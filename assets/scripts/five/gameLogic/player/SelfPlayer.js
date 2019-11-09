@@ -1,0 +1,76 @@
+let SelfPlayer = cc.Class({
+
+    extends: require("Player"),
+
+    properties: {
+        biography: {
+            default: null,
+        },
+    },
+
+    __ctor__: function (param) {
+        this.type = "self";
+
+        debug.log("SelfPlayer init");
+        debug.log(param);
+
+        this.biography = param.biography;
+    },
+
+    onUpdate: function (dt) {
+    },
+
+    isSelf: function () {
+        return true;
+    },
+
+    setFirst: function (isFirst) {
+        this.isFirst = isFirst;
+        this.chessType = isFirst ? 1 : 2;
+    },
+
+    notifyPlay: function () {
+        //debug.log("self notifyPlay");
+        appContext.getGameManager().chessboardManager.setLocked(false);
+    },
+
+    notifyGrabFirst: function () {
+        debug.log("玩家快快决定是否抢先手吧！");
+        this.grabFirst(false);//TODO ui let player choose
+    },
+
+    grabFirst: function (grab) {
+        debug.log("玩家抢先手:" + grab);
+
+        appContext.getGameManager().playerGrabFirst(this.index, grab);
+    },
+
+    offline: function () {
+        debug.log("玩家掉线了");
+        appContext.getGameManager().playerWin(3 - this.chessType);
+    },
+
+    surrender: function () {
+        debug.log("玩家认输了");
+        appContext.getGameManager().playerWin(3 - this.chessType, false, true);
+    },
+
+    makeDecision: function (x, y, t) {
+        let cbm = appContext.getGameManager().chessboardManager;
+        if (cbm == null) {
+            debug.log("cbm is null!");
+            return;
+        }
+
+        if (appContext.getGameManager().game.currentChessType != this.chessType) {
+            debug.log("currentChessType is not match!");
+            return;
+        }
+
+        cbm.commitChessAt(x, y, t);
+    },
+
+    destroy: function () {
+
+    },
+});
