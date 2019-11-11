@@ -12,14 +12,11 @@ let WechatAPI = {
 
     cache: {},
 
-    // 支持添加到小程序栏的微信版本
-    supportAddToProgramWechatVersion: "6.7.1",
+    threadWorker: require("ThreadWorker"),
 
     webService: require("WebService"),
 
     deviceManager: require("DeviceManager"),
-
-    threadWorker: require("ThreadWorker"),
 
     bannerAdUtil: null,
 
@@ -303,7 +300,6 @@ let WechatAPI = {
     },
 
     setTTAppLaunchOptions() {
-        this.ttPromoInfo = null;
         this.ttAppLaunchOptions = null;
         if (WechatAPI.systemInfo.platform == 'ios') {
             return;
@@ -317,16 +313,13 @@ let WechatAPI = {
         }
 
         let res = [];
-
-        let str = JSON.stringify(debug.promoInfo);
-        let promoInfo = str ? JSON.parse(str) : null;
-
-        if (promoInfo == null || promoInfo.list == null || promoInfo.list.length < 1) {
+        let promoInfo = debug.getPromoList();
+        if (promoInfo == null) {
             return;
         }
 
-        for (let i in promoInfo.list) {
-            let info = promoInfo.list[i];
+        for (let i in promoInfo) {
+            let info = promoInfo[i];
             if (info) {
                 res.push({
                     appId: info.appid,
@@ -336,7 +329,6 @@ let WechatAPI = {
             }
         }
 
-        this.ttPromoInfo = promoInfo.list;
         this.ttAppLaunchOptions = res;
         debug.log("!!ttAppLaunchOptions");
         debug.log(this.ttAppLaunchOptions);

@@ -26,7 +26,7 @@ let DataPool = {
                         applyRes(data);
                     },
                     function (res) {
-                        debug.log("fetchAdRewardRes失败 清空");
+                        debug.log("fetchAdReward失败");
                         debug.log(res);
                         self.write(self.ID.AvailableAdReward);
                     },
@@ -44,8 +44,8 @@ let DataPool = {
                         applyRes(data);
                     },
                     function (res) {
-                        debug.log("fetchCanClientAssignBonus失败，清空");
-                        debug.log("param = " + param);
+                        debug.log("fetchCanClientAssignBonus失败");
+                        debug.log("param " + param);
                         debug.log(res);
                         self.write(self.ID.RewardPoolTestId, null);
                     },
