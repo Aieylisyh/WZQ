@@ -51,15 +51,7 @@ cc.Class({
         }
 
         //TODO read localStorage
-        this.selfPlayer = new SelfPlayer({
-            biography: {
-                nickName: "游客玩家",
-                sex: 1, //0 female, 1 male
-                grade: 1,
-                image: "",
-                city: "喵喵星球",
-            },
-        });
+        this.selfPlayer = new SelfPlayer(appContext.getUxManager().getUserInfo());
     },
 
     //根据远程得到的结果生成本地的棋局

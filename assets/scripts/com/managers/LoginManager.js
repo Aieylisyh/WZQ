@@ -1,5 +1,4 @@
 let LoginState = require("LoginState");
-let ServerTypes = require("ServerTypes");
 let StorageKey = require("StorageKey");
 let StringUtil = require("StringUtil");
 let SequenceStateMachine = require("SequenceStateMachine");
@@ -244,30 +243,6 @@ cc.Class({
         }, this);
     },
 
-    onWxPServerConnected: function () {
-        let sendWxPLoginResult = appContext.getRemoteAPI().sendWxPLogin();
-        if (sendWxPLoginResult) {
-            this._stateMachine.addWaitingTask(LoginState.GotWxPloginResult, function () {
-                this.switchToState(0);
-            }, this);
-        } else {
-            debug.warn("sendWxPLogin没有足够的信息!");
-            appContext.getAnalyticManager().addEvent("bug__NotEnoughInfoWxPLogin");
-            appContext.getAnalyticManager().accelerateUpload();
-            this.switchToState(0);
-        }
-    },
-
-    onWxHServerConnected: function () {
-        appContext.getRemoteAPI().sendWxHLogin();
-        this._stateMachine.addWaitingTask(LoginState.GotWxHloginResult, function () {
-            this.switchToState(0);
-        }, this);
-    },
-
-    onHServerConnected: function () {
-        //TODO
-    },
 
     clearLoginStorageAndCache: function () {
         // 不清除本地缓存的username(防止在登录界面的客服面板copy空的username)，每次登陆都会重新覆盖username 
@@ -641,28 +616,6 @@ cc.Class({
         });
     },
 
-    enterStateConnectWxPServer: function (url) {
-        url = url || this.pipWxPServerUrl || this.wxPServerUrl;
-        debug.log(" enterStateConnectWxPServer url " + url);
-
-        appContext.getNetworkManager().tryConnect(ServerTypes.WxPServer, url);
-        console.log("connecting WxPServer " + url);
-        this._stateMachine.addWaitingTask(LoginState.ConnectWxPServer, function () {
-            this.switchToState(LoginState.Wait);
-        }, this, 10);
-    },
-
-    enterStateConnectWxHServer: function (url) {
-        if (url == null) {
-            url = this.wxHServerUrl;
-        }
-
-        this._stateMachine.addWaitingTask(LoginState.ConnectWxHServer, function () {
-            this.switchToState(LoginState.Wait);
-        }, this, 10);
-        appContext.getNetworkManager().tryConnect(ServerTypes.WxHServer, url);
-    },
-
     enterStateGetWxPloginResult: function (suc, username, token, url, code) {
         debug.log("onPLoginResult suc " + username + " username:" + username + " token:" + token + " url:" + url);
         if (username != null && username != "") {
@@ -674,13 +627,6 @@ cc.Class({
             WechatAPI.loginInfo.token = token;
         }
 
-        if (!suc) {
-            appContext.getDialogManager().showToast("登录失败，请重试 [" + code + "]");
-            this.clearLoginStorageAndCache();
-            this.switchToState(LoginState.Wait);
-            return;
-        }
-
         this.wxHServerUrl = url;
         this.switchToState(LoginState.ConnectWxHServer, url);
 
@@ -690,13 +636,6 @@ cc.Class({
     },
 
     enterStateGotWxHloginResult: function (success, code) {
-        if (!success) {
-            appContext.getDialogManager().showToast("登录失败，请重试 [" + code + "]");
-            this.clearLoginStorageAndCache();
-            this.switchToState(LoginState.Wait);
-            return;
-        }
-
         this.switchToState(LoginState.Finish);
 
         this._stateMachine.addWaitingTask(LoginState.GotWxHloginResult, function () {

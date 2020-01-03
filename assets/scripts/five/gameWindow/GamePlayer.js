@@ -1,6 +1,4 @@
-let DataKey = require("DataKey");
-let DataContainerUpdater = require("DataContainerUpdater");
-let LoadResPath = require("LoadResPath");
+let Grade = require("Grade");
 let GameUtil = require("GameUtil");
 
 cc.Class({
@@ -32,24 +30,6 @@ cc.Class({
             }
             this.timerLabel.string = ceilChessTimer;
         }
-    },
-
-    // todo
-    onUserUpdate: function (user) {
-        if (user == null) {
-            return;
-        }
-
-        let nickName = "哈哈";
-        this.nicknameLabel.string = nickName;
-
-        let gradeLevel = "初心一段";
-        this.gradeLevelLabel.string = gradeLevel;
-
-        let headUrl = "https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83ep0TEW4icA1e7xicDvAUtra8vN2McN8Dk5LP7SYctmwv08FyfePPxLcA1jIibev1h20Riaiag6IhVGtLag/132";
-        let sex = 1;
-        let defaultHeadPath = sex === 1 ? LoadResPath.ImgPath.boy_defaultHeadIcon : LoadResPath.ImgPath.girl_defaultHeadIcon;
-        GameUtil.setHeadIconImg(headUrl, this.headIconImg, defaultHeadPath);
     },
 
     // 显示倒计时

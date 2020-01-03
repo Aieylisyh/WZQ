@@ -42,7 +42,7 @@ cc.Class({
                 } else if (m.currentScore < n.currentScore) {
                     result = -1;
                 } else if (m.currentScore === n.currentScore) {
-                    if (m.nickName >= n.nickName) {
+                    if (m.nickname >= n.nickname) {
                         result = 1;
                     } else {
                         result = -1;

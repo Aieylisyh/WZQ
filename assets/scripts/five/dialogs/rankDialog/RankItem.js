@@ -24,9 +24,9 @@ cc.Class({
         }
 
         // 昵称todo
-        let nickName = data.nickName;
-        if (StringUtil.isNotEmpty(nickName)) {
-            this.nicknameLabel.string = nickName;
+        let nickname = data.nickname;
+        if (StringUtil.isNotEmpty(nickname)) {
+            this.nicknameLabel.string = nickname;
         }
 
         // 胜场todo
@@ -50,7 +50,6 @@ cc.Class({
         let headIconUrl = data.headIconUrl;
         // 性别todo(背景图片自带男默认图像)
         let sex = data.sex;
-        let defaultIconPath = sex === 2 ? LoadResPath.ImgPath.girl_defaultHeadIcon : null;
         GameUtil.setHeadIconImg(headIconUrl, this.headIconImg, defaultIconPath);
     },
 

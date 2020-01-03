@@ -288,24 +288,24 @@ let DataUtil = {
         }
     },
 
-    formatNickname: function (nickName) {
-        if (nickName == null || nickName === "") {
-            return nickName;
+    formatNickname: function (nickname) {
+        if (nickname == null || nickname === "") {
+            return nickname;
         }
 
         // 删除换行符和空格。
-        nickName = nickName.replace(/\n/, '');
-        nickName = nickName.replace(/\r/, '');
+        nickname = nickname.replace(/\n/, '');
+        nickname = nickname.replace(/\r/, '');
 
-        //nickName = nickName.Trim();
-        while (nickName.charAt(0) == ' ') {
-            nickName = nickName.slice(1);
+        //nickname = nickname.Trim();
+        while (nickname.charAt(0) == ' ') {
+            nickname = nickname.slice(1);
         }
-        while (nickName.charAt(nickName.length - 1) == ' ') {
-            nickName = nickName.slice(0, -1);
+        while (nickname.charAt(nickname.length - 1) == ' ') {
+            nickname = nickname.slice(0, -1);
         }
 
-        return nickName;
+        return nickname;
     },
 
     formatWinRate: function (winRate) {

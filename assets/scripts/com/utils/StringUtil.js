@@ -27,29 +27,6 @@ let StringUtil = {
         return s;
     },
 
-    getLocationLabel: function () {
-        var location = null;
-
-        if (WechatAPI.loginInfo && WechatAPI.loginInfo.userInfo) {
-            var city = WechatAPI.loginInfo.userInfo.city;
-            if (StringUtil.isNotEmpty(city)) {
-                location = StringUtil.getLocationByCity(city);
-            }
-
-            if (StringUtil.isEmpty(location)) {
-                var province = WechatAPI.loginInfo.userInfo.province;
-                if (StringUtil.isNotEmpty(province)) {
-                    location = StringUtil.getRandomLocationByProvince(province);
-                }
-            }
-
-        }
-
-        location = location || StringUtil.getRandomLocationByProvince(StringUtil.getRandomProvince());
-
-        return location;
-    },
-
     getRandomProvince: function () {
         let rnd = Math.random();
         if (rnd < 0.3) {

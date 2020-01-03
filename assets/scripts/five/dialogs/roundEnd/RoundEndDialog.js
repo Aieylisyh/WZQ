@@ -1,5 +1,4 @@
 let GameUtil = require("GameUtil");
-let LoadResPath = require("LoadResPath");
 
 cc.Class({
     extends: require("BaseDialog"),
@@ -138,20 +137,20 @@ cc.Class({
         let action = cc.scaleTo(0.2, 1).easing(cc.easeBackOut());
         this.mainNode.runAction(action);
 
-        GameUtil.setHeadIconImg(
-            /* info.selfPlayer.biography.image,*/null,
+        GameUtil.setHeadIcon(
+            this.info.selfPlayer.basic.headIconUrl,
+            this.info.selfPlayer.basic.headIconPath,
             this.selfSprite,
-            this.info.selfPlayer.biography.sex == 1 ? LoadResPath.ImgPath.boy_defaultHeadIcon : LoadResPath.ImgPath.girl_defaultHeadIcon,
         );
 
         GameUtil.setHeadIconImg(
-            /* info.opponentPlayer.biography.image,*/null,
+            this.info.opponentPlayer.basic.headIconUrl,
+            this.info.opponentPlayer.basic.headIconUrl,
             this.opponentSprite,
-            this.info.opponentPlayer.biography.sex == 1 ? LoadResPath.ImgPath.boy_defaultHeadIcon : LoadResPath.ImgPath.girl_defaultHeadIcon,
         );
 
-        this.selfLabel.string = this.info.selfPlayer.biography.nickName;
-        this.opponentLabel.string = this.info.opponentPlayer.biography.nickName;
+        this.selfLabel.string = this.info.selfPlayer.basic.nickname;
+        this.opponentLabel.string = this.info.opponentPlayer.basic.nickname;
 
         this.scheduleOnce(function () {
             this.step = 3;

@@ -1,8 +1,8 @@
-let DataContainerUpdater = require("DataContainerUpdater");
-let DataKey = require("DataKey");
+
 let StringUtil = require("StringUtil");
 let LoadResPath = require("LoadResPath");
 let GameUtil = require("GameUtil");
+let Grade = require("Grade");
 
 // 此组件多地方通用(目前是MainWindow和PlayerInfoDialog)，删除属性时需检查下
 cc.Class({
@@ -26,13 +26,17 @@ cc.Class({
         gradeLevelLabel: cc.Label, // 段位
 
         gradeScoreLabel: cc.Label, // 段位积分
+
+        gradePB: cc.ProgressBar,
+
+        gradePBTop: cc.Label,
+
+        gradePBBottom: cc.Label,
+
+        gradeIcon: cc.Sprite,
     },
 
-    start() {
-        this.onUserUpdate();
-    },
-
-    onUserUpdate: function (user) {
+    setup: function (user) {
         if (user == null) {
             return;
         }
@@ -41,36 +45,31 @@ cc.Class({
         let sex = user.sex;
         if (this.sexTagImg != null) {
             let sexTagPath = sex === 1 ? LoadResPath.ImgPath.boyTag : LoadResPath.ImgPath.girlTag;
-            this.setSexTagImg(sexTagPath);
+            appContext.getFileManager().applySpriteSafe(sexTagPath, this.sexTagImg);
         }
 
         if (this.headIconImg != null) {
-            // todo
-            let headIconUrl = user.headIconUrl;
-            let defaultIconPath = sex === 1 ? LoadResPath.ImgPath.boy_defaultHeadIcon : LoadResPath.ImgPath.girl_defaultHeadIcon;
-            GameUtil.setHeadIconImg(headIconUrl, this.headIconImg, defaultIconPath);
+            GameUtil.setHeadIcon(user.basic.headIconUrl, user.basic.headIconPath, this.headIconImg);
         }
 
         if (this.nicknameLabel != null) {
             // todo
-            let nickName = user.nickName;
-            if (StringUtil.isNotEmpty(nickName)) {
-                this.nicknameLabel.string = nickName;
+            let nickname = user.basic.nickname;
+            if (StringUtil.isNotEmpty(nickname)) {
+                this.nicknameLabel.string = nickname;
             }
         }
 
         if (this.maxKeepWinLabel != null) {
-            // todo
-            let maxKeepWin = user.maxKeepWin;
-            this.maxKeepWinLabel.string = maxKeepWin;
+            let maxKeepWin = user.basic.maxKeepWin;
+            this.maxKeepWinLabel.string = maxKeepWin || 0;
         }
 
-        // todo
-        let winCount = user.winCount;
-        let roundCount = user.roundCount;
+        let winCount = user.basic.winCount;
+        let roundCount = user.basic.roundCount;
         if (this.winRateLabel != null) {
-            let winRate = Math.round((winCount / roundCount) * 10000) / 100 + "%";
-            this.winRate.string = winRate;
+            let winRate = Math.round((winCount / roundCount) * 1000) / 10;
+            this.winRateLabel.string = (winRate || 0) + "%";
         }
         if (this.winCountLabel != null) {
             this.winCountLabel.string = winCount;
@@ -79,23 +78,31 @@ cc.Class({
             this.roundCountLabel.string = roundCount;
         }
 
+
+        let gradeAndFillInfo = Grade.getGradeAndFillInfoByScore(user.basic.grade);
+        let gradeInfo = Grade.getGradeInfo(gradeAndFillInfo.grade);
         if (this.gradeLevelLabel != null) {
-            // todo
-            let level = user.level;
-            this.gradeLevelLabel.string = level;
+            this.gradeLevelLabel.string = gradeInfo.name;
         }
 
         if (this.gradeScoreLabel != null) {
-            // todo
-            let currentScore = user.currentScore;
-            let totalScore = "200";
-            this.gradeScoreLabel.string = currentScore + "/" + totalScore;
+            this.gradeScoreLabel.string = gradeAndFillInfo.fillAmount;
         }
-    },
 
-    setSexTagImg: function (sexTagPath) {
-        if (StringUtil.isNotEmpty(sexTagPath)) {
-            appContext.getFileManager().applySpriteSafe(sexTagPath, this.sexTagImg);
+        if (this.gradePBTop != null) {
+            this.gradePBTop.string = gradeAndFillInfo.fillTop;
+        }
+
+        if (this.gradePBBottom != null) {
+            this.gradePBBottom.string = gradeAndFillInfo.fillBottom;
+        }
+
+        if (this.gradePB != null) {
+            this.gradePB.value = gradeAndFillInfo.fillAmount / gradeInfo.exp;
+        }
+
+        if (this.gradeIcon != null) {
+            appContext.getFileManager().applySpriteSafe(gradeInfo.imgPath, this.gradeIcon);
         }
     },
 });

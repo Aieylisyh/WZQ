@@ -3,7 +3,7 @@ let SelfPlayer = cc.Class({
     extends: require("Player"),
 
     properties: {
-        biography: {
+        basic: {
             default: null,
         },
     },
@@ -14,7 +14,7 @@ let SelfPlayer = cc.Class({
         debug.log("SelfPlayer init");
         debug.log(param);
 
-        this.biography = param.biography;
+        this.basic = param.basic;
     },
 
     onUpdate: function (dt) {

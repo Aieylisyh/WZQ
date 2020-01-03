@@ -8,7 +8,7 @@ let DataPool = {
 
     //所有数据的列表
     pool: [],
-
+/*
     init: function () {
         let self = this;
 
@@ -53,7 +53,7 @@ let DataPool = {
             },
             this.ID.RewardPoolTestId, 2.5);
     },
-
+*/
     //创建一个数据
     create: function (id, fetch, param, interval) {
         let data = this.pool[id] || {};

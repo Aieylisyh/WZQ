@@ -12,26 +12,22 @@ cc.Class({
 
         btnSetting: cc.Node,
 
-        userInfoNode: cc.Node,
+        playerInfoBoard: require("PlayerInfo"),
     },
 
     start: function () {
         this.node.on("CloseAllDialogs", this.onCloseAllDialogs, this);
 
         this.autoShowDialogs();
+
+        this.playerInfoBoard.setup(appContext.getUxManager().getUserInfo());
     },
 
     update: function (dt) {
         // 信息栏动画
         if (this.swingTime != null) {
-            this.userInfoNode.x = Math.floor(Math.sin(this.swingTime * 2) * 220) / 10;
+            this.playerInfoBoard.node.x = Math.floor(Math.sin(this.swingTime * 2.5) * 220) * 0.1;
             this.swingTime += dt;
-        }
-    },
-
-    onUserUpdate: function (user) {
-        if (user == null) {
-            return;
         }
     },
 
@@ -95,18 +91,18 @@ cc.Class({
 
     // 播放用户信息栏动画
     playUserInfoAction: function () {
-        if (this.userInfoNode.active) {
+        if (this.playerInfoBoard.node.active) {
             return;
         }
 
-        this.userInfoNode.active = true;
-        let positionX = this.userInfoNode.x;
+        this.playerInfoBoard.node.active = true;
+        let positionX = this.playerInfoBoard.node.x;
         let action1 = cc.moveTo(1, positionX, 483).easing(cc.easeElasticOut());
         let finishCallback = cc.callFunc(function () {
             this.swingTime = 0;
         }, this);
         let sequence = cc.sequence(action1, finishCallback);
-        this.userInfoNode.runAction(sequence);
+        this.playerInfoBoard.node.runAction(sequence);
     },
 
     autoShowDialogs: function () {

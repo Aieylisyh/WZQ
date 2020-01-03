@@ -19,7 +19,7 @@ let Dummy = cc.Class({
 
     properties: {
         //假人资料
-        biography: {
+        basic: {
             default: null,
         },
 
@@ -50,9 +50,9 @@ let Dummy = cc.Class({
         this.taskProcessTimer = this.taskProcessTime;
 
         //为本质属性，个人资料赋值，并由此计算出其外在属性
-        this.biography = param.biography;
+        this.basic = param.basic;
         this.personality = param.personality;
-        this.status = Dummy.getStatus(this.biography, this.personality);
+        this.status = Dummy.getStatus(this.basic, this.personality);
 
         //为额外的外在属性赋值（如果有的话）
         if (param.extraStatus) {

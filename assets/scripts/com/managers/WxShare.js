@@ -12,7 +12,7 @@ let WxShare = {
             }
         }
 
-        return "官方正版潜艇大战，休闲免费3秒上手";
+        return "官方正版五子棋作战，休闲免费1秒上手";
     },
 
     getImgUrl: function(param) {
@@ -27,14 +27,14 @@ let WxShare = {
 
     //根据类型获取query
     getQuery: function(param) {
-        let query = "app=zqt";
+        let query = "app=wzq";
         let userInfo = appContext.getUxManager().getUserInfo();
 
         if (userInfo && userInfo.openId) {
             query += "&sharerOpenId=" + userInfo.openId;
         }
-        if (userInfo && userInfo.nickName) {
-            query += "&sharerNickName=" + userInfo.nickName;
+        if (userInfo && userInfo.nickname) {
+            query += "&sharerNickName=" + userInfo.nickname;
         }
         if (param && param.items) {
             query += "&items=" + Encoder.makeGiftCode(param.items);

@@ -1,4 +1,4 @@
-let NetworkManager = require("NetworkManager");
+
 let MessageRouter = require("MessageRouter");
 let DataRepository = require("DataRepository");
 let RemoteAPI = require("RemoteAPI");
@@ -50,7 +50,7 @@ cc.Class({
         },
     },
 
-    start: function() {
+    start: function () {
         window.WechatAPI = WechatAPI;
         window.appContext = this;
 
@@ -68,11 +68,6 @@ cc.Class({
         //数据仓库
         if (this._dataRepository == null) {
             this._dataRepository = new DataRepository();
-        }
-
-        //从这里获得网络接收到的消息，并向网络发消息
-        if (this._networkManager == null) {
-            this._networkManager = new NetworkManager();
         }
 
         //负责接收消息，并且将消息分发给Handler处理
@@ -113,10 +108,10 @@ cc.Class({
 
 
         if (WechatAPI.isEnabled()) {
-            if (WechatAPI.isWx) {
-                this.getAnalyticManager().enableALD = true;
-                this.getAnalyticManager().aldTag = "WX_";
-            }
+            // if (WechatAPI.isWx) {
+            //     this.getAnalyticManager().enableALD = true;
+            //     this.getAnalyticManager().aldTag = "WX_";
+            // }
         } else {
             //cc.director.setDisplayStats(false); //去掉网页上的性能面板 
         }
@@ -125,84 +120,80 @@ cc.Class({
         this.appController.startListenWxOnShowEarlyParam();
 
         //切换到首场景
-        this.scheduleOnce(function() {
+        this.scheduleOnce(function () {
+            this.getRemoteAPI().loadFakePlayerInfo();
             this.windowManager.switchToMainWindow();
             this._uxManager.init();
         }, 0);
     },
 
-    update: function(dt) {
+    update: function (dt) {
         //对没有必要继承cc.Component的实例调用onUpdate方法
         this._taskManager.onUpdate(dt);
-        this._networkManager.onUpdate(dt);
         this._uxManager.onUpdate(dt);
     },
 
-    lateUpdate: function(dt) {
+    lateUpdate: function (dt) {
         this._messageRouter.onLateUpdate(dt);
     },
 
-    getLoginManager: function() {
+    getLoginManager: function () {
         return this._loginManager;
     },
 
-    getWindowManager: function() {
+    getWindowManager: function () {
         return this.windowManager;
     },
 
-    getMessageRouter: function() {
+    getMessageRouter: function () {
         return this._messageRouter;
     },
 
-    getNetworkManager: function() {
-        return this._networkManager;
-    },
-
-    getDataRepository: function() {
+    getDataRepository: function () {
         return this._dataRepository;
     },
 
-    getDialogManager: function() {
+    getDialogManager: function () {
         return this.dialogManager;
     },
 
-    getRemoteAPI: function() {
+    getRemoteAPI: function () {
         return this._remoteAPI;
     },
 
-    getAnalyticManager: function() {
+    getAnalyticManager: function () {
         return this.statisticsManager;
     },
 
-    getSoundManager: function() {
+    getSoundManager: function () {
         return this.soundManager;
     },
 
-    getTaskManager: function() {
+    getTaskManager: function () {
         return this._taskManager;
     },
 
-    getAppController: function() {
+    getAppController: function () {
         return this.appController;
     },
 
-    getFileManager: function() {
+    getFileManager: function () {
         return this._fileManager;
     },
 
-    getGameSettingManager: function() {
+    getGameSettingManager: function () {
         return this._gameSettingManager;
     },
 
-    getUxManager: function() {
+    getUxManager: function () {
         return this._uxManager;
     },
 
-    getGameManager: function() {
+    getGameManager: function () {
         return this.gameManager;
     },
 
-    dynamicRequire: function(s) {
+    dynamicRequire: function (s) {
         let res = null;
 
         try {

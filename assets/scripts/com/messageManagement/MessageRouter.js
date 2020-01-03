@@ -2,37 +2,37 @@ let AppState = require("AppState");
 
 cc.Class({
     ctor: function () {
-        // 初始化filters
-        if (this._messageLogicFactory == null) {
-            let MessageLogicFactory = require("MessageLogicFactory");
-            this._messageLogicFactory = new MessageLogicFactory();
-        }
+        // // 初始化filters
+        // if (this._messageLogicFactory == null) {
+        //     let MessageLogicFactory = require("MessageLogicFactory");
+        //     this._messageLogicFactory = new MessageLogicFactory();
+        // }
 
-        let filters = this._messageLogicFactory.getMessageFilterList();
-        if (filters != null) {
-            for (let i in filters) {
-                let f = filters[i];
-                if (f == null) {
-                    continue;
-                }
-                if (this._filters.indexOf(f) == -1) {
-                    this._filters.push(f);
-                }
-            }
-        }
+        // let filters = this._messageLogicFactory.getMessageFilterList();
+        // if (filters != null) {
+        //     for (let i in filters) {
+        //         let f = filters[i];
+        //         if (f == null) {
+        //             continue;
+        //         }
+        //         if (this._filters.indexOf(f) == -1) {
+        //             this._filters.push(f);
+        //         }
+        //     }
+        // }
 
-        // 初始化MessageHandlers
-        let handlers = this._messageLogicFactory.getMessageHandlerList();
-        if (handlers != null) {
-            for (let j in handlers) {
-                let h = handlers[j];
-                if (h == null) {
-                    continue;
-                }
-                let type = h.cmdType;
-                this._msgHandlers[type] = h;
-            }
-        }
+        // // 初始化MessageHandlers
+        // let handlers = this._messageLogicFactory.getMessageHandlerList();
+        // if (handlers != null) {
+        //     for (let j in handlers) {
+        //         let h = handlers[j];
+        //         if (h == null) {
+        //             continue;
+        //         }
+        //         let type = h.cmdType;
+        //         this._msgHandlers[type] = h;
+        //     }
+        // }
     },
 
     properties: {
@@ -61,8 +61,8 @@ cc.Class({
 
     onLateUpdate: function (dt) {
         // 不管有没有断线，都应该始终检查是否收到消息，并处理完成。
-        this.checkReceivedMsg(this._fetchCountPerFrame);
-        this.checkResponse(dt);
+        // this.checkReceivedMsg(this._fetchCountPerFrame);
+        // this.checkResponse(dt);
 
         // 目前没有用到消息刷新器
         // this.checkMsgUpdater();
@@ -127,44 +127,19 @@ cc.Class({
 
     checkResponse: function (dt) {
         return;
-        let state = appContext.getAppController().getAppState();
-        //目前只有WxHServer需要检查心跳，以后分服的话还是要考虑发送那种心跳
-        if (state === AppState.Null) {
-            return;
-        }
-        if (state === AppState.NoWxPLogin) {
-            return;
-        }
-        if (state === AppState.WxPLoginOk) {
-            return;
-        }
-
-        this._noResponseTimer += dt;
-        this._heatBeatSendTimer += dt;
-
-        if (this._noResponseTimer > this.noResponseTimeThreshold) {
-            this._noResponseTimer = 0;
-            debug.log("reconnect by hb:" + state);
-            appContext.getNetworkManager().onDisconnected();
-        }
-
-        if (this._heatBeatSendTimer > this.heatBeatSendTimeThreshold) {
-            this._heatBeatSendTimer = 0;
-            // appContext.getRemoteAPI().HBReq(0);
-        }
     },
 
     // 同一个刷新器，每次只处理一个
     checkMsgUpdater: function () {
-        for (let i in this._msgUpdaters) {
-            let msgUpdater = this._msgUpdaters[i];
-            if (msgUpdater.isUpdate()) {
-                let content = msgUpdater.getContent();
-                if (content != null) {
-                    msgUpdater.doHandle(content);
-                }
-            }
-        }
+        // for (let i in this._msgUpdaters) {
+        //     let msgUpdater = this._msgUpdaters[i];
+        //     if (msgUpdater.isUpdate()) {
+        //         let content = msgUpdater.getContent();
+        //         if (content != null) {
+        //             msgUpdater.doHandle(content);
+        //         }
+        //     }
+        // }
     },
 
     getMsgUpdater: function (type) {

@@ -1,9 +1,21 @@
 let StringUtil = require("StringUtil");
 let DataKey = require("DataKey");
 let StorageKey = require("StorageKey");
+let LoadResPath = require("LoadResPath");
 
 let GameUtil = {
-    //新加的///////////////////////////////////////////
+    setHeadIcon: function (headIconUrl, localPath, targetSprite, defaultIconPath = "") {
+        if (StringUtil.isNotEmpty(localPath)) {
+            this.applyHeadIcon(localPath, targetSprite);
+        } else {
+            //   let defaultHeadPath = sex === 1 ? LoadResPath.ImgPath.boy_defaultHeadIcon : LoadResPath.ImgPath.girl_defaultHeadIcon;
+            if (StringUtil.isEmpty(defaultIconPath)) {
+                defaultHeadPath = LoadResPath.ImgPath.boy_defaultHeadIcon;
+            }
+            this.setHeadIconImg(headIconUrl, targetSprite, defaultIconPath);
+        }
+    },
+
     // 设置头像图片
     setHeadIconImg: function (headIconUrl, targetSprite, defaultIconPath = "") {
         if (StringUtil.isNotEmpty(headIconUrl)) {
