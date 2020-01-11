@@ -87,7 +87,7 @@ cc.Class({
 
     onStartGame() {
         //show surrender
-        this.btnSurrender.active = false;
+        this.btnSurrender.active = true;
     },
 
     closeChatBoard() {

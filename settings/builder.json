@@ -2,6 +2,7 @@
   "android-instant": {
     "REMOTE_SERVER_ROOT": "",
     "host": "",
+    "packageName": "org.cocos2d.cocosProject",
     "pathPattern": "",
     "recordPath": "",
     "scheme": "https",
@@ -45,5 +46,15 @@
     "subContext": ""
   },
   "xxteaKey": "d5b83c58-f40d-4c",
-  "zipCompressJs": true
+  "zipCompressJs": true,
+  "android": {
+    "packageName": "org.cocos2d.cocosProject"
+  },
+  "ios": {
+    "packageName": "org.cocos2d.cocosProject"
+  },
+  "mac": {
+    "packageName": "org.cocos2d.cocosProject"
+  },
+  "win32": {}
 }

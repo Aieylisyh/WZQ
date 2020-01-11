@@ -116,12 +116,12 @@ let Grade = {
         let fillAmount = 0;
         let grade = 1;
         for (let i in this.grades) {
-            if (score >= base) {
-                grade = this.grades[i].grade;
-                fillBottom = base;
+            if (score < base) {
                 break;
             }
 
+            grade = this.grades[i].grade;
+            fillBottom = base;
             base += this.grades[i].exp;
         }
 
@@ -139,14 +139,26 @@ let Grade = {
         };
     },
 
-    getGradeInfo: function (gradeValue) {
-        let info = this.grades[gradeValue];
+    getGradeInfo: function (grade) {
+        let info = this.grades[grade - 1];
         if (info) {
             let res = {};
-            res.imgPath = "images/gradeImg/grade" + gradeValue;
+            res.imgPath = "images/gradeImg/grade" + grade;
             for (let i in info) { res[i] = info[i]; }
             return res;
         }
+    },
+
+    getFitScore(grade) {
+        let score = 0;
+        for (let i in this.grades) {
+            let info = this.grades[i];
+            if (info && info.grade < grade) {
+                score += info.exp;
+            }
+        }
+
+        return score;
     },
 
     getGradeMatchModifier(grade) {

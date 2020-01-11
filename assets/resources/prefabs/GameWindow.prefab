@@ -9576,14 +9576,14 @@
       "__id__": 260
     },
     "_enabled": true,
-    "duration": 3,
+    "duration": 2,
     "sp": {
       "__id__": 262
     },
     "targetX": -65,
-    "targetY": 320,
+    "targetY": 365,
     "startX": 265,
-    "startY": 470,
+    "startY": 465,
     "_id": ""
   },
   {
@@ -9800,14 +9800,14 @@
       "__id__": 267
     },
     "_enabled": true,
-    "duration": 3,
+    "duration": 2,
     "sp": {
       "__id__": 269
     },
     "targetX": 65,
-    "targetY": 320,
+    "targetY": 365,
     "startX": -265,
-    "startY": 470,
+    "startY": 465,
     "_id": ""
   },
   {

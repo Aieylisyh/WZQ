@@ -119,9 +119,26 @@ cc.Class({
         },
 
         assignGradeAndAiToUser(user, grade) {
-            user.grade = grade;
-            user.fast = (Math.random() * 20 + grade < 15);
-
+            let oppoGrade = grade;
+            let rnd = Math.random();
+            if (rnd > 0.95) {
+                oppoGrade += 3;
+            } else if (rnd > 0.9) {
+                oppoGrade -= 3;
+            } else if (rnd > 0.8) {
+                oppoGrade += 2;
+            } else if (rnd > 0.7) {
+                oppoGrade -= 2;
+            } else if (rnd > 0.55) {
+                oppoGrade += 1;
+            } else if (rnd > 0.4) {
+                oppoGrade -= 1;
+            }
+            oppoGrade = Math.min(Math.max(oppoGrade, 0), 10);
+            //debug.log("oppoGrade " + oppoGrade);
+            user.basic.currentScore = Grade.getFitScore(oppoGrade);
+            user.fast = (Math.random() * 20 + oppoGrade < 15);
+            debug.log(user);
             return new Dummy(user);
         },
 

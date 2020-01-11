@@ -108,18 +108,18 @@ cc.Class({
             this.uxData.usedGiftCode = [];
 
             if (WechatAPI.isWx) {
-                this.uxData.safeEntry = this.matchWLHigh();
-                console.log("首 whlist " + this.uxData.safeEntry);
+                // this.uxData.safeEntry = this.matchWLHigh();
+                // console.log("首 whlist " + this.uxData.safeEntry);
             }
 
         } else {
             this.uxData.counts += 1;
             debug.log(this.uxData.counts + "次");
             if (WechatAPI.isWx) {
-                if (this.uxData.safeEntry) {
-                    this.uxData.safeEntry = this.matchWLHigh() || this.matchWLLow();
-                }
-                console.log("whlist " + this.uxData.safeEntry);
+                // if (this.uxData.safeEntry) {
+                //     this.uxData.safeEntry = this.matchWLHigh() || this.matchWLLow();
+                // }
+                // console.log("whlist " + this.uxData.safeEntry);
             }
         }
 
