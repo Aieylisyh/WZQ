@@ -1,6 +1,5 @@
 let StorageKey = require("StorageKey");
 let VitaSystem = require("VitaSystem");
-let Item = require("Item");
 let DialogTypes = require('DialogTypes');
 
 let shareVitaCountPerDay = 3;
@@ -67,12 +66,6 @@ cc.Class({
                 return false;
             },
         },
-
-        playerData: {
-            get: function () {
-                return this.getPlayerData();
-            },
-        },
     },
 
     ctor: function () {
@@ -92,6 +85,8 @@ cc.Class({
             this.toSaveUxData = false;
             WechatAPI.setStorageSync(StorageKey.uxData, JSON.stringify(this.uxData));
         }
+
+
     },
 
     init: function () {
@@ -253,19 +248,6 @@ cc.Class({
         appContext.getAnalyticManager().accelerateUpload(0);
     },
 
-    initInviteData: function () {
-        let data = this.gameInfo.inviteData;
-        if (data == null || data.finished == null) {
-            data = {};
-            data.finished = false;
-            data.crueList = [];
-            data.hostOpenId = null;
-            data.rewardClaimedCount = 0;
-            this.gameInfo.inviteData = data;
-            this.saveGameInfo();
-        }
-    },
-
     saveUserInfo: function (userInfo) {
         debug.log("!!saveUserInfo");
         if (userInfo) {
@@ -281,25 +263,30 @@ cc.Class({
                 headIconUrl: null,
                 headIconPath: null,//prior
                 maxKeepWin: 0,
+                crtKeepWin: 0,
                 winCount: 0,
                 roundCount: 0,
-                grade: 1,
+                lastWin: false,
                 currentScore: 0,//这是总分，总分不会小于0。 显示出来的得分是计算段位之后的总分
                 //  let scoreInfo = appContext.getUxManager().getScoreInfo(currentScore);
                 // todaySafeScore // from SC2. the score to prevent rank loose, not sure to use it or not
             },
         };
     },
-    getUserInfo: function (res) {
+
+    getUserInfo: function () {
         let userInfo = WechatAPI.getStorageSync(StorageKey.UserInfo);
-        debug.log("userInfo:");
-        debug.log(userInfo);
         if (userInfo == null || userInfo == "") {
             userInfo = this.createRawUserInfo();
             this.saveUserInfo(userInfo);
         }
-
+        debug.log("userInfo:");
+        debug.log(userInfo);
         return userInfo;
+    },
+
+    getUserPool() {
+        return this.userPool||[];//简简单单就是一个数组 保存本地游戏生命周期出现过的玩家
     },
 
     initGameInfo: function () {
@@ -312,7 +299,6 @@ cc.Class({
             this.gameInfo = {};
             this.vitaSystem.init();
             this.initCore(now);
-            this.initInviteData();
         } else {
             debug.log("load existing game info");
             //debug.log(info);
@@ -328,7 +314,6 @@ cc.Class({
     versionCheck: function () {
         this.initAvatarData();
 
-        let version = debug.version;
         if (this.gameInfo.version == null) {
             this.gameInfo.version = debug.version;
             this.gameInfo.vitaSystem.vita = this.vitaSystem.vitaMax;
@@ -337,13 +322,6 @@ cc.Class({
             debug.log("Update from " + this.gameInfo.version);
             this.gameInfo.version = debug.version;
         }
-    },
-
-    getPlayerData: function () {
-        let data = {};
-        data.uxData = this.uxData;
-        data.gameInfo = this.gameInfo;
-        return data;
     },
 
     saveGameInfo: function () {
@@ -361,5 +339,4 @@ cc.Class({
 
         return data;
     },
-
 });

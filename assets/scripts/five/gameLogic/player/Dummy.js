@@ -18,16 +18,6 @@ let Dummy = cc.Class({
     extends: require("Player"),
 
     properties: {
-        //假人资料
-        basic: {
-            default: null,
-        },
-
-        //本质属性
-        personality: {
-            default: null,
-        },
-
         //表现属性
         status: {
             default: null,
@@ -51,8 +41,7 @@ let Dummy = cc.Class({
 
         //为本质属性，个人资料赋值，并由此计算出其外在属性
         this.basic = param.basic;
-        this.personality = param.personality;
-        this.status = Dummy.getStatus(this.basic, this.personality);
+        this.status = Dummy.getStatus(param);
 
         //为额外的外在属性赋值（如果有的话）
         if (param.extraStatus) {
@@ -263,14 +252,17 @@ let Dummy = cc.Class({
             };
         },
 
-        getStatus: function (bio, per) {
+        getStatus: function (param) {
+            debug.log("dummy getStatus");
+            debug.log(param);
+
             let missChance = 18;
             let offlineChance = 8;
             let rawSolutionTurns = 3;
             let admitLooseChance = 30;
             let grabFirstChance = 1;
 
-            switch (bio.grade) {
+            switch (param.grade) {
                 case 1:
                     missChance = 60;
                     offlineChance = 2;
@@ -357,33 +349,19 @@ let Dummy = cc.Class({
             let turnTimeMin = 1;
             let turnTimeMax = 5;
 
-            switch (per.playSpeed) {
-                case 1:
-                    turnTimeMin = 0.5;
-                    turnTimeMax = 3.1;
-                    break;
-
-                case 2:
-                    turnTimeMin = 1;
-                    turnTimeMax = 5.5;
-                    break;
-
-                case 3:
-                    turnTimeMin = 5.5;
-                    turnTimeMax = 12;
-                    break;
-
-                case 4:
-                    turnTimeMin = 0.5;
-                    turnTimeMax = 13;
-                    break;
+            if (param.fast) {
+                turnTimeMin = 0.5;
+                turnTimeMax = 3.5;
+            } else {
+                turnTimeMin = 1.5;
+                turnTimeMax = 12;
             }
 
             let evaluatingParam = null; //设置下棋风格
             //平均，原有参数为   [[0, 1], [2, 3], [4, 12], [10, 64], [256, 256]],
-            if (per.playStyle == 1) {
+            if (param.playStyle == 1) {
                 evaluatingParam = [[0, 2], [2, 8], [4, 60], [10, 64], [256, 256]];  //黑棋进攻，白棋防御
-            } else if (per.playStyle == 2) {
+            } else if (param.playStyle == 2) {
                 evaluatingParam = [[0, 1], [4, 5], [10, 12], [10, 64], [256, 256]];     //黑棋防御，白棋进攻
             }
 

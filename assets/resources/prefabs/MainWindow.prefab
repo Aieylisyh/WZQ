@@ -345,7 +345,7 @@
       "ctor": "Float64Array",
       "array": [
         784,
-        139,
+        100,
         0,
         0,
         0,
@@ -762,8 +762,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -903,
-        -313,
+        -240,
+        -300,
         0,
         0,
         0,
@@ -934,7 +934,7 @@
       "__id__": 6
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 26
@@ -972,7 +972,7 @@
       "ctor": "Float64Array",
       "array": [
         -240,
-        -340,
+        -450,
         0,
         0,
         0,
@@ -2523,6 +2523,7 @@
     "maxKeepWinLabel": {
       "__id__": 50
     },
+    "crtKeepWinLabel": null,
     "winRateLabel": {
       "__id__": 58
     },
@@ -2532,6 +2533,10 @@
     "roundCountLabel": null,
     "gradeLevelLabel": null,
     "gradeScoreLabel": null,
+    "gradePB": null,
+    "gradePBTop": null,
+    "gradePBBottom": null,
+    "gradeIcon": null,
     "_id": ""
   },
   {
@@ -2652,7 +2657,7 @@
       "__id__": 71
     },
     "_enabled": true,
-    "freq": 0.5,
+    "freq": 0.8,
     "force": 5,
     "startAwake": true,
     "isPlaying": true,

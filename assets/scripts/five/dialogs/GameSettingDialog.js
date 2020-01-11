@@ -40,18 +40,9 @@ cc.Class({
     },
 
     refreshByGameSetting: function () {
-        let gameSettingManager = appContext.getGameSettingManager();
+        let gsm = appContext.getGameSettingManager();
 
-        if (gameSettingManager.getMuteMusic()) {
-            this.bgMusicCheck.isChecked = false;
-        } else {
-            this.bgMusicCheck.isChecked = true;
-        }
-
-        if (gameSettingManager.getMuteSound()) {
-            this.soundEffectCheck.isChecked = false;
-        } else {
-            this.soundEffectCheck.isChecked = true;
-        }
+        this.bgMusicCheck.isChecked = !gsm.getMuteMusic();
+        this.soundEffectCheck.isChecked = !gsm.getMuteSound();
     },
 });

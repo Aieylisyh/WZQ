@@ -17,6 +17,8 @@ cc.Class({
 
         maxKeepWinLabel: cc.Label, // 最高连胜
 
+        crtKeepWinLabel: cc.Label, // 连胜
+
         winRateLabel: cc.Label, // 胜率
 
         winCountLabel: cc.Label, // 胜场
@@ -41,8 +43,10 @@ cc.Class({
             return;
         }
 
+        debug.log(user);
+
         // todo
-        let sex = user.sex;
+        let sex = user.basic.sex;
         if (this.sexTagImg != null) {
             let sexTagPath = sex === 1 ? LoadResPath.ImgPath.boyTag : LoadResPath.ImgPath.girlTag;
             appContext.getFileManager().applySpriteSafe(sexTagPath, this.sexTagImg);
@@ -61,15 +65,17 @@ cc.Class({
         }
 
         if (this.maxKeepWinLabel != null) {
-            let maxKeepWin = user.basic.maxKeepWin;
-            this.maxKeepWinLabel.string = maxKeepWin || 0;
+            this.maxKeepWinLabel.string = user.basic.maxKeepWin || 0;
         }
-
+        if (this.crtKeepWinLabel != null) {
+            this.crtKeepWinLabel.string = user.basic.crtKeepWin || 0;
+        }
+        
         let winCount = user.basic.winCount;
         let roundCount = user.basic.roundCount;
         if (this.winRateLabel != null) {
             let winRate = Math.round((winCount / roundCount) * 1000) / 10;
-            this.winRateLabel.string = (winRate || 0) + "%";
+            this.winRateLabel.string = (winRate || 50) + "%";
         }
         if (this.winCountLabel != null) {
             this.winCountLabel.string = winCount;
@@ -79,7 +85,7 @@ cc.Class({
         }
 
 
-        let gradeAndFillInfo = Grade.getGradeAndFillInfoByScore(user.basic.grade);
+        let gradeAndFillInfo = Grade.getGradeAndFillInfoByScore(user.basic.currentScore);
         let gradeInfo = Grade.getGradeInfo(gradeAndFillInfo.grade);
         if (this.gradeLevelLabel != null) {
             this.gradeLevelLabel.string = gradeInfo.name;

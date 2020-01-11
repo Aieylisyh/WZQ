@@ -88,10 +88,8 @@ cc.Class({
             this, true);
     },
 
-    applySpriteFrameOfBUserByIndex(targetSprite, i = 0) {
-        let path = "playerInfo/b/" + i + ".jpg";
+    applySpriteFrameOfBUserByIndex(targetSprite, path) {
         debug.log("getSpriteFrameOfBUserByIndex " + path);
-
         appContext.getFileManager().applySpriteSafe(path, targetSprite, null, true);
     },
 });

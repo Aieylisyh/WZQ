@@ -112,23 +112,26 @@ cc.Class({
     },
 
     // 已经匹配到对手
-    onMatchedOpponent: function (success, opponent) {
+    onMatchedOpponent: function () {
         let info = DummyPicker.matchOpponent();
-
+        debug.log("已经匹配到对手");
+        debug.log(info);
         if (info.success) {
             this.hasMatchedOpponent = true;
             // this.matchVsTag.node.active = true;
             // this.matchVsTag.fastShowUp();
             this.questionNode.active = false;
 
-            this.opponentInfo = info.opponent;
+            this.opponent = info.dummyPlayer;
             this.scheduleOnce(function () {
                 this.setOpponentInfo();
                 this.opponentPlayerAnim.shake();
-            }, 0.2);
+            }, 0.25);
 
             let gameManager = appContext.getGameManager();
-            gameManager.createGame(gameManager.selfPlayer, this.opponentInfo, Math.random(), {});
+            debug.log(gameManager.selfPlayer);
+            debug.log(this.opponent);
+            gameManager.createGame(gameManager.selfPlayer, this.opponent, Math.random(), {});//player1, player2, randomSeed, gameConfig
 
             this.stopLinesAnimation();
 
@@ -150,8 +153,9 @@ cc.Class({
     },
 
     requireOpponenetInfo: function () {
-        this.opponentInfo = null;
+        this.opponent = null;
         let time = 0.4 + Math.random() * 3.6;
+
         this.scheduleOnce(function () {
             this.onMatchedOpponent();
         }, time);
@@ -159,8 +163,8 @@ cc.Class({
 
     // 设置对手的昵称头像
     setOpponentInfo: function () {
-        this.opponentNickname.string = this.opponentInfo.basic.nickname;
-        GameUtil.setHeadIcon(this.opponentInfo.basic.headIconUrl, this.opponentInfo.basic.headIconPath, this.opponentIcon);
+        this.opponentNickname.string = this.opponent.basic.nickname;
+        GameUtil.setHeadIcon(this.opponent.basic.headIconUrl, this.opponent.basic.headIconPath, this.opponentIcon);
     },
 
     // 开始下棋
@@ -171,7 +175,7 @@ cc.Class({
                 isSelf: true,
             },
             white: {
-                user: this.opponentInfo,
+                user: this.opponent,
             },
             timestamp: Date.now(),
         });

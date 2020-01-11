@@ -15,10 +15,6 @@ cc.Class({
     },
 
     isRemoveAdPurchased() {
-        if (appContext.getUxManager().gameInfo.removeAdPurchased) {
-            return true;
-        }
-
         return false;
     },
 

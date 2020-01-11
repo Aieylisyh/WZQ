@@ -58,74 +58,54 @@ let Grade = {
 
     gradeMatchModifier: [
         {
-            existB: 0,
             exist: 0,
             fail: 0,
-            newB: 50,
-            new: 50,
+            bUser: 50,
         },
         {
-            existB: 25,
-            exist: 25,
+            exist: 10,
             fail: 0,
-            newB: 25,
-            new: 25,
+            bUser: 40,
         },
         {
-            existB: 13,
-            exist: 5,
-            fail: 2,
-            newB: 40,
-            new: 40,
-        },
-        {
-            existB: 12,
-            exist: 11,
-            fail: 2,
-            newB: 35,
-            new: 40,
-        },
-        {
-            existB: 13,
-            exist: 15,
-            fail: 2,
-            newB: 35,
-            new: 35,
-        },
-        {
-            existB: 13,
-            exist: 15,
-            fail: 2,
-            newB: 35,
-            new: 35,
-        },
-        {
-            existB: 13,
-            exist: 16,
+            exist: 20,
             fail: 1,
-            newB: 30,
-            new: 40,
+            bUser: 30,
         },
         {
-            existB: 13,
-            exist: 26,
-            fail: 1,
-            newB: 25,
-            new: 35,
+            exist: 30,
+            fail: 2,
+            bUser: 20,
         },
         {
-            existB: 15,
-            exist: 29,
-            fail: 1,
-            newB: 20,
-            new: 35,
+            exist: 40,
+            fail: 2,
+            bUser: 15,
         },
         {
-            existB: 20,
-            exist: 29,
+            exist: 30,
+            fail: 2,
+            bUser: 15,
+        },
+        {
+            exist: 30,
+            fail: 2,
+            bUser: 10,
+        },
+        {
+            exist: 30,
             fail: 1,
-            newB: 15,
-            new: 35,
+            bUser: 10,
+        },
+        {
+            exist: 30,
+            fail: 0,
+            bUser: 10,
+        },
+        {
+            exist: 30,
+            fail: 0,
+            bUser: 10,
         },
     ],
 
@@ -169,8 +149,8 @@ let Grade = {
         }
     },
 
-    getGradeMatchModifier(){
-
+    getGradeMatchModifier(grade) {
+        return this.gradeMatchModifier[grade - 1];
     },
 };
 

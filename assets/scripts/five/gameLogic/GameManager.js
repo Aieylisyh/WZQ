@@ -83,6 +83,8 @@ cc.Class({
 
         console.log("opponentPlayer");
         console.log(game.opponentPlayer);
+        console.log("selfPlayer");
+        console.log(game.selfPlayer);
         this.game = game;
     },
 

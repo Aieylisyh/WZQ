@@ -8,9 +8,9 @@ let GameUtil = {
         if (StringUtil.isNotEmpty(localPath)) {
             this.applyHeadIcon(localPath, targetSprite);
         } else {
-            //   let defaultHeadPath = sex === 1 ? LoadResPath.ImgPath.boy_defaultHeadIcon : LoadResPath.ImgPath.girl_defaultHeadIcon;
+            //   let defaultIconPath = sex === 1 ? LoadResPath.ImgPath.boy_defaultHeadIcon : LoadResPath.ImgPath.girl_defaultHeadIcon;
             if (StringUtil.isEmpty(defaultIconPath)) {
-                defaultHeadPath = LoadResPath.ImgPath.boy_defaultHeadIcon;
+                defaultIconPath = LoadResPath.ImgPath.boy_defaultHeadIcon;
             }
             this.setHeadIconImg(headIconUrl, targetSprite, defaultIconPath);
         }

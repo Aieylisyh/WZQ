@@ -1,36 +1,26 @@
 let Dummy = require("Dummy");
+let Grade = require("Grade");
 
 cc.Class({
     statics: {
-        pickTypes: {
-            fail: 1,
-            existB: 2,
-            exist: 3,
-            newB: 4,
-            new: 5,
-        },
-
         matchOpponent: function () {
             //搜索对手时调用，什么参数都不用传
             //会自动检测是否有网，自动分配合理的对手
-
-            let dummyParam = this.pickDummy();
+            let user = appContext.getUxManager().getUserInfo();
+            let gradeAndFillInfo = Grade.getGradeAndFillInfoByScore(user.basic.currentScore);
+            //let gradeInfo = Grade.getGradeInfo(gradeAndFillInfo.grade);
+            debug.log("matchOpponent");
+            debug.log(user);
+            let dummyPlayer = this.pickDummy(gradeAndFillInfo.grade);
             let success = true;
+            if (!dummyPlayer) {
+                success = false;
+            }
 
             return {
-                dummyParam: dummyParam,//假人数据
+                dummyPlayer: dummyPlayer,//假人数据
                 success: success,//匹配是否成功 只有在没网才会失败
             };
-        },
-
-        //用名字精确挑选假人
-        pickDummyByName: function (nickname) {
-
-        },
-
-        // 再次挑选上一局对手假人
-        pickLastRoundDummy: function () {
-
         },
 
         userExample() {
@@ -84,45 +74,109 @@ cc.Class({
         },
 
         //获得假人
-        //步骤：
-        //1 初始化假人池
-        //2 生成随机数，决定：匹配失败 匹配当前活跃对手 匹配已有美女对手 匹配已有普通对手 匹配新美女对手 匹配新普通对手
-        //3 生成随机数，决定是否匹配当前活跃对手（本次游戏生命周期内遇到过的对手）
-        //4 生成数据，返回的数据是完整的假人属性
         pickDummy: function (grade) {
             debug.log("正在为grade为" + grade + "的玩家匹配对手")
-            this.reinitUserPool();
-            let rnd1 = Math.random();
-            let rnd2 = Math.random();
-            let pickType = pickTypes.newB;
-            return new Dummy(param);
-        },
-
-        reinitUserPool: function () {
             //初始化一个假人池,如果没有初始化过的话
-            let newPool = {
+            this.userPool = appContext.getUxManager().getUserPool();
+            let gradeMatchModifier = Grade.getGradeMatchModifier(grade);
 
+            let fail = Math.random() * 100 < gradeMatchModifier.fail;
+            if (fail) {
+                return;
+            }
+
+            let pickExist = false;
+            if (this.userPool.length > 0) {
+                pickExist = Math.random() * 100 < gradeMatchModifier.exist;
+            }
+            if (pickExist) {
+                return this.pickExsitUser(grade);
+            } else {
+                if (Math.random() * 100 < gradeMatchModifier.bUser) {
+                    return this.pickNewBUser(grade);
+                } else {
+                    return this.pickNewUser(grade);
+                }
+            }
+        },
+
+        pickExsitUser(grade) {
+            let id = this.userPool[Math.floor(this.userPool.length * Math.random())];
+            //mix bUser and user
+            return this.assignGradeAndAiToUser(this.pickUserById(id), grade);
+        },
+
+        pickNewBUser(grade) {
+            //美女玩家（1000~1029）
+            let id = this.getBUserId(grade);
+            return this.assignGradeAndAiToUser(this.pickUserById(id), grade);
+        },
+
+        pickNewUser(grade) {
+            //普通玩家id（0~699）
+            let id = this.getUserId(grade);
+            return this.assignGradeAndAiToUser(this.pickUserById(id), grade);
+        },
+
+        assignGradeAndAiToUser(user, grade) {
+            user.grade = grade;
+            user.fast = (Math.random() * 20 + grade < 15);
+
+            return new Dummy(user);
+        },
+
+        pickUserById(id) {
+            let data = appContext._remoteAPI.fakePlayerInfo;
+            let user = {
+                basic: {
+                    //nickname: "我",
+                    sex: 1,//0 female, 1 male
+                    //headIconUrl: null,
+                    //headIconPath: null,//prior
+                    //currentScore: 0,//这是总分，总分不会小于0。 显示出来的得分是计算段位之后的总分
+                },
             };
+
+            if (id < 1000) {
+                let rawData = data.data[id];
+                user.basic.nickname = rawData.nickname;
+                user.basic.headIconUrl = rawData.avatarUrl;
+            } else {
+                user.basic.nickname = data.bUserNickNames[id - 1000];
+                user.basic.headIconPath = "playerInfo/b/" + (id - 999) + ".jpg";
+            }
+
+            return user;
         },
 
-        pickFail() {
-            return;
+        getBUserId(grade) {
+            let r = Math.random();
+            if (grade < 3) {
+                return Math.floor(r * 14 + 1000);
+            } else if (grade < 5) {
+                return Math.floor(r * 8 + 1014);
+            } else if (grade < 7) {
+                return Math.floor(r * 3 + 1022);
+            } else if (grade < 9) {
+                return Math.floor(r * 3 + 1025);
+            } else {
+                return Math.floor(r * 2 + 1028);
+            }
         },
 
-        pickExsitBUser() {
-
-        },
-
-        pickExsitUser() {
-
-        },
-
-        pickNewBUser() {
-
-        },
-
-        pickNewUser() {
-
+        getUserId(grade) {
+            let r = Math.random();
+            if (grade < 3) {
+                return Math.floor(r * 150 + 0);
+            } else if (grade < 5) {
+                return Math.floor(r * 150 + 150);
+            } else if (grade < 7) {
+                return Math.floor(r * 150 + 300);
+            } else if (grade < 9) {
+                return Math.floor(r * 150 + 450);
+            } else {
+                return Math.floor(r * 100 + 600);
+            }
         },
     }
 });
