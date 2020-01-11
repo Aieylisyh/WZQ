@@ -143,7 +143,8 @@ cc.Class({
                 user.basic.headIconUrl = rawData.avatarUrl;
             } else {
                 user.basic.nickname = data.bUserNickNames[id - 1000];
-                user.basic.headIconPath = "playerInfo/b/" + (id - 999) + ".jpg";
+                //user.basic.headIconPath = "playerInfo/b/" + (id - 999) + ".jpg";
+                user.basic.headIconPath = "playerInfo/b/" + (id - 999);
             }
 
             return user;

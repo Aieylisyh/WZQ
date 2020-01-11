@@ -27,6 +27,8 @@ cc.Class({
 
         gradeLevelLabel: cc.Label, // 段位
 
+        gradeNameLabel: cc.Label, // 段位
+
         gradeScoreLabel: cc.Label, // 段位积分
 
         gradePB: cc.ProgressBar,
@@ -60,7 +62,7 @@ cc.Class({
             // todo
             let nickname = user.basic.nickname;
             if (StringUtil.isNotEmpty(nickname)) {
-                this.nicknameLabel.string = nickname;
+                this.nicknameLabel.string = StringUtil.trimString(nickname,10);
             }
         }
 
@@ -88,13 +90,18 @@ cc.Class({
         let gradeAndFillInfo = Grade.getGradeAndFillInfoByScore(user.basic.currentScore);
         let gradeInfo = Grade.getGradeInfo(gradeAndFillInfo.grade);
         if (this.gradeLevelLabel != null) {
-            this.gradeLevelLabel.string = gradeInfo.name;
+            this.gradeLevelLabel.string = gradeAndFillInfo.grade;
         }
+
+        if (this.gradeNameLabel != null) {
+            this.gradeNameLabel.string = gradeInfo.name;
+        }
+
 
         if (this.gradeScoreLabel != null) {
             this.gradeScoreLabel.string = gradeAndFillInfo.fillAmount;
         }
-
+        
         if (this.gradePBTop != null) {
             this.gradePBTop.string = gradeAndFillInfo.fillTop;
         }

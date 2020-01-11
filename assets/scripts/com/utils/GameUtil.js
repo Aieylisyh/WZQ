@@ -6,7 +6,8 @@ let LoadResPath = require("LoadResPath");
 let GameUtil = {
     setHeadIcon: function (headIconUrl, localPath, targetSprite, defaultIconPath = "") {
         if (StringUtil.isNotEmpty(localPath)) {
-            this.applyHeadIcon(localPath, targetSprite);
+            //this.applyHeadIcon(localPath, targetSprite);
+            appContext.getFileManager().applySpriteSafe(localPath, targetSprite);
         } else {
             //   let defaultIconPath = sex === 1 ? LoadResPath.ImgPath.boy_defaultHeadIcon : LoadResPath.ImgPath.girl_defaultHeadIcon;
             if (StringUtil.isEmpty(defaultIconPath)) {

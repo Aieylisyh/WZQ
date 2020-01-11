@@ -11,7 +11,7 @@ cc.Class({
         },
     },
 
-    update: function(dt) {
+    update: function (dt) {
         if (this.game == null ||
             this.game.player1 == null ||
             this.game.player2 == null) {
@@ -22,11 +22,9 @@ cc.Class({
         this.game.player2.onUpdate(dt);
     },
 
-    start: function() {
+    start: function () {
         this.game = null;
-        window.gm = this;
-
-        this.initSelfPlayer();
+        window.gm = this;//TODO
     },
 
     setCurrentMatchMakingInfo(info) {
@@ -44,14 +42,8 @@ cc.Class({
         }
     },
 
-    initSelfPlayer: function() {
-        if (this.selfPlayer != null) {
-            debug.log(this.selfPlayer);
-            return;
-        }
-
-        //TODO read localStorage
-        this.selfPlayer = new SelfPlayer(appContext.getUxManager().getUserInfo());
+    getSelfPlayer: function () {
+        return new SelfPlayer(appContext.getUxManager().getUserInfo());
     },
 
     //根据远程得到的结果生成本地的棋局
@@ -59,7 +51,7 @@ cc.Class({
     //player2 玩家2
     //randomSeed 随机种子，主要用于决定先手，也可用于其他需要两边一致的随机
     //gameConfig 棋局设置，什么场，什么游戏模式等等
-    createGame: function(player1, player2, randomSeed, gameConfig) {
+    createGame: function (player1, player2, randomSeed, gameConfig) {
         debug.log("!!createGame");
         this.clearPlayers();
 
@@ -88,7 +80,7 @@ cc.Class({
         this.game = game;
     },
 
-    playerGrabFirst: function(index, grab) {
+    playerGrabFirst: function (index, grab) {
         if (index == 1) {
             this.game.player1GrabFirst = grab;
             if (this.game.opponentPlayer.index == 1) {
@@ -114,11 +106,14 @@ cc.Class({
         }
     },
 
-    startGame: function() {
+    startGame: function () {
         debug.log("!!startGame");
         if (this.chessboardManager == null || this.chessboardManager.node == null || !this.chessboardManager.node.isValid) {
             return false;
         }
+
+        //gamewindow
+        this.getGameWindow().showInfo();
 
         this.chessboardManager.clearBoard();
         this.game.chessMap = this.chessboardManager.chessboard.chessMap;
@@ -132,13 +127,26 @@ cc.Class({
         return true;
     },
 
-    startPlay: function() {
+    getGameWindow() {
+        if (this.gw == null || this.gw.node == null || !this.gw.node.isValid) {
+            this.gw = appContext.getWindowManager().getCurrentWindowNode().getComponent("GameWindow");
+        }
+        if (this.gw == null) {
+            //否则退回主菜单
+            appContext.getAppController().backToMain();
+        }
+
+        return this.gw;
+    },
+
+    startPlay: function () {
         debug.log("!!startPlay");
         if (this.chessboardManager == null || this.chessboardManager.node == null || !this.chessboardManager.node.isValid) {
             return false;
         }
 
         this.setupFirstPlay();
+        this.getGameWindow().onStartGame();
         if (this.game.firstIsSelfPlayer) {
             this.chessboardManager.setMyChessType(true);
         } else {
@@ -152,7 +160,7 @@ cc.Class({
     },
 
     //提交当前的场面
-    commitBoard: function(chessMap, lastChessType) {
+    commitBoard: function (chessMap, lastChessType) {
         this.game.chessMap = chessMap;
 
         let winRes = Ai.checkWin(lastChessType);
@@ -165,19 +173,25 @@ cc.Class({
         }
     },
 
-    startNextTurn: function(lastChessType) {
+    startNextTurn: function (lastChessType) {
         this.game.currentChessType = 3 - lastChessType;
         this.game.currentTurn++;
 
-        if (this.game.firstIsSelfPlayer && this.game.currentChessType === 1 ||
-            !this.game.firstIsSelfPlayer && this.game.currentChessType === 2) {
+        if (this.getCurrentPlayerIsSelf()) {
             this.game.selfPlayer.notifyPlay();
+            this.getGameWindow().showTimer(true);
         } else {
             this.game.opponentPlayer.notifyPlay();
+            this.getGameWindow().showTimer(false);
         }
     },
 
-    playerWin: function(winnerType, isLooserOffline = false, isSurrender = false) {
+    getCurrentPlayerIsSelf() {
+        return (this.game.firstIsSelfPlayer && this.game.currentChessType === 1 ||
+            !this.game.firstIsSelfPlayer && this.game.currentChessType === 2);
+    },
+
+    playerWin: function (winnerType, isLooserOffline = false, isSurrender = false) {
         let info = {};
         info.selfPlayer = this.game.selfPlayer;
         info.opponentPlayer = this.game.opponentPlayer;
@@ -205,12 +219,13 @@ cc.Class({
 
         info.gradeExp = 1234; //TODO
 
+        this.getGameWindow().reset();
         appContext.getDialogManager().showDialog(DialogTypes.RoundEnd, info);
         this.chessboardManager.setLocked(true);
         this.clearPlayers();
     },
 
-    clearPlayers: function() {
+    clearPlayers: function () {
         if (this.game != null) {
             if (this.game.opponentPlayer != null) {
                 this.game.opponentPlayer.destroy();
@@ -224,7 +239,7 @@ cc.Class({
         }
     },
 
-    setupFirstPlay: function() {
+    setupFirstPlay: function () {
         if (this.game == null) {
             return;
         }
@@ -261,7 +276,7 @@ cc.Class({
     //更新当前的游戏，newGame中的每一条属性，都会覆盖当前的currentGame的对应属性。
     //如果不想覆盖，请不要让该属性存在，否则即便是null也会覆盖
     //可用于更新游戏状态，比如谁使用了先手卡
-    updateCurrentGame: function(newGame) {
+    updateCurrentGame: function (newGame) {
         if (newGame == null) {
             return;
         }
@@ -275,7 +290,7 @@ cc.Class({
         }
     },
 
-    onGetRemoteResponse: function(res) {
+    onGetRemoteResponse: function (res) {
         let cbm = appContext.getGameManager().chessboardManager;
         if (cbm == null) {
             debug.log("onGetRemoteResponse cbm is null!");
@@ -287,5 +302,82 @@ cc.Class({
         }
 
         this.game.opponentPlayer.makeDecision(res);
+    },
+
+    showChat(isSelf, chatType) {
+        debug.log("showChat " + chatType);
+        this.getGameWindow().playEmoji(isSelf, chatType);
+    },
+
+    getOpening() {
+        //暂时不用这个，开局的信息太多，影响用户体验
+        let index = Math.floor(Math.random() * 4);
+        let p1 = "";
+        let p2 = "";
+
+        if (index == 1) {
+            p1 = "我的棋力会把你撕成碎片";
+            p2 = "这可是你自找的";
+        } else if (index == 2) {
+            p1 = "当心你的背后";
+            p2 = "放马过来吧";
+        } else if (index == 3) {
+            p1 = "我会夺取你的棋子";
+            p2 = "我可没时间陪你玩游戏";
+        } else {
+            p1 = "五子棋灵指引我前进";
+            p2 = "看谁笑到最后";
+        }
+        return {
+            p1: p1,
+            p2: p2,
+        };
+    },
+
+    getHurry() {
+        //30秒出
+        let index = Math.floor(Math.random() * 4);
+        let p1 = "";
+
+        if (index == 1) {
+            p1 = "时间不多了！";
+        } else if (index == 2) {
+            p1 = "我必须做出判断！";
+        } else if (index == 3) {
+            p1 = "时间紧迫！";
+        } else {
+            p1 = "再不落子就输了！";
+        }
+        return p1;
+    },
+
+    getThink() {
+        //10秒出  20秒出
+        let index = Math.floor(Math.random() * 4);
+        let p1 = "";
+
+        if (index == 1) {
+            p1 = "怎么办呢...";
+        } else if (index == 2) {
+            p1 = "真是难以抉择...";
+        } else if (index == 3) {
+            p1 = "我想想...";
+        } else {
+            p1 = "该怎么下呢...";
+        }
+        return p1;
+    },
+
+    playChat(type) {
+        switch (type) {
+            case "think1":
+            case "think2":
+                this.getGameWindow().playChat(this.getCurrentPlayerIsSelf(), this.getThink());
+                break;
+
+            case "hurry":
+                this.getGameWindow().playChat(this.getCurrentPlayerIsSelf(), this.getHurry());
+                break;
+        }
     },
 });

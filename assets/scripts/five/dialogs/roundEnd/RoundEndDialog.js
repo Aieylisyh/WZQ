@@ -1,9 +1,15 @@
-let GameUtil = require("GameUtil");
+let PlayerInfo = require("PlayerInfo");
+let DialogTypes = require("DialogTypes");
+
 
 cc.Class({
     extends: require("BaseDialog"),
 
     properties: {
+        oppoPlayerInfo: PlayerInfo,
+
+        selfPlayerInfo: PlayerInfo,
+
         gradeIcon: cc.Sprite,
 
         gradeLabel: cc.Label,
@@ -33,14 +39,6 @@ cc.Class({
         looserTagXLeft: -150,
 
         looserTagXRight: 150,
-
-        selfSprite: cc.Sprite,
-
-        selfLabel: cc.Label,
-
-        opponentSprite: cc.Sprite,
-
-        opponentLabel: cc.Label,
 
         mainNode: cc.Node,
 
@@ -137,20 +135,8 @@ cc.Class({
         let action = cc.scaleTo(0.2, 1).easing(cc.easeBackOut());
         this.mainNode.runAction(action);
 
-        GameUtil.setHeadIcon(
-            this.info.selfPlayer.basic.headIconUrl,
-            this.info.selfPlayer.basic.headIconPath,
-            this.selfSprite,
-        );
-
-        GameUtil.setHeadIconImg(
-            this.info.opponentPlayer.basic.headIconUrl,
-            this.info.opponentPlayer.basic.headIconUrl,
-            this.opponentSprite,
-        );
-
-        this.selfLabel.string = this.info.selfPlayer.basic.nickname;
-        this.opponentLabel.string = this.info.opponentPlayer.basic.nickname;
+        this.selfPlayerInfo.setup(this.info.selfPlayer);
+        this.oppoPlayerInfo.setup(this.info.opponentPlayer);
 
         this.scheduleOnce(function () {
             this.step = 3;
@@ -175,11 +161,11 @@ cc.Class({
         this.looserTag.runAction(action2);
 
         if (this.info.isLooserOffline) {
-            this.looserTagLabel.string = "中途离线";
+            this.looserTagLabel.string = "超时或离线";
         } else if (this.info.isSurrender) {
             this.looserTagLabel.string = "主动认输";
         } else {
-            this.looserTagLabel.string = "本局输了";
+            this.looserTagLabel.string = "输 了";
         }
 
         this.scheduleOnce(function () {
@@ -229,7 +215,12 @@ cc.Class({
     // 点击"再来一局"按钮
     onClickBtnContinue: function () {
         this.hide();
-        tester.runChess();
+        // let gm = appContext.getGameManager();
+        // let p2 = DummyPicker.pickTestDummy();
+        // gm.createGame(gm.selfPlayer, p2, Math.random(), {});
+        // gm.startGame();
+        appContext.getAppController().backToMain();
+        appContext.getDialogManager().showDialog(DialogTypes.Match);
     },
 
     // 点击"炫耀"按钮

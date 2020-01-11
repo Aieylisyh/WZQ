@@ -129,9 +129,10 @@ cc.Class({
             }, 0.25);
 
             let gameManager = appContext.getGameManager();
-            debug.log(gameManager.selfPlayer);
+            let selfPlayer = gameManager.getSelfPlayer();
+            debug.log(selfPlayer);
             debug.log(this.opponent);
-            gameManager.createGame(gameManager.selfPlayer, this.opponent, Math.random(), {});//player1, player2, randomSeed, gameConfig
+            gameManager.createGame(selfPlayer, this.opponent, Math.random(), {});//player1, player2, randomSeed, gameConfig
 
             this.stopLinesAnimation();
 
@@ -139,7 +140,7 @@ cc.Class({
                 this.hasStartedPlay = true;
                 this.scheduleOnce(function () {
                     this.startPlayGame();
-                }, 1.5);
+                }, 2);
             }
         } else {
             //TODO 匹配失败
@@ -147,9 +148,9 @@ cc.Class({
     },
 
     setSelfPlayerInfo: function () {
-        let selfPlayer = appContext.getGameManager().selfPlayer;
-        this.selfNickname.string = selfPlayer.basic.nickname;
-        GameUtil.setHeadIcon(selfPlayer.basic.headIconUrl, selfPlayer.basic.headIconPath, this.selfIcon);
+        let selfInfo= appContext.getUxManager().getUserInfo();
+        this.selfNickname.string = selfInfo.basic.nickname;
+        GameUtil.setHeadIcon(selfInfo.basic.headIconUrl, selfInfo.basic.headIconPath, this.selfIcon);
     },
 
     requireOpponenetInfo: function () {

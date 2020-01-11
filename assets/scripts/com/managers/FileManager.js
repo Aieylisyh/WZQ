@@ -226,21 +226,21 @@ cc.Class({
     hasImageFile: function(url, callback, caller) {
         //debug.log("fm hasImageFile " + url);
         let self = this;
+        let sucCb = function(param) {
+            //debug.warn('ImageFile exsit: ' + param);
+            if (callback && caller) {
+                callback.call(caller, param);
+            }
+        }
+        let failCb = function(param) {
+            debug.warn('ImageFile unexsit: ' + param);
+            if (callback && caller) {
+                callback.call(caller);
+            }
+        }
 
         if (WechatAPI.isEnabled()) {
             let localPath = this.convertPathRemoveDirectory(url);
-            let sucCb = function(param) {
-                //debug.warn('ImageFile exsit: ' + param);
-                if (callback && caller) {
-                    callback.call(caller, param);
-                }
-            }
-            let failCb = function(param) {
-                debug.warn('ImageFile unexsit: ' + param);
-                if (callback && caller) {
-                    callback.call(caller);
-                }
-            }
             let path = localPath;
             if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT) {
                 self._fs.access({
