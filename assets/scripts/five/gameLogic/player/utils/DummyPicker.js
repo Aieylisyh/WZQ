@@ -99,50 +99,58 @@ cc.Class({
                     dummy = this.pickNewUser(grade);
                 }
             }
-            debug.log("正在为grade为" + grade + "的玩家匹配对手")
+            debug.log("挑选到dummy:");
+            debug.log(dummy);
+            appContext.getUxManager().pushUserToPool(dummy.id);
             return dummy;
         },
 
         pickExsitUser(grade, tpUserPool) {
             let id = tpUserPool[Math.floor(tpUserPool.length * Math.random())];
             //mix bUser and user
-            return this.assignGradeAndAiToUser(this.pickUserById(id), grade);
+            return this.refineDummy(id, grade);
         },
 
         pickNewBUser(grade) {
             //美女玩家（1000~1029）
             let id = this.getBUserId(grade);
-            return this.assignGradeAndAiToUser(this.pickUserById(id), grade);
+            return this.refineDummy(id, grade);
         },
 
         pickNewUser(grade) {
             //普通玩家id（0~699）
             let id = this.getUserId(grade);
-            return this.assignGradeAndAiToUser(this.pickUserById(id), grade);
+            return this.refineDummy(id, grade);
         },
 
-        assignGradeAndAiToUser(user, grade) {
+        refineDummy(id, grade) {
+            let user = this.pickUserById(id);
+
             let oppoGrade = grade;
             let rnd = Math.random();
             if (rnd > 0.95) {
                 oppoGrade += 3;
             } else if (rnd > 0.9) {
                 oppoGrade -= 3;
-            } else if (rnd > 0.8) {
+            } else if (rnd > 0.85) {
                 oppoGrade += 2;
-            } else if (rnd > 0.7) {
+            } else if (rnd > 0.8) {
                 oppoGrade -= 2;
-            } else if (rnd > 0.55) {
+            } else if (rnd > 0.6) {
                 oppoGrade += 1;
             } else if (rnd > 0.4) {
                 oppoGrade -= 1;
             }
+
             oppoGrade = Math.min(Math.max(oppoGrade, 0), 10);
             //debug.log("oppoGrade " + oppoGrade);
             user.basic.currentScore = Grade.getFitScore(oppoGrade);
             user.fast = (Math.random() * 20 + oppoGrade < 15);
-            debug.log(user);
-            return new Dummy(user);
+            debug.log("refineDummy ");
+            let dummy = new Dummy(user);
+            debug.log(dummy);
+            dummy.id = id;
+            return dummy;
         },
 
         pickUserById(id) {

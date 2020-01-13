@@ -86,7 +86,12 @@ cc.Class({
             WechatAPI.setStorageSync(StorageKey.uxData, JSON.stringify(this.uxData));
         }
 
-
+        if (this.toSaveUserInfo) {
+            this.toSaveUserInfo = false;
+            if (this.userInfo) {
+                WechatAPI.setStorageSync(StorageKey.UserInfo, this.userInfo);
+            }
+        }
     },
 
     init: function () {
@@ -249,10 +254,9 @@ cc.Class({
     },
 
     saveUserInfo: function (userInfo) {
-        debug.log("!!saveUserInfo");
-        if (userInfo) {
-            WechatAPI.setStorageSync(StorageKey.UserInfo, userInfo);
-        }
+        //debug.log("!!saveUserInfo");
+        this.userInfo = userInfo;
+        this.toSaveUserInfo = true;
     },
 
     createRawUserInfo() {
@@ -280,13 +284,34 @@ cc.Class({
             userInfo = this.createRawUserInfo();
             this.saveUserInfo(userInfo);
         }
-        debug.log("userInfo:");
-        debug.log(userInfo);
+
         return userInfo;
     },
 
+    pushUserToPool(dummyId) {
+        debug.log("放入用户池" + dummyId);
+        let has = false;
+        for (let i in this.userPool) {
+            if (this.userPool[i] == dummyId) {
+                has = true;
+                break;
+            }
+        }
+
+        if (has) {
+            debug.log("重复放入用户池" + dummyId);
+            return;
+        }
+
+        this.userPool.push(dummyId);
+    },
+
     getUserPool() {
-        return this.userPool||[];//简简单单就是一个数组 保存本地游戏生命周期出现过的玩家
+        if (!this.userPool) {
+            this.userPool = [];
+        }
+
+        return this.userPool;//简简单单就是一个数组 保存本地游戏生命周期出现过的玩家id
     },
 
     initGameInfo: function () {

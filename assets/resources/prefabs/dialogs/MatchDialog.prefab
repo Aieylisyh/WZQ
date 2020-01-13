@@ -8069,8 +8069,8 @@
     "target": {
       "__id__": 1
     },
-    "component": "MatchDialog",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "5def0a3Il5Oubo3LiMhtljS",
     "handler": "onClickBtnCancel",
     "customEventData": ""
   },
@@ -8292,6 +8292,9 @@
     },
     "selfPlayerNode": {
       "__id__": 12
+    },
+    "cancelBtn": {
+      "__id__": 220
     },
     "opponentPlayerNode": {
       "__id__": 114

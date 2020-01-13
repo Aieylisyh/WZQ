@@ -58,7 +58,7 @@ let Grade = {
 
     gradeMatchModifier: [
         {
-            exist: 0,
+            exist: 100,
             fail: 0,
             bUser: 50,
         },

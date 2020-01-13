@@ -15,6 +15,8 @@ cc.Class({
 
         selfPlayerNode: cc.Node,
 
+        cancelBtn: cc.Node,
+
         opponentPlayerNode: cc.Node,
 
         matchVsTag: require("VibrateButton"),
@@ -116,6 +118,8 @@ cc.Class({
         let info = DummyPicker.matchOpponent();
         debug.log("已经匹配到对手");
         debug.log(info);
+        this.cancelBtn.active = false;
+
         if (info.success) {
             this.hasMatchedOpponent = true;
             // this.matchVsTag.node.active = true;
@@ -148,7 +152,7 @@ cc.Class({
     },
 
     setSelfPlayerInfo: function () {
-        let selfInfo= appContext.getUxManager().getUserInfo();
+        let selfInfo = appContext.getUxManager().getUserInfo();
         this.selfNickname.string = selfInfo.basic.nickname;
         GameUtil.setHeadIcon(selfInfo.basic.headIconUrl, selfInfo.basic.headIconPath, this.selfIcon);
     },
