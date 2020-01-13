@@ -164,10 +164,10 @@ cc.Class({
         this.game.chessMap = chessMap;
 
         let winRes = Ai.checkWin(lastChessType);
-
+        debug.log("winRes");
+        debug.log(winRes);
         if (winRes && winRes.win) {
-            this.playerWin(lastChessType);
-            this.chessboardManager.setLocked(true);
+            this.delayedPlayerWin(lastChessType);
         } else {
             this.startNextTurn(lastChessType);
         }
@@ -189,6 +189,15 @@ cc.Class({
     getCurrentPlayerIsSelf() {
         return (this.game.firstIsSelfPlayer && this.game.currentChessType === 1 ||
             !this.game.firstIsSelfPlayer && this.game.currentChessType === 2);
+    },
+
+    delayedPlayerWin(winnerType, isLooserOffline = false, isSurrender = false) {
+        this.chessboardManager.setLocked(true);
+        this.chessboardManager.playWinEffect();
+        this.scheduleOnce(function () {
+            this.playerWin(winnerType, isLooserOffline, isSurrender);
+        }, 3);
+
     },
 
     playerWin: function (winnerType, isLooserOffline = false, isSurrender = false) {
@@ -315,16 +324,16 @@ cc.Class({
         let p1 = "";
         let p2 = "";
 
-        if (index == 1) {
+        if (index == 0) {
             p1 = "我的棋力会把你撕成碎片";
             p2 = "这可是你自找的";
-        } else if (index == 2) {
+        } else if (index == 1) {
             p1 = "当心你的背后";
             p2 = "放马过来吧";
-        } else if (index == 3) {
+        } else if (index == 2) {
             p1 = "我会夺取你的棋子";
             p2 = "我可没时间陪你玩游戏";
-        } else {
+        } else if (index == 3) {
             p1 = "五子棋灵指引我前进";
             p2 = "看谁笑到最后";
         }
@@ -339,13 +348,13 @@ cc.Class({
         let index = Math.floor(Math.random() * 4);
         let p1 = "";
 
-        if (index == 1) {
+        if (index == 0) {
             p1 = "时间不多了！";
-        } else if (index == 2) {
+        } else if (index == 1) {
             p1 = "我必须做出判断！";
-        } else if (index == 3) {
+        } else if (index == 2) {
             p1 = "时间紧迫！";
-        } else {
+        } else if (index == 3) {
             p1 = "再不落子就输了！";
         }
         return p1;
@@ -356,14 +365,29 @@ cc.Class({
         let index = Math.floor(Math.random() * 4);
         let p1 = "";
 
-        if (index == 1) {
+        if (index == 0) {
             p1 = "怎么办呢...";
+        } else if (index == 1) {
+            p1 = "难以抉择...";
         } else if (index == 2) {
-            p1 = "真是难以抉择...";
-        } else if (index == 3) {
             p1 = "我想想...";
-        } else {
+        } else if (index == 3) {
             p1 = "该怎么下呢...";
+        }
+        return p1;
+    },
+
+    getDone() {
+        //10秒出  20秒出
+        let index = Math.floor(Math.random() * 7);
+        let p1 = "";
+
+        if (index == 0) {
+            p1 = "轮到你了";
+        } else if (index == 1) {
+            p1 = "该你了";
+        } else {
+            //p1 = "";
         }
         return p1;
     },
@@ -377,6 +401,10 @@ cc.Class({
 
             case "hurry":
                 this.getGameWindow().playChat(this.getCurrentPlayerIsSelf(), this.getHurry());
+                break;
+
+            case "done":
+                this.getGameWindow().playChat(this.getCurrentPlayerIsSelf(), this.getDone());
                 break;
         }
     },

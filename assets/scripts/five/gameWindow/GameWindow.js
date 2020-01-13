@@ -114,6 +114,10 @@ cc.Class({
     },
 
     playChat(isSelf, content) {
+        if (content == "" || content == null) {
+            return;
+        }
+        
         if (isSelf) {
             this.selfChatBubble.play(content);
         } else {

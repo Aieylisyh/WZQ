@@ -136,18 +136,16 @@ let Dummy = cc.Class({
         let myTurn = Math.floor((game.currentTurn + 1) / 2);
 
         if (myTurn > 3 && Math.random() < this.status.offlineChance / 100) {
-            if (Math.random() < 0.4) {
-                debug.log("dummy offline timeout");
-                this.addTask({
-                    turns: 30,
-                    type: 2,
-                });
-                return;
-            }
+            let time = Math.random() * 15 + 20;
+            debug.log("dummy offline timeout");
+            this.addTask({
+                turns: time,
+                type: 2,
+            });
 
-            debug.log("dummy offline socket bad");
-            this.offline();  // 如果返回空，默认为对手掉线
-            return;
+            // debug.log("dummy offline socket bad");
+            // this.offline();  // 如果返回空，默认为对手掉线
+            // return;
         }
 
         let param = Ai.getAnalyseParam();

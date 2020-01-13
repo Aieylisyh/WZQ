@@ -35,7 +35,7 @@ cc.Class({
     scaleToFit: function () {
         this.scheduleOnce(function () {
             let w = Math.floor(this.label.node.width * this.label.node.scaleX);
-            this.frame.width = w + 50;
+            this.frame.width = w + 60;
         }, 0);
     },
 

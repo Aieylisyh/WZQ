@@ -31,7 +31,7 @@ cc.Class({
 
         this.node.stopAllActions();
         let action1 = cc.scaleTo(2, 1, 1);
-        let action2 = cc.moveTo(2, this.targetX, this.targetY).easing(cc.easeActionIn());
+        let action2 = cc.moveTo(2, this.targetX, this.targetY);
         this.node.runAction(cc.spawn(action1, action2));
         this.timer = this.duration;
         this.playing = true;

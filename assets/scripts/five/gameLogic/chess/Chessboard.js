@@ -17,6 +17,14 @@ cc.Class({
         chessMap: [],
 
         newChessEffect: cc.Node,
+
+        winEff1: cc.Node,
+
+        winEff2: cc.Node,
+
+        winEff3: cc.Node,
+
+        winEff4: cc.Node,
     },
 
     start() {
@@ -164,5 +172,23 @@ cc.Class({
         let pos = this.chessPointToPosition(x, y);
         this.newChessEffect.x = pos.x;
         this.newChessEffect.y = pos.y;
+    },
+
+    playWinEffect() {
+        this.winEff1.scale = 0;
+        this.winEff2.scale = 0;
+        this.winEff3.scale = 0;
+        this.winEff4.scale = 0;
+        this.winEff1.active = true;
+        this.winEff2.active = true;
+        this.winEff3.active = true;
+        this.winEff4.active = true;
+        let action1 = cc.scaleTo(0.1, 1, 1);
+        let action2 = cc.scaleTo(0.3, 15, 0.5);
+        let action3 = cc.scaleTo(0.2, 0, 0);
+        this.winEff1.runAction(cc.sequence(cc.delayTime(0.4), action1, action2, action3));
+        this.winEff2.runAction(cc.sequence(cc.delayTime(0.6), action1, action2, action3));
+        this.winEff3.runAction(cc.sequence(cc.delayTime(0.8), action1, action2, action3));
+        this.winEff4.runAction(cc.sequence(cc.delayTime(1.0), action1, action2, action3));
     },
 });

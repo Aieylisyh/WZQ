@@ -73,6 +73,10 @@ cc.Class({
         this._locked = locked;
     },
 
+    playWinEffect(){
+        this.chessboard.playWinEffect();
+    },
+
     //提交一步棋
     commitChessAt: function (x, y, type) {
         this.chessboard.toggleChessChecker(false);
@@ -81,6 +85,7 @@ cc.Class({
         this.chessboard.placeNewChessEffect(x, y);
 
         //向GameManager提交一步棋，发送当前盘面和当前走棋的type给对手，等待对手的回复
+        appContext.getGameManager().playChat("done");
         appContext.getGameManager().commitBoard(this.chessboard.chessMap, type);
     },
 

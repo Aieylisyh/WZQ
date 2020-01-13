@@ -75,33 +75,36 @@ cc.Class({
 
         //获得假人
         pickDummy: function (grade) {
+            let dummy = null;
             debug.log("正在为grade为" + grade + "的玩家匹配对手")
             //初始化一个假人池,如果没有初始化过的话
-            this.userPool = appContext.getUxManager().getUserPool();
+            let tpUserPool = appContext.getUxManager().getUserPool();
             let gradeMatchModifier = Grade.getGradeMatchModifier(grade);
 
             let fail = Math.random() * 100 < gradeMatchModifier.fail;
             if (fail) {
-                return;
+                return dummy;
             }
 
             let pickExist = false;
-            if (this.userPool.length > 0) {
+            if (tpUserPool.length > 0) {
                 pickExist = Math.random() * 100 < gradeMatchModifier.exist;
             }
             if (pickExist) {
-                return this.pickExsitUser(grade);
+                dummy = this.pickExsitUser(grade, tpUserPool);
             } else {
                 if (Math.random() * 100 < gradeMatchModifier.bUser) {
-                    return this.pickNewBUser(grade);
+                    dummy = this.pickNewBUser(grade);
                 } else {
-                    return this.pickNewUser(grade);
+                    dummy = this.pickNewUser(grade);
                 }
             }
+            debug.log("正在为grade为" + grade + "的玩家匹配对手")
+            return dummy;
         },
 
-        pickExsitUser(grade) {
-            let id = this.userPool[Math.floor(this.userPool.length * Math.random())];
+        pickExsitUser(grade, tpUserPool) {
+            let id = tpUserPool[Math.floor(tpUserPool.length * Math.random())];
             //mix bUser and user
             return this.assignGradeAndAiToUser(this.pickUserById(id), grade);
         },
