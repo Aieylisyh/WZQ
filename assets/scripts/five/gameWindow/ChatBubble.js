@@ -25,7 +25,7 @@ cc.Class({
 
         this.label.string = content;
         this.scaleToFit();
-        let action = cc.scaleTo(1, 1, 1).easing(cc.easeElasticOut());
+        let action = cc.scaleTo(1.5, 1, 1).easing(cc.easeElasticOut());
 
         this.node.runAction(action);
         this.playing = true;
@@ -41,7 +41,7 @@ cc.Class({
 
     hide: function () {
         this.playing = false;
-        this.node.scale = 0.5;
+        this.node.scale = 0.1;
         this.node.active = false;
     },
 });

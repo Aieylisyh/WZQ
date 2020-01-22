@@ -33,13 +33,9 @@ cc.Class({
             this.showNode.active = true;
             this.node.stopAllActions();
             let rotate = cc.rotateBy(1.5, 360).easing(cc.easeInOut(1.5));
-            if (WechatAPI.deviceManager.miscBasic) {
-                let scale1 = cc.scaleTo(0.5, 0.6);
-                let scale2 = cc.scaleTo(1.0, 1);
-                this.node.runAction(cc.spawn(rotate, cc.sequence(scale1, scale2)).repeatForever());
-            }else{
-                this.node.runAction(rotate.repeatForever());
-            }
+            let scale1 = cc.scaleTo(0.5, 0.6);
+            let scale2 = cc.scaleTo(1.0, 1);
+            this.node.runAction(cc.spawn(rotate, cc.sequence(scale1, scale2)).repeatForever());
         }
     },
 

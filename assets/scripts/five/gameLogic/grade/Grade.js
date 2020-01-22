@@ -58,14 +58,14 @@ let Grade = {
 
     gradeMatchModifier: [
         {
-            exist: 100,
+            exist: 10,
             fail: 0,
-            bUser: 50,
+            bUser: 45,
         },
         {
             exist: 10,
             fail: 0,
-            bUser: 40,
+            bUser: 35,
         },
         {
             exist: 20,
@@ -73,12 +73,12 @@ let Grade = {
             bUser: 30,
         },
         {
-            exist: 30,
+            exist: 25,
             fail: 2,
             bUser: 20,
         },
         {
-            exist: 40,
+            exist: 35,
             fail: 2,
             bUser: 15,
         },
@@ -88,13 +88,13 @@ let Grade = {
             bUser: 15,
         },
         {
-            exist: 30,
-            fail: 2,
+            exist: 25,
+            fail: 1,
             bUser: 10,
         },
         {
-            exist: 30,
-            fail: 1,
+            exist: 25,
+            fail: 0,
             bUser: 10,
         },
         {
@@ -163,6 +163,20 @@ let Grade = {
 
     getGradeMatchModifier(grade) {
         return this.gradeMatchModifier[grade - 1];
+    },
+
+    getScoreByGradeDelta(selfGrade, oppoGrade, isWin) {
+        let delta = selfGrade - oppoGrade;
+        let sum = selfGrade + oppoGrade;
+        let res = 100 + sum * 3;
+        debug.log(res);
+        if (isWin) {
+            res *= 1 - delta * 0.1;
+        } else {
+            res *= -1 - delta * 0.1;
+        }
+
+        return Math.floor(res);
     },
 };
 

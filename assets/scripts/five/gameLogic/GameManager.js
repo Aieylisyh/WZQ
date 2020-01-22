@@ -80,29 +80,23 @@ cc.Class({
         this.game = game;
     },
 
-    playerGrabFirst: function (index, grab) {
+    playerGrabFirst: function (index, bGrab) {
+        debug.log("!抢先手注意看参数");
+        debug.log(arguments);
+
+        if (!this.grabFirstProcess) {
+            debug.log("!抢先手但是不在有效时间");
+            return;
+        }
+
         if (index == 1) {
-            this.game.player1GrabFirst = grab;
-            if (this.game.opponentPlayer.index == 1) {
-                if (grab) {
-                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "对手抢先手");
-                } else {
-                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "对手不抢先手");
-                }
-            }
+            this.game.player1GrabFirst = bGrab;
         } else {
-            this.game.player2GrabFirst = grab;
-            if (this.game.opponentPlayer.index == 2) {
-                if (grab) {
-                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "对手抢先手");
-                } else {
-                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "对手不抢先手");
-                }
-            }
+            this.game.player2GrabFirst = bGrab;
         }
 
         if (this.game.player1GrabFirst != null && this.game.player2GrabFirst != null) {
-            this.startPlay();
+            this.grabFirstEnd();
         }
     },
 
@@ -118,13 +112,26 @@ cc.Class({
         this.chessboardManager.clearBoard();
         this.game.chessMap = this.chessboardManager.chessboard.chessMap;
 
+        this.startGrabFirstSection();
+
+        return true;
+    },
+
+    startGrabFirstSection() {
+        debug.log("!抢先手开始");
         this.game.selfPlayer.notifyGrabFirst();
         this.game.opponentPlayer.notifyGrabFirst();
+        this.grabFirstProcess = true;
 
-        appContext.getDialogManager().showDialog(DialogTypes.Toast, "正在问对面是否抢先手...");
-        debug.log("!!正在问对面是否抢先手");
+        // appContext.getDialogManager().showDialog(DialogTypes.Toast, "正在问对面是否抢先手...");
+        // debug.log("!!正在问对面是否抢先手");
         //this.playerWin(1);
-        return true;
+    },
+
+    grabFirstEnd() {
+        debug.log("!抢先手 结束");
+        this.grabFirstProcess = false;
+        this.startPlay();
     },
 
     getGameWindow() {
@@ -212,25 +219,12 @@ cc.Class({
 
         info.isLooserOffline = isLooserOffline;
         info.isSurrender = isSurrender;
-
-        //TODO
-        /*  info.chestInfo = {
-              chest0: {
-                  text: "大奖",
-                  resUrl: "images/rankImg/rank1",
-              },
-              chest1: null,
-              chest2: {
-                  text: "参与奖",
-                  resUrl: "images/rankImg/rank2",
-              },
-          };*/
-
-        info.gradeExp = 1234; //TODO
-
-        this.getGameWindow().reset();
+       
+        info = appContext.getUxManager().registerGameEnd(info);
         appContext.getDialogManager().showDialog(DialogTypes.RoundEnd, info);
+
         this.chessboardManager.setLocked(true);
+        this.getGameWindow().reset();
         this.clearPlayers();
     },
 
@@ -257,11 +251,13 @@ cc.Class({
         let firstIsPlayer1 = true;
         if (!this.game.player1GrabFirst && this.game.player2GrabFirst) {
             firstIsPlayer1 = false;
+            //appContext.getDialogManager().showDialog(DialogTypes.Toast, "一方抢了先手");
         } else if (this.game.player1GrabFirst && !this.game.player2GrabFirst) {
             firstIsPlayer1 = true;
+            //appContext.getDialogManager().showDialog(DialogTypes.Toast, "双方都抢了先手");//n本局随机决定先手
         } else {
             if (this.game.player1GrabFirst && this.game.player2GrabFirst) {
-                appContext.getDialogManager().showDialog(DialogTypes.Toast, "双方都抢先手\n本局随机决定先手");
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "双方都抢了先手");//n本局随机决定先手
             }
             firstIsPlayer1 = this.game.randomSeed < 0.5;
         }
@@ -273,13 +269,15 @@ cc.Class({
             this.game.firstIsSelfPlayer = true;
             this.game.selfPlayer.setFirst(true);
             this.game.opponentPlayer.setFirst(false);
-            appContext.getDialogManager().showDialog(DialogTypes.Toast, "游戏开始\n本局由您先手", 1);
+            appContext.getDialogManager().showDialog(DialogTypes.Toast, "本局由您先手");
         } else {
             this.game.firstIsSelfPlayer = false;
             this.game.selfPlayer.setFirst(false);
             this.game.opponentPlayer.setFirst(true);
-            appContext.getDialogManager().showDialog(DialogTypes.Toast, "游戏开始\n本局由对面先手", 1);
+            appContext.getDialogManager().showDialog(DialogTypes.Toast, "本局由对面先手");
         }
+
+        appContext.getDialogManager().showDialog(DialogTypes.Toast, "游戏开始");
     },
 
     //更新当前的游戏，newGame中的每一条属性，都会覆盖当前的currentGame的对应属性。
@@ -372,7 +370,7 @@ cc.Class({
         } else if (index == 2) {
             p1 = "我想想...";
         } else if (index == 3) {
-            p1 = "该怎么下呢...";
+            p1 = "该怎么下...";
         }
         return p1;
     },

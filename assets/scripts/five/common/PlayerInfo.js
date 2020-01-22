@@ -62,7 +62,7 @@ cc.Class({
             // todo
             let nickname = user.basic.nickname;
             if (StringUtil.isNotEmpty(nickname)) {
-                this.nicknameLabel.string = StringUtil.trimString(nickname,10);
+                this.nicknameLabel.string = StringUtil.trimString(nickname, 10);
             }
         }
 
@@ -72,7 +72,7 @@ cc.Class({
         if (this.crtKeepWinLabel != null) {
             this.crtKeepWinLabel.string = user.basic.crtKeepWin || 0;
         }
-        
+
         let winCount = user.basic.winCount;
         let roundCount = user.basic.roundCount;
         if (this.winRateLabel != null) {
@@ -101,7 +101,7 @@ cc.Class({
         if (this.gradeScoreLabel != null) {
             this.gradeScoreLabel.string = gradeAndFillInfo.fillAmount;
         }
-        
+
         if (this.gradePBTop != null) {
             this.gradePBTop.string = gradeAndFillInfo.fillTop;
         }
@@ -114,8 +114,12 @@ cc.Class({
             this.gradePB.value = gradeAndFillInfo.fillAmount / gradeInfo.exp;
         }
 
+        this.setGradeIcon(gradeInfo.imgPath);
+    },
+
+    setGradeIcon(imgPath) {
         if (this.gradeIcon != null) {
-            appContext.getFileManager().applySpriteSafe(gradeInfo.imgPath, this.gradeIcon);
+            appContext.getFileManager().applySpriteSafe(imgPath, this.gradeIcon);
         }
     },
 });

@@ -20,6 +20,8 @@ let DialogTypes = {
     GradeInfo: "GradeInfo",
 
     Toast: "Toast",
+
+    GrabFirst: "GrabFirst",
 }
 
 module.exports = DialogTypes;

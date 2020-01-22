@@ -145,8 +145,8 @@ cc.Class({
             oppoGrade = Math.min(Math.max(oppoGrade, 0), 10);
             //debug.log("oppoGrade " + oppoGrade);
             user.basic.currentScore = Grade.getFitScore(oppoGrade);
-            user.fast = (Math.random() * 20 + oppoGrade < 15);
-            debug.log("refineDummy ");
+            //user.fast = (Math.random() * 20 + oppoGrade < 15);
+            //debug.log("refineDummy ");
             let dummy = new Dummy(user);
             debug.log(dummy);
             dummy.id = id;
@@ -164,9 +164,11 @@ cc.Class({
                     //currentScore: 0,//这是总分，总分不会小于0。 显示出来的得分是计算段位之后的总分
                 },
             };
-
+            debug.log("pickUserById ");
+            debug.log(id);
             if (id < 1000) {
                 let rawData = data.data[id];
+                debug.log(rawData);
                 user.basic.nickname = rawData.nickname;
                 user.basic.headIconUrl = rawData.avatarUrl;
             } else {

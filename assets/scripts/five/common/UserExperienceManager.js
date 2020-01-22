@@ -1,6 +1,6 @@
 let StorageKey = require("StorageKey");
 let VitaSystem = require("VitaSystem");
-let DialogTypes = require('DialogTypes');
+let Grade = require('Grade');
 
 let shareVitaCountPerDay = 3;
 
@@ -135,6 +135,26 @@ cc.Class({
         this.uxData.lastestDate = Date.now();
 
         this.toSaveUxData = true;
+
+        if (this.isFirst) {
+            if (WechatAPI.isWx) {
+                let sceneId = cc.enterAppSceneId || appContext.getUxManager().cache.enterAppSceneId || 0;
+                let promoteChannel = appContext.getUxManager().cache.promoteChannel;
+                appContext.getAnalyticManager().addEvent("newUser_scene__" + sceneId);
+                if (promoteChannel) {
+                    appContext.getAnalyticManager().addEvent("newUser_promote__" + promoteChannel);
+                    appContext.getAnalyticManager().sendALD("newUser_promote__" + promoteChannel);
+                } else {
+                    promoteChannel = "default";
+                }
+
+                debug.log("首次进入游戏promoteChannel " + promoteChannel);
+            }
+        }
+
+        this.initGameInfo();
+        this.saveGameInfo();
+        appContext.getAnalyticManager().accelerateUpload(0);
     },
 
     setDayInfo: function () {
@@ -231,30 +251,9 @@ cc.Class({
         this.toSaveUxData = true;
     },
 
-    onLoginFinish: function () {
-        if (this.isFirst) {
-            if (WechatAPI.isWx) {
-                let sceneId = cc.enterAppSceneId || appContext.getUxManager().cache.enterAppSceneId || 0;
-                let promoteChannel = appContext.getUxManager().cache.promoteChannel;
-                appContext.getAnalyticManager().addEvent("newUser_scene__" + sceneId);
-                if (promoteChannel) {
-                    appContext.getAnalyticManager().addEvent("newUser_promote__" + promoteChannel);
-                    appContext.getAnalyticManager().sendALD("newUser_promote__" + promoteChannel);
-                } else {
-                    promoteChannel = "default";
-                }
-
-                debug.log("首次进入游戏promoteChannel " + promoteChannel);
-            }
-        }
-
-        this.initGameInfo();
-        this.saveGameInfo();
-        appContext.getAnalyticManager().accelerateUpload(0);
-    },
-
     saveUserInfo: function (userInfo) {
-        //debug.log("!!saveUserInfo");
+        debug.log("!!saveUserInfo");
+        debug.log(userInfo);
         this.userInfo = userInfo;
         this.toSaveUserInfo = true;
     },
@@ -271,7 +270,7 @@ cc.Class({
                 winCount: 0,
                 roundCount: 0,
                 lastWin: false,
-                currentScore: 0,//这是总分，总分不会小于0。 显示出来的得分是计算段位之后的总分
+                currentScore: 990,//这是总分，总分不会小于0。 显示出来的得分是计算段位之后的总分
                 //  let scoreInfo = appContext.getUxManager().getScoreInfo(currentScore);
                 // todaySafeScore // from SC2. the score to prevent rank loose, not sure to use it or not
             },
@@ -280,6 +279,8 @@ cc.Class({
 
     getUserInfo: function () {
         let userInfo = WechatAPI.getStorageSync(StorageKey.UserInfo);
+        debug.log("!!getUserInfo");
+        debug.log(userInfo);
         if (userInfo == null || userInfo == "") {
             userInfo = this.createRawUserInfo();
             this.saveUserInfo(userInfo);
@@ -323,40 +324,78 @@ cc.Class({
         if (info == null || info == "" || typeof info != "object") {
             this.gameInfo = {};
             this.vitaSystem.init();
-            this.initCore(now);
         } else {
             debug.log("load existing game info");
             //debug.log(info);
             this.gameInfo = info;
-            this.versionCheck();
             this.vitaSystem.load(this.gameInfo.vitaSystem);
         }
 
         this.gameInfo.vitaSystem = this.vitaSystem.getSaveData();
     },
 
-    //检测已有的存档，进行版本修复
-    versionCheck: function () {
-        this.initAvatarData();
-
-        if (this.gameInfo.version == null) {
-            this.gameInfo.version = debug.version;
-            this.gameInfo.vitaSystem.vita = this.vitaSystem.vitaMax;
-
-        } else if (this.gameInfo.version != debug.version) {
-            debug.log("Update from " + this.gameInfo.version);
-            this.gameInfo.version = debug.version;
+    useGrabFirstCard() {
+        if (this.getGrabFirstCardCount() >= 1) {
+            this.gameInfo.grabFirstCardCount = this.getGrabFirstCardCount() - 1;
+            this.saveGameInfo();
+            return true;
         }
+
+        return false;
+    },
+
+    addGrabFirstCard(count) {
+        this.gameInfo.grabFirstCardCount = this.getGrabFirstCardCount() + count;
+        this.saveGameInfo();
+    },
+
+    getGrabFirstCardCount() {
+        if (!this.gameInfo.grabFirstCardCount) {
+            this.gameInfo.grabFirstCardCount = 3;
+            this.saveGameInfo();
+        }
+
+        return this.gameInfo.grabFirstCardCount;
     },
 
     saveGameInfo: function () {
         this.toSaveGameInfo = true;
     },
 
-    registerWin: function (levelPassed) {
-        let data = {};
+    registerGameEnd: function (info) {
+        debug.log("游戏结束！！！");
+        // debug.log(info.selfPlayer.basic.currentScore);
+        // debug.log(info.opponentPlayer.basic.currentScore);
+        // debug.log(info.win);
+        // debug.log(info.isLooserOffline);
+        let grade1 = Grade.getGradeAndFillInfoByScore(info.selfPlayer.basic.currentScore).grade;
+        let grade2 = Grade.getGradeAndFillInfoByScore(info.opponentPlayer.basic.currentScore).grade;
 
-        return data;
+        info.gradeScoreAdd = Grade.getScoreByGradeDelta(grade1, grade2, info.win);
+        let userInfo = this.getUserInfo();
+        debug.log(userInfo.basic.currentScore);
+        info.fromScore = userInfo.basic.currentScore;
+        userInfo.basic.roundCount += 1;
+        userInfo.basic.currentScore += info.gradeScoreAdd;
+        info.toScore = userInfo.basic.currentScore;
+
+        if (userInfo.basic.currentScore < 0) {
+            userInfo.basic.currentScore = 0;
+        }
+        if (info.win) {
+            userInfo.basic.crtKeepWin += 1;
+            userInfo.basic.lastWin = true;
+            userInfo.basic.winCount += 1;
+            if (userInfo.basic.crtKeepWin > userInfo.basic.maxKeepWin) {
+                userInfo.basic.maxKeepWin = userInfo.basic.crtKeepWinfalse;
+            }
+        } else {
+            userInfo.basic.crtKeepWin = 0;
+            userInfo.basic.lastWin = false;
+        }
+
+        this.saveUserInfo(userInfo);
+        return info;
     },
 
     registerLoose: function (levelPassed) {

@@ -27,11 +27,11 @@ cc.Class({
     },
 
     start: function () {
-        if (this.importance == 3 && !WechatAPI.deviceManager.lessImpBigImage) {
+        if (this.importance == 3) {
             this.done = true;
             return;
         }
-        if (this.importance == 2 && !WechatAPI.deviceManager.impbigImage) {
+        if (this.importance == 2) {
             this.done = true;
             return;
         }
@@ -75,7 +75,7 @@ cc.Class({
             return;
         }
 
-        if (this.showTime <= 0 || !WechatAPI.deviceManager.miscBasic) {
+        if (this.showTime <= 0) {
             this.sprite.spriteFrame = loadedSpriteFrame;
         } else {
             this.node.opacity = 0;

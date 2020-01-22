@@ -1,6 +1,6 @@
 let PlayerInfo = require("PlayerInfo");
 let DialogTypes = require("DialogTypes");
-
+let Grade = require("Grade");
 
 cc.Class({
     extends: require("BaseDialog"),
@@ -47,6 +47,20 @@ cc.Class({
         chestPrefab: cc.Prefab,
 
         buttons: cc.Node,
+
+        expPart: cc.Node,
+
+        expAddPart: cc.Node,
+
+        expProgressBar: cc.ProgressBar,
+
+        expProgressBarLabel: cc.Label,
+
+        expLowLabel: cc.Label,
+
+        expArtNum: cc.Label,
+
+        expArtNumPref: cc.Label,
     },
 
     show: function (info) {
@@ -56,6 +70,7 @@ cc.Class({
         }
 
         window.re = this;
+        debug.log(info);
 
         this.fadeInBackground();
         this.info = info;
@@ -175,15 +190,50 @@ cc.Class({
     },
 
     showGradeExp: function () {
+        //  info.gradeScoreAdd 
+        //  info.toScore
+        //  info.fromScore
+        this.gradeAndFillInfoFrom = Grade.getGradeAndFillInfoByScore(this.info.fromScore);
+        this.gradeAndFillInfoTo = Grade.getGradeAndFillInfoByScore(this.info.toScore);
+        this.gradeInfoFrom = Grade.getGradeInfo(this.gradeAndFillInfoFrom.grade);
+        this.gradeInfoTo = Grade.getGradeInfo(this.gradeAndFillInfoTo.grade);
+        debug.log(this.gradeAndFillInfoFrom);
+        debug.log(this.gradeAndFillInfoTo);
+        debug.log(this.gradeInfoFrom);
+        debug.log(this.gradeInfoTo);
+
+        let total = this.gradeAndFillInfoFrom.fillTop - this.gradeAndFillInfoFrom.fillBottom;
+        this.expProgressBar.progress = this.gradeAndFillInfoFrom.fillAmount / total;
+        this.expProgressBarLabel.string = this.gradeAndFillInfoFrom.fillAmount + "/" + total;
+
+        this.expPart.scale = 0.1;
+        this.expPart.runAction(cc.scaleTo(0.5, 1).easing(cc.easeBackOut()));
+
+        this.expArtNumPref.string = this.info.win ? "积分+" : "积分-";
+        this.expArtNum.string = Math.abs(this.info.gradeScoreAdd);
+        this.expAddPart.scale = 0.1;
+        let shakeAction = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
+        this.expAddPart.runAction(cc.sequence(cc.delayTime(0.6), shakeAction));
+
         this.scheduleOnce(function () {
             this.step = 5;
             this.processStep();
-        }, 0.5);
+        }, 1.2);
     },
 
     showGradeAnim: function () {
-        this.step = 6;
-        this.processStep();
+        let total = this.gradeAndFillInfoTo.fillTop - this.gradeAndFillInfoTo.fillBottom;
+        let rest = total - this.gradeAndFillInfoTo.fillAmount;
+
+        this.expProgressBar.progress = this.gradeAndFillInfoTo.fillAmount / total;
+        this.expProgressBarLabel.string = this.gradeAndFillInfoTo.fillAmount + "/" + total;
+
+        this.expLowLabel.string = "距提升到下一个段位还需要" + rest + "积分";
+
+        this.scheduleOnce(function () {
+            this.step = 6;
+            this.processStep();
+        }, 1);
     },
 
     showButtons: function () {
@@ -191,8 +241,8 @@ cc.Class({
         this.btnKeepGrade.active = false;
         this.buttons.active = true;
 
-        this.buttons.y = -500;
-        let action = cc.moveTo(0.5, 0, 0).easing(cc.easeCubicActionOut());
+        this.buttons.y = -520;
+        let action = cc.moveTo(0.5, 0, -40).easing(cc.easeCubicActionOut());
         this.buttons.runAction(action);
 
         this.scheduleOnce(function () {
@@ -266,6 +316,21 @@ cc.Class({
     },
 
     createChests: function () {
+
+        //TODO
+        /*  info.chestInfo = {
+              chest0: {
+                  text: "大奖",
+                  resUrl: "images/rankImg/rank1",
+              },
+              chest1: null,
+              chest2: {
+                  text: "参与奖",
+                  resUrl: "images/rankImg/rank2",
+              },
+          };*/
+
+
         this.chestsVisual = [];
 
         for (let i = 0; i < 3; i++) {

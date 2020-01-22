@@ -36,13 +36,15 @@ cc.Class({
         toastPrefabPath: "",
 
         confirmBoxPrefabPath: "",
+
+        grabFirstPrefabPath: "grabFirstPrefabPath",
     },
 
-    onDialogHide: function(type) {
+    onDialogHide: function (type) {
         this._cachedDialogs[type] = null;
     },
 
-    getQueuedDialogsCount: function() {
+    getQueuedDialogsCount: function () {
         if (this.queuedDialogs == null) {
             return 0;
         }
@@ -57,7 +59,7 @@ cc.Class({
         return count;
     },
 
-    fireQueuedDialogs: function() {
+    fireQueuedDialogs: function () {
         if (this.queuedDialogs == null) {
             return;
         }
@@ -75,7 +77,7 @@ cc.Class({
         return;
     },
 
-    areAllDialogsClosed: function() {
+    areAllDialogsClosed: function () {
         let count = 0;
         for (let i in this._cachedDialogs) {
             if (this._cachedDialogs[i] != null) {
@@ -90,10 +92,9 @@ cc.Class({
         return false;
     },
 
-    onCloseAllDialogs: function() {
+    onCloseAllDialogs: function () {
         //debug.log("onCloseAllDialogs");
         if (appContext.getWindowManager().currentWindowNode) {
-            debug.log("dispatchEvent");
             appContext.getWindowManager().currentWindowNode.dispatchEvent(new cc.Event.EventCustom('CloseAllDialogs'));
         }
 
@@ -102,7 +103,7 @@ cc.Class({
         }
     },
 
-    closeAllDialogs: function() {
+    closeAllDialogs: function () {
         for (let i in this.dialogParent.children) {
             let item = this.dialogParent.children[i];
             if (item == null) {
@@ -116,7 +117,7 @@ cc.Class({
         }
     },
 
-    enqueueDialog: function(type, info) {
+    enqueueDialog: function (type, info) {
         //把一个dialog放入队列，关闭某个dialog时将显示队列中的dialog
         if (this._cachedDialogs[type] && this.isDialogTypeCached(type)) {
             //如果现在正在显示这个dialog或者正在加载这个dialog 则依然不放入队列
@@ -130,7 +131,7 @@ cc.Class({
         });
     },
 
-    showOrEnqueueDialog: function(type, info) {
+    showOrEnqueueDialog: function (type, info) {
         //如果一个Cached对话正在显示或者即将显示，就加入队列，否则直接显示
         let hasDialogShowing = false;
         for (let key in this._cachedDialogs) {
@@ -148,7 +149,7 @@ cc.Class({
         }
     },
 
-    updateDataBasedDialogs: function() {
+    updateDataBasedDialogs: function () {
         let needUpdateDialogTypes = [
             DialogTypes.Inventory,
             DialogTypes.Upgrade,
@@ -169,7 +170,7 @@ cc.Class({
         }
     },
 
-    isDialogTypeCached: function(type) {
+    isDialogTypeCached: function (type) {
         let isCached = true;
 
         switch (type) {
@@ -187,7 +188,7 @@ cc.Class({
         return isCached;
     },
 
-    getDialogPrefabPathByType: function(type) {
+    getDialogPrefabPathByType: function (type) {
         let prefabPath = "";
 
         switch (type) {
@@ -275,18 +276,6 @@ cc.Class({
                 prefabPath = this.rankDialogPrefabPath;
                 break;
 
-            case DialogTypes.IdleLevel:
-                prefabPath = this.idleLevelDialogPath;
-                break;
-
-            case DialogTypes.Wiki:
-                prefabPath = this.wikiDialogPath;
-                break;
-
-            case DialogTypes.MoreFunc:
-                prefabPath = this.moreFuncDialogPath;
-                break;
-
             case DialogTypes.Promotion:
                 prefabPath = this.promotionDialogPath;
                 break;
@@ -299,16 +288,8 @@ cc.Class({
                 prefabPath = this.lotteryDialogPath;
                 break;
 
-            case DialogTypes.StartGamePromotion:
-                prefabPath = this.startGamePromotionDialogPath;
-                break;
-
-            case DialogTypes.Avatar:
-                prefabPath = this.avatarDialogPath;
-                break;
-
-            case DialogTypes.FreeAvatar:
-                prefabPath = this.freeAvatarDialogPath;
+            case DialogTypes.GrabFirst:
+                prefabPath = this.grabFirstPrefabPath;
                 break;
 
             default:
@@ -318,7 +299,7 @@ cc.Class({
         return prefabPath;
     },
 
-    showDialog: function(type, info) {
+    showDialog: function (type, info) {
         let prefabPath = this.getDialogPrefabPathByType(type);
         let isCached = this.isDialogTypeCached(type);
 
@@ -340,12 +321,15 @@ cc.Class({
         }
 
         let resPath = this.rootDialogPrefabPath + prefabPath;
-        appContext.getFileManager().loadResourceSafe(resPath, cc.Prefab, function(prefab) {
+        appContext.getFileManager().loadResourceSafe(resPath, cc.Prefab, function (prefab) {
             let comp = null;
             let dialogObj = null;
             if (prefab != null) {
                 try {
+                    // debug.log(prefab);
                     dialogObj = cc.instantiate(prefab);
+                    dialogObj.active = true;//非常恶心的bug，如果在同一帧生成多个同一个prefab的对象，只有一个的active是true
+                    // debug.log(dialogObj.active);
                     comp = dialogObj.getComponent("BaseDialog");
                 } catch (e) {
                     debug.log(e);
@@ -387,7 +371,7 @@ cc.Class({
         }, this);
     },
 
-    getCachedDialog: function(type) {
+    getCachedDialog: function (type) {
         if (type == null || type == "") {
             return null;
         }
@@ -400,31 +384,31 @@ cc.Class({
         return cachedDialog;
     },
 
-    showWaitingCircle: function() {
+    showWaitingCircle: function () {
         // this.waitingCircle.show();
     },
 
-    hideWaitingCircle: function() {
+    hideWaitingCircle: function () {
         //this.waitingCircle.hide();
     },
 
-    showTip: function(tip, x, y) {
+    showTip: function (tip, x, y) {
         this.tip.show(tip);
         this.tip.move(x, y);
     },
 
-    hideTip: function() {
+    hideTip: function () {
         this.tip.hide();
     },
 
-    updateTip: function(x, y) {
+    updateTip: function (x, y) {
         this.tip.move(x, y);
     },
 
-    appendMiniResourcesHud: function(cb, caller) {
+    appendMiniResourcesHud: function (cb, caller) {
         let resPath = this.rootDialogPrefabPath + this.miniResourcesHudPath;
 
-        appContext.getFileManager().loadResourceSafe(resPath, cc.Prefab, function(prefab) {
+        appContext.getFileManager().loadResourceSafe(resPath, cc.Prefab, function (prefab) {
             let node = cc.instantiate(prefab);
             let comp = node.getComponent("MiniResourcesHud");
             cc.loader.releaseRes(resPath, cc.Prefab);
@@ -434,10 +418,10 @@ cc.Class({
         }, this);
     },
 
-    appendVitaHud: function(cb, caller) {
+    appendVitaHud: function (cb, caller) {
         let resPath = this.rootDialogPrefabPath + this.vitaHudPath;
 
-        appContext.getFileManager().loadResourceSafe(resPath, cc.Prefab, function(prefab) {
+        appContext.getFileManager().loadResourceSafe(resPath, cc.Prefab, function (prefab) {
             let node = cc.instantiate(prefab);
             cc.loader.releaseRes(resPath, cc.Prefab);
             if (caller.node && caller.node.isValid) {
@@ -446,10 +430,10 @@ cc.Class({
         }, this);
     },
 
-    appendFg: function(cb, caller) {
+    appendFg: function (cb, caller) {
         let resPath = this.rootDialogPrefabPath + this.fgPath;
 
-        appContext.getFileManager().loadResourceSafe(resPath, cc.Prefab, function(prefab) {
+        appContext.getFileManager().loadResourceSafe(resPath, cc.Prefab, function (prefab) {
             let node = cc.instantiate(prefab);
             if (caller.node && caller.node.isValid) {
                 cb.call(caller, node);
@@ -457,10 +441,10 @@ cc.Class({
         }, this);
     },
 
-    appendFghc: function(cb, caller) {
+    appendFghc: function (cb, caller) {
         let resPath = this.rootDialogPrefabPath + this.fghcPath;
 
-        appContext.getFileManager().loadResourceSafe(resPath, cc.Prefab, function(prefab) {
+        appContext.getFileManager().loadResourceSafe(resPath, cc.Prefab, function (prefab) {
             let node = cc.instantiate(prefab);
             if (caller.node && caller.node.isValid) {
                 cb.call(caller, node);

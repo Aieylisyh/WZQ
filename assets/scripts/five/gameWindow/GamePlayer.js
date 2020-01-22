@@ -64,15 +64,15 @@ cc.Class({
             this.chessTimer = this.getChessTurnTime();
             this.timerLabel.string = this.chessTimer;
             if (this.isSelf) {
-                this.turnLabel.string = "我方回合";
+                this.turnLabel.string = "-下棋中-";//我方
             } else {
-                this.turnLabel.string = "对方回合";
+                this.turnLabel.string = "-下棋中-";//敌方
             }
             action = cc.scaleTo(0.4, 1, 1).easing(cc.easeCubicActionOut());
         } else {
             this.startTimer = false;
-            this.timerLabel.string = "--";
-            this.turnLabel.string = "等待中";
+            this.timerLabel.string = "";
+            this.turnLabel.string = "-等待-";
             action = cc.scaleTo(0.4, 0.8, 0.8).easing(cc.easeCubicActionOut());
         }
 

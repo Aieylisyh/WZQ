@@ -36,7 +36,7 @@ let Dummy = cc.Class({
         debug.log("dummy init");
         debug.log(param);
 
-        this.task = [];
+        this.tasks = [];
         this.taskProcessTimer = this.taskProcessTime;
 
         //为本质属性，个人资料赋值，并由此计算出其外在属性
@@ -70,6 +70,8 @@ let Dummy = cc.Class({
     },
 
     addTask: function (task) {
+        debug.log("假人任务");
+        debug.log(task);
         this.tasks.push(task);
     },
 
@@ -95,11 +97,11 @@ let Dummy = cc.Class({
         let finished = false;
 
         if (task.turns > 0) {
-            //debug.log("dummy processTask " + task.turns);
+            debug.log("dummy processTask " + task.turns);
             task.turns -= 1;
         } else {
             finished = true;
-            //debug.log("dummy  finish processTask " + task.type);
+            debug.log("dummy finish processTask " + task.type);
             switch (task.type) {
                 case 1:
                     //一般下棋 这个动作中，也可能下歪 可能认输
@@ -114,6 +116,10 @@ let Dummy = cc.Class({
                 case 3:
                     //抢先手
                     this.grabFirst(task.param);
+                    break;
+
+                case 4:
+                    this.surrender();
                     break;
             }
         }
@@ -132,20 +138,13 @@ let Dummy = cc.Class({
             return;
         }
 
-
+        debug.log("dummy playChess");
         let myTurn = Math.floor((game.currentTurn + 1) / 2);
 
         if (myTurn > 3 && Math.random() < this.status.offlineChance / 100) {
-            let time = Math.random() * 15 + 20;
-            debug.log("dummy offline timeout");
-            this.addTask({
-                turns: time,
-                type: 2,
-            });
-
-            // debug.log("dummy offline socket bad");
-            // this.offline();  // 如果返回空，默认为对手掉线
-            // return;
+            debug.log("dummy will addOffLineTask");
+            this.addOffLineTask();
+            return;
         }
 
         let param = Ai.getAnalyseParam();
@@ -164,17 +163,20 @@ let Dummy = cc.Class({
 
         param.evaluatingParam = this.status.evaluatingParam;
 
-        if (WechatAPI.isEnabled()) {
-            //如果是微信平台，发送消息给副线程
-            WechatAPI.threadWorker.startWorker(param);
-        } else {
-            //如果不是微信平台，调用主域的ai，同步执行代码，会卡
-            let solution = Ai.getSolution(param);
-            this.makeDecision(solution);
-        }
+        // if (WechatAPI.isEnabled()) {
+        //     //如果是微信平台，发送消息给副线程
+        //     WechatAPI.threadWorker.startWorker(param);
+        // } else {
+        //     //如果不是微信平台，调用主域的ai，同步执行代码，会卡
+        //     let solution = Ai.getSolution(param);
+        //     this.makeDecision(solution);
+        // }
+        let solution = Ai.getSolution(param);
+        this.makeDecision(solution);
     },
 
     offline: function () {
+        try { throw new Exception(); } catch (e) { debug.log(e) }
         debug.log("假人掉线了");
         appContext.getGameManager().playerWin(3 - this.chessType, true);
     },
@@ -192,21 +194,40 @@ let Dummy = cc.Class({
         }
 
         this.addTask({
-            turns: Math.random() * 2 + 0.3,
+            turns: Math.random() * 5 + 0.5,
             type: 3,
             param: grab,
         });
     },
 
+    addOffLineTask() {
+        let time = Math.random() * 5 + 35;
+        debug.log("dummy addOffLineTask " + time);
+        this.addTask({
+            turns: time,
+            type: 2,
+        });
+    },
+
+    addSurrenderTask() {
+        let time = Math.random() * 10 + 1;
+        this.addTask({
+            turns: time,
+            type: 4,
+        });
+    },
+
     grabFirst: function (grab) {
         debug.log("假人抢先手:" + grab);
-
+        if (grab) {
+            appContext.getDialogManager().showDialog(DialogTypes.Toast, "对手使用了先手卡");
+        }
         appContext.getGameManager().playerGrabFirst(this.index, grab);
     },
 
     makeDecision: function (solution) {
         if (solution == null) {
-            this.offline();  // 如果返回空，默认为对手掉线
+            this.addOffLineTask();  // 如果返回空，默认为对手掉线
             return;
         }
 
@@ -225,8 +246,8 @@ let Dummy = cc.Class({
             //有劣势
             this.onCon();
 
-            if (solution.oppoPro > 1 && Math.random() < this.status.admitLooseChance / 100) {
-                this.surrender();
+            if (solution.oppoPro > 1.01 && Math.random() < this.status.admitLooseChance / 100) {
+                this.addSurrenderTask();
                 return;
             }
         }
@@ -234,6 +255,9 @@ let Dummy = cc.Class({
         if (solution.selfPro >= 1) {
             //有优势
             this.onPro();
+            if (Math.random() > 0.25) {
+                //chat
+            }
         }
 
         cbm.commitChessAt(solution.x, solution.y, solution.type);
@@ -257,103 +281,128 @@ let Dummy = cc.Class({
             let missChance = 18;
             let offlineChance = 8;
             let rawSolutionTurns = 3;
-            let admitLooseChance = 30;
+            let admitLooseChance = 15;
             let grabFirstChance = 1;
+
+            let turnTimeMin = 0;
+            let turnTimeMax = 1;
+            let fastChance = 0.5;
+            let turnTimeAdd = 0;
 
             switch (param.grade) {
                 case 1:
-                    missChance = 60;
-                    offlineChance = 2;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 2.4);
-                    admitLooseChance = 20;
-                    grabFirstChance = 1;
+                    missChance = 65;
+                    offlineChance = 3;
+                    rawSolutionTurns = 2 + Math.floor(Math.random() * 2.7);
+                    admitLooseChance = 15;
+                    grabFirstChance = 10;
+                    fastChance = 90;
+                    turnTimeAdd = 0;
                     break;
 
                 case 2:
                     missChance = 50;
                     offlineChance = 2;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 1.7);
-                    admitLooseChance = 30;
-                    grabFirstChance = 9;
+                    rawSolutionTurns = 2 + Math.floor(Math.random() * 1.8);
+                    admitLooseChance = 25;
+                    grabFirstChance = 8;
+                    fastChance = 80;
+                    turnTimeAdd = 0;
                     break;
 
                 case 3:
                     missChance = 38;
                     offlineChance = 2;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 2);
-                    admitLooseChance = 40;
-                    grabFirstChance = 16;
+                    admitLooseChance = 30;
+                    grabFirstChance = 15;
+                    fastChance = 70;
+                    turnTimeAdd = 0;
                     break;
 
                 case 4:
                     missChance = 28;
                     offlineChance = 2;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 1.5);
-                    admitLooseChance = 30;
+                    admitLooseChance = 20;
                     grabFirstChance = 25;
+                    fastChance = 70;
+                    turnTimeAdd = 0;
                     break;
 
                 case 5:
                     missChance = 20;
                     offlineChance = 1;
                     rawSolutionTurns = 1;
-                    admitLooseChance = 20;
-                    grabFirstChance = 36;
+                    admitLooseChance = 15;
+                    grabFirstChance = 35;
+                    fastChance = 70;
+                    turnTimeAdd = 0;
                     break;
 
                 case 6:
                     missChance = 12;
                     offlineChance = 1;
                     rawSolutionTurns = Math.floor(Math.random() * 2);
-                    admitLooseChance = 16;
-                    grabFirstChance = 42;
+                    admitLooseChance = 12;
+                    grabFirstChance = 45;
+                    fastChance = 70;
+                    turnTimeAdd = 0;
                     break;
 
                 case 7:
                     missChance = 8;
                     offlineChance = 1;
                     rawSolutionTurns = Math.floor(Math.random() * 1.5);
-                    admitLooseChance = 13;
+                    admitLooseChance = 7;
                     grabFirstChance = 50;
+                    fastChance = 70;
+                    turnTimeAdd = 0;
                     break;
 
                 case 8:
                     missChance = 5;
                     offlineChance = 1;
                     rawSolutionTurns = Math.floor(Math.random() * 1.2);
-                    admitLooseChance = 10;
+                    admitLooseChance = 5;
                     grabFirstChance = 60;
+                    fastChance = 60;
+                    turnTimeAdd = 0;
                     break;
 
                 case 9:
                     missChance = 2;
                     offlineChance = 0;
                     rawSolutionTurns = 0;
-                    admitLooseChance = 8;
-                    grabFirstChance = 75;
+                    admitLooseChance = 1;
+                    grabFirstChance = 70;
                     per.playStyle = 0;//强制没有风格
+                    fastChance = 50;
+                    turnTimeAdd = 0.6;
                     break;
 
                 case 10:
                     missChance = 0;
                     offlineChance = 0;
                     rawSolutionTurns = 0;
-                    admitLooseChance = 2;
-                    grabFirstChance = 85;
+                    admitLooseChance = 0;
+                    grabFirstChance = 80;
                     per.playStyle = 0;//强制没有风格
+                    fastChance = 55;
+                    turnTimeAdd = 0.9;
                     break;
             }
 
-            let turnTimeMin = 1;
-            let turnTimeMax = 5;
-
-            if (param.fast) {
-                turnTimeMin = 0.5;
-                turnTimeMax = 3.5;
+            if (Math.random() * 100 > fastChance) {
+                turnTimeMin = 1.2 + turnTimeAdd;
+                turnTimeMax = 15 + turnTimeAdd;
             } else {
-                turnTimeMin = 1.5;
-                turnTimeMax = 12;
+                turnTimeMin = 0.4 + turnTimeAdd;
+                turnTimeMax = 3.2 + turnTimeAdd;
             }
+
+            turnTimeMin = 0;
+            turnTimeMax = 0;//test
 
             let evaluatingParam = null; //设置下棋风格
             //平均，原有参数为   [[0, 1], [2, 3], [4, 12], [10, 64], [256, 256]],

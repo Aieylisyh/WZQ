@@ -122,11 +122,12 @@ cc.Class({
 
         if (info.success) {
             this.hasMatchedOpponent = true;
-            // this.matchVsTag.node.active = true;
-            // this.matchVsTag.fastShowUp();
+            this.matchVsTag.node.active = true;
+            this.matchVsTag.fastShowUp();
             this.questionNode.active = false;
 
             this.opponent = info.dummyPlayer;
+            this.opponentIcon.node.active=true;
             this.scheduleOnce(function () {
                 this.setOpponentInfo();
                 this.opponentPlayerAnim.shake();

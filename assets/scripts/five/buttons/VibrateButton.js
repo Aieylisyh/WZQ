@@ -47,14 +47,12 @@ cc.Class({
             return;
         }
 
-        if (WechatAPI.deviceManager.miscAnim) {
             let action1 = cc.scaleTo(0.1, 1.08, 1.08).easing(cc.easeCubicActionOut());
             let action2 = cc.scaleTo(0.1, 1.02, 1.02).easing(cc.easeCubicActionOut());
             let action3 = cc.scaleTo(0.1, 1.13, 1.13).easing(cc.easeCubicActionOut());
             let action4 = cc.scaleTo(0.1, 1.06, 1.06).easing(cc.easeCubicActionOut());
             let seq = cc.sequence(action1, action2, action3, action4);
             this.node.runAction(seq);
-        }
     },
 
     shakeEnd: function () {
@@ -62,41 +60,33 @@ cc.Class({
             return;
         }
 
-        if (WechatAPI.deviceManager.miscAnim) {
-            let action1 = cc.scaleTo(0.1, 0.93, 0.93).easing(cc.easeCubicActionOut());
-            let action2 = cc.scaleTo(0.1, 1.05, 1.05).easing(cc.easeCubicActionOut());
-            let action3 = cc.scaleTo(0.1, 1, 1).easing(cc.easeCubicActionOut());
-            let seq = cc.sequence(action1, action2, action3);
-            this.node.runAction(seq);
-        }
+        let action1 = cc.scaleTo(0.1, 0.93, 0.93).easing(cc.easeCubicActionOut());
+        let action2 = cc.scaleTo(0.1, 1.05, 1.05).easing(cc.easeCubicActionOut());
+        let action3 = cc.scaleTo(0.1, 1, 1).easing(cc.easeCubicActionOut());
+        let seq = cc.sequence(action1, action2, action3);
+        this.node.runAction(seq);
     },
 
     showUp: function () {
-        if (WechatAPI.deviceManager.miscAnim) {
-            let action1 = cc.scaleTo(0.3, 1.15, 1.15).easing(cc.easeCubicActionOut());
-            let action2 = cc.scaleTo(0.2, 1, 1).easing(cc.easeCubicActionOut());
-            let seq = cc.sequence(action1, action2);
-            this.node.runAction(seq);
-        }
+        let action1 = cc.scaleTo(0.3, 1.15, 1.15).easing(cc.easeCubicActionOut());
+        let action2 = cc.scaleTo(0.2, 1, 1).easing(cc.easeCubicActionOut());
+        let seq = cc.sequence(action1, action2);
+        this.node.runAction(seq);
     },
 
     fastShowUp: function () {
-        if (WechatAPI.deviceManager.miscAnim) {
-            this.node.scale = 0.6;
-            let action1 = cc.scaleTo(0.1, 1.3, 1.3);
-            let action2 = cc.scaleTo(0.2, 1, 1).easing(cc.easeBackOut());
-            let seq = cc.sequence(action1, action2);
-            this.node.runAction(seq);
-        }
+        this.node.scale = 0.6;
+        let action1 = cc.scaleTo(0.1, 1.3, 1.3);
+        let action2 = cc.scaleTo(0.2, 1, 1).easing(cc.easeBackOut());
+        let seq = cc.sequence(action1, action2);
+        this.node.runAction(seq);
     },
 
     shake: function () {
-        if (WechatAPI.deviceManager.miscAnim) {
-            let action1 = cc.scaleTo(0.1, 1.3, 1.3);
-            let action2 = cc.scaleTo(0.2, 1, 1).easing(cc.easeBackOut());
-            let seq = cc.sequence(action1, action2);
-            this.node.runAction(seq);
-        }
+        let action1 = cc.scaleTo(0.1, 1.3, 1.3);
+        let action2 = cc.scaleTo(0.2, 1, 1).easing(cc.easeBackOut());
+        let seq = cc.sequence(action1, action2);
+        this.node.runAction(seq);
     },
 
     onDisable: function () {

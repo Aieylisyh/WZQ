@@ -1,3 +1,6 @@
+let DialogTypes = require("DialogTypes");
+
+
 let SelfPlayer = cc.Class({
 
     extends: require("Player"),
@@ -35,8 +38,9 @@ let SelfPlayer = cc.Class({
     },
 
     notifyGrabFirst: function () {
-        debug.log("玩家快快决定是否抢先手吧！");
-        this.grabFirst(false);//TODO ui let player choose
+        // debug.log("玩家快快决定是否抢先手吧！");
+        // this.grabFirst(false);//TODO ui let player choose
+        appContext.getDialogManager().showDialog(DialogTypes.GrabFirst);
     },
 
     grabFirst: function (grab) {

@@ -25,7 +25,7 @@ cc.Class({
         bgOpacity: 180,
     },
 
-    onDisable: function() {
+    onDisable: function () {
         appContext.getDialogManager().onDialogHide(this.type);
         appContext.getDialogManager().fireQueuedDialogs();
 
@@ -34,27 +34,27 @@ cc.Class({
         }
     },
 
-    hide: function() {
+    hide: function () {
         if (this.node) {
             this.node.destroy();
         }
     },
 
-    clickBgHide: function() {
+    clickBgHide: function () {
         if (this._isAnimComplete) {
             this.hide();
         }
     },
 
-    show: function(info) {
+    show: function (info) {
         debug.log("BaseDialog show ");
     },
 
-    updateInfo: function(info) {
+    updateInfo: function (info) {
         debug.log("BaseDialog updateInfo");
     },
 
-    fadeInBackground: function(delay = 0) {
+    fadeInBackground: function (delay = 0) {
         if (this.backgroundNode == null) {
             return;
         }
@@ -63,28 +63,22 @@ cc.Class({
             this.addClickBackgroundHideEvent();
         }
 
-        let finishedCallback = cc.callFunc(function() {
+        let finishedCallback = cc.callFunc(function () {
             this._isAnimComplete = true;
             this.onAnimComplete();
         }, this);
 
-        if (WechatAPI.deviceManager.dialogAnim) {
-            this.backgroundNode.opacity = 0;
-            this.backgroundNode.active = true;
+        this.backgroundNode.opacity = 0;
+        this.backgroundNode.active = true;
 
-            let action = cc.fadeTo(0.25, this.bgOpacity);
-            let seq = cc.sequence(cc.delayTime(delay), action, cc.delayTime(0.1), finishedCallback);
-            this.backgroundNode.runAction(seq);
-        } else {
-            this.backgroundNode.opacity = this.bgOpacity;
-            this.backgroundNode.active = true;
-            this.backgroundNode.runAction(cc.sequence(cc.delayTime(delay + 0.2), finishedCallback));
-        }
+        let action = cc.fadeTo(0.25, this.bgOpacity);
+        let seq = cc.sequence(cc.delayTime(delay), action, cc.delayTime(0.1), finishedCallback);
+        this.backgroundNode.runAction(seq);
     },
 
-    onAnimComplete: function() {},
+    onAnimComplete: function () { },
 
-    addClickBackgroundHideEvent: function() {
+    addClickBackgroundHideEvent: function () {
         if (this.backgroundBtn == null) {
             this.backgroundBtn = this.backgroundNode.getComponent("cc.Button");
         }
@@ -100,48 +94,32 @@ cc.Class({
         this.backgroundBtn.clickEvents.push(evt);
     },
 
-    mildShowAnim: function(delay = 0) {
+    mildShowAnim: function (delay = 0) {
         this.frame.scale = 1;
-        this.scheduleOnce(function() {
+        this.scheduleOnce(function () {
             let action1 = cc.scaleTo(0.2, 0.8);
             let action2 = cc.scaleTo(0.2, 1);
             this.frame.runAction(cc.sequence(action1, action2));
         }, delay);
     },
 
-    fastShowAnim: function(delay = 0) {
-        if (WechatAPI.deviceManager.dialogAnim) {
-            this.frame.scale = 0.1;
-            this.scheduleOnce(function() {
-                let action = cc.scaleTo(0.2, 1).easing(cc.easeBackOut());
-                this.frame.runAction(action);
-            }, delay);
-        } else {
-            this.node.opacity = 0;
-            let action = cc.callFunc(function() {
-                this.node.opacity = 255;
-            }, this);
-            this.node.runAction(cc.sequence(cc.delayTime(0.06), action));
-        }
+    fastShowAnim: function (delay = 0) {
+        this.frame.scale = 0.1;
+        this.scheduleOnce(function () {
+            let action = cc.scaleTo(0.2, 1).easing(cc.easeBackOut());
+            this.frame.runAction(action);
+        }, delay);
     },
 
-    elasticShowAnim: function(delay = 0) {
-        if (WechatAPI.deviceManager.dialogAnim) {
-            this.frame.scale = 0.1;
-            this.scheduleOnce(function() {
-                let action = cc.scaleTo(0.25, 1).easing(cc.easeElasticOut());
-                this.frame.runAction(action);
-            }, delay);
-        } else {
-            this.node.opacity = 0;
-            let action = cc.callFunc(function() {
-                this.node.opacity = 255;
-            }, this);
-            this.node.runAction(cc.sequence(cc.delayTime(0.06), action));
-        }
+    elasticShowAnim: function (delay = 0) {
+        this.frame.scale = 0.1;
+        this.scheduleOnce(function () {
+            let action = cc.scaleTo(0.25, 1).easing(cc.easeElasticOut());
+            this.frame.runAction(action);
+        }, delay);
     },
 
-    resizeFrame: function(delay = 0.05) {
+    resizeFrame: function (delay = 0.05) {
         if (this.resizeRef == null) {
             return;
         }
@@ -150,7 +128,7 @@ cc.Class({
             return;
         }
 
-        this.scheduleOnce(function() {
+        this.scheduleOnce(function () {
             let pHeight = this.resizeRef.height * this.resizeRef.scaleY;
             let pWidth = this.resizeRef.width * this.resizeRef.scaleX;
             this.frame.height = pHeight + this.frameBaseHeight;
@@ -159,7 +137,7 @@ cc.Class({
         }, delay);
     },
 
-    resetAlignment: function(node) {
+    resetAlignment: function (node) {
         if (node == null || !node.isValid) {
             return;
         }

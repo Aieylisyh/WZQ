@@ -5,8 +5,8 @@ let LoadResPath = require("LoadResPath");
 
 let GameUtil = {
     setHeadIcon: function (headIconUrl, localPath, targetSprite, defaultIconPath = "") {
-        debug.log("设置头像图片setHeadIcon");
-        debug.log(arguments);
+        // debug.log("设置头像图片setHeadIcon");
+        // debug.log(arguments);
         if (StringUtil.isNotEmpty(localPath)) {
             //this.applyHeadIcon(localPath, targetSprite);
             appContext.getFileManager().applySpriteSafe(localPath, targetSprite);
@@ -21,10 +21,11 @@ let GameUtil = {
 
     // 设置头像图片
     setHeadIconImg: function (headIconUrl, targetSprite, defaultIconPath = "") {
-        debug.log("设置头像图片setHeadIconImg");
-        debug.log(arguments);
+        // debug.log("设置头像图片setHeadIconImg " + headIconUrl);
+        // debug.log(arguments);
         if (StringUtil.isNotEmpty(headIconUrl)) {
             appContext.getFileManager().hasImageFile(headIconUrl, function (path) {
+                // debug.log("setHeadIconImg path " + path);
                 if (path) {
                     this.applyHeadIcon(path, targetSprite);
                 } else {
@@ -37,11 +38,12 @@ let GameUtil = {
     },
 
     downloadAndApplyHeadIcon: function (headIconUrl, targetSprite, defaultIconPath = "") {
+        //debug.log("downloadAndApplyHeadIcon");
         appContext.getFileManager().downloadAndSaveFile(headIconUrl, function (path) {
             if (targetSprite == null || targetSprite.node == null) {
                 return;
             }
-
+            //debug.log("downloadAndApplyHeadIcon path " + path);
             if (path) {
                 this.applyHeadIcon(path, targetSprite);
             } else {
