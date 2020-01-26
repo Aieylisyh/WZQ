@@ -58,52 +58,52 @@ let Grade = {
 
     gradeMatchModifier: [
         {
-            exist: 10,
+            exist: 5,
             fail: 0,
             bUser: 45,
         },
         {
-            exist: 10,
+            exist: 8,
             fail: 0,
             bUser: 35,
         },
         {
-            exist: 20,
+            exist: 15,
             fail: 1,
             bUser: 30,
         },
         {
-            exist: 25,
+            exist: 20,
             fail: 2,
             bUser: 20,
         },
         {
-            exist: 35,
+            exist: 28,
             fail: 2,
             bUser: 15,
         },
         {
-            exist: 30,
+            exist: 32,
             fail: 2,
             bUser: 15,
         },
         {
-            exist: 25,
+            exist: 20,
             fail: 1,
             bUser: 10,
         },
         {
-            exist: 25,
+            exist: 15,
             fail: 0,
             bUser: 10,
         },
         {
-            exist: 30,
+            exist: 20,
             fail: 0,
             bUser: 10,
         },
         {
-            exist: 30,
+            exist: 20,
             fail: 0,
             bUser: 10,
         },

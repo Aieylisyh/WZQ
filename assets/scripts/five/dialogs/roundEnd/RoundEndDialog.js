@@ -10,11 +10,7 @@ cc.Class({
 
         selfPlayerInfo: PlayerInfo,
 
-        gradeIcon: cc.Sprite,
-
         gradeLabel: cc.Label,
-
-        gradeBar: cc.ProgressBar,
 
         gradeScoreLabel: cc.Label,
 
@@ -61,6 +57,10 @@ cc.Class({
         expArtNum: cc.Label,
 
         expArtNumPref: cc.Label,
+
+        crtGradeIcon: cc.Sprite,
+
+        nextGradeIcon: cc.Sprite,
     },
 
     show: function (info) {
@@ -79,18 +79,64 @@ cc.Class({
         this.processStep();
     },
 
-    processStep: function () {
-        //整体次序 step
-        // 0 初始
-        // 1 宝箱（如果有） showChests
-        // 2 基础面板 showMainBoard
-        // 3 出现胜利者 showWinner
-        // 4 积分 showGradeExp
-        // 5 段位动画（如果有） showGradeAnim
-        // 6 出现按钮 showButtons
-        // 7 广告（如果有） showBannerAd
+    update(dt) {
+        if (this.expPart.active && this.isExpAddInfo) {
+            // this.isExpAddInfo = {
+            //     from: this.info.fromScore,
+            //     to: this.info.toScore,
+            //     time: 2,
+            //     timer: 0,
+            //     crtGrade:this.gradeAndFillInfoFrom.grade,
+            // };
+            this.isExpAddInfo.timer += dt;
+            //debug.log("    this.isExpAddInfo.timer" + this.isExpAddInfo.timer);
+            if (this.isExpAddInfo.timer >= this.isExpAddInfo.time) {
+                this.isExpAddInfo.timer = this.isExpAddInfo.time;
+                this.updatePBGrade();
+                this.isExpAddInfo = null;
+            } else {
+                this.updatePBGrade();
+            }
+        }
+    },
 
-        switch (this.step) {
+    updatePBGrade() {
+        let tempScore = Math.floor(this.isExpAddInfo.from + (this.isExpAddInfo.to - this.isExpAddInfo.from) * (this.isExpAddInfo.timer / this.isExpAddInfo.time));
+        //debug.log("updatePBGrade " + tempScore);
+
+        let gradeAndFillInfo = Grade.getGradeAndFillInfoByScore(tempScore);
+
+        let total = gradeAndFillInfo.fillTop - gradeAndFillInfo.fillBottom;
+        this.setPBProgress(gradeAndFillInfo.fillAmount, total);
+        if (gradeAndFillInfo.grade != this.isExpAddInfo.crtGrade) {
+            this.isExpAddInfo.crtGrade = gradeAndFillInfo.grade;
+            if (this.isExpAddInfo.crtGrade >= 10) {
+                this.setPBIcon(this.isExpAddInfo.crtGrade);
+            } else {
+                this.setPBIcon(this.isExpAddInfo.crtGrade, this.isExpAddInfo.crtGrade + 1);
+            }
+        }
+    },
+
+    setPBProgress(amount, total) {
+        this.expProgressBar.progress = amount / total;
+        this.expProgressBarLabel.string = amount + "/" + total;
+    },
+
+    setPBIcon(crtGrade, nextGrade) {
+        let gradeInfo1 = Grade.getGradeInfo(crtGrade);
+        appContext.getFileManager().applySpriteSafe(gradeInfo1.imgPath, this.crtGradeIcon);
+
+        if (nextGrade != null) {
+            let gradeInfo2 = Grade.getGradeInfo(nextGrade);
+            appContext.getFileManager().applySpriteSafe(gradeInfo2.imgPath, this.nextGradeIcon);
+        } else {
+            this.nextGradeIcon.spriteFrame = null;
+        }
+    },
+
+    processStep: function () {
+        switch (++this.step) {
             case 1:
                 this.showChests();
                 break;
@@ -108,14 +154,18 @@ cc.Class({
                 break;
 
             case 5:
-                this.showGradeAnim();
+                this.showGradeDelta();
                 break;
 
             case 6:
-                this.showButtons();
+                this.showNewGrade();
                 break;
 
             case 7:
+                this.showButtons();
+                break;
+
+            case 8:
                 this.showBannerAd();
                 break;
 
@@ -124,7 +174,6 @@ cc.Class({
 
     showChests: function () {
         if (this.info.chestInfo == null) {
-            this.step = 2;
             this.processStep();
             return;
         }
@@ -154,7 +203,6 @@ cc.Class({
         this.oppoPlayerInfo.setup(this.info.opponentPlayer);
 
         this.scheduleOnce(function () {
-            this.step = 3;
             this.processStep();
         }, 1);
     },
@@ -184,7 +232,6 @@ cc.Class({
         }
 
         this.scheduleOnce(function () {
-            this.step = 4;
             this.processStep();
         }, 0.5);
     },
@@ -195,43 +242,79 @@ cc.Class({
         //  info.fromScore
         this.gradeAndFillInfoFrom = Grade.getGradeAndFillInfoByScore(this.info.fromScore);
         this.gradeAndFillInfoTo = Grade.getGradeAndFillInfoByScore(this.info.toScore);
-        this.gradeInfoFrom = Grade.getGradeInfo(this.gradeAndFillInfoFrom.grade);
-        this.gradeInfoTo = Grade.getGradeInfo(this.gradeAndFillInfoTo.grade);
-        debug.log(this.gradeAndFillInfoFrom);
-        debug.log(this.gradeAndFillInfoTo);
-        debug.log(this.gradeInfoFrom);
-        debug.log(this.gradeInfoTo);
+        let gradeFrom = this.gradeAndFillInfoFrom.grade;
+        let gradeTo = this.gradeAndFillInfoTo.grade;
+        this.gradeInfoFrom = Grade.getGradeInfo(gradeFrom);
+        this.gradeInfoTo = Grade.getGradeInfo(gradeTo);
+        // debug.log(this.gradeAndFillInfoFrom);
+        // debug.log(this.gradeAndFillInfoTo);
+        // debug.log(this.gradeInfoFrom);
+        // debug.log(this.gradeInfoTo);
 
         let total = this.gradeAndFillInfoFrom.fillTop - this.gradeAndFillInfoFrom.fillBottom;
-        this.expProgressBar.progress = this.gradeAndFillInfoFrom.fillAmount / total;
-        this.expProgressBarLabel.string = this.gradeAndFillInfoFrom.fillAmount + "/" + total;
+        this.setPBProgress(this.gradeAndFillInfoFrom.fillAmount, total);
 
-        this.expPart.scale = 0.1;
-        this.expPart.runAction(cc.scaleTo(0.5, 1).easing(cc.easeBackOut()));
+        if (gradeFrom >= 10) {
+            this.setPBIcon(gradeFrom);
+        } else {
+            this.setPBIcon(gradeFrom, gradeFrom + 1);
+        }
 
+
+
+        this.scheduleOnce(function () {
+            this.processStep();
+        }, 0.5);
+    },
+
+    showScoreDeltaText() {
         this.expArtNumPref.string = this.info.win ? "积分+" : "积分-";
         this.expArtNum.string = Math.abs(this.info.gradeScoreAdd);
         this.expAddPart.scale = 0.1;
         let shakeAction = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
-        this.expAddPart.runAction(cc.sequence(cc.delayTime(0.6), shakeAction));
+        this.expAddPart.runAction(cc.sequence(cc.delayTime(0), shakeAction));
 
-        this.scheduleOnce(function () {
-            this.step = 5;
-            this.processStep();
-        }, 1.2);
+        this.expPart.active = true;
+        this.expPart.scale = 0.1;
+        this.expPart.runAction(cc.scaleTo(0.5, 1).easing(cc.easeBackOut()));
     },
 
-    showGradeAnim: function () {
+    showGradeDelta: function () {
+        this.showScoreDeltaText();
+
+        this.isExpAddInfo = {
+            from: this.info.fromScore,
+            to: this.info.toScore,
+            time: 2,
+            timer: 0,
+            crtGrade: this.gradeAndFillInfoFrom.grade,
+        };
+        //debug.log(this.isExpAddInfo);
         let total = this.gradeAndFillInfoTo.fillTop - this.gradeAndFillInfoTo.fillBottom;
         let rest = total - this.gradeAndFillInfoTo.fillAmount;
 
-        this.expProgressBar.progress = this.gradeAndFillInfoTo.fillAmount / total;
-        this.expProgressBarLabel.string = this.gradeAndFillInfoTo.fillAmount + "/" + total;
+        this.scheduleOnce(function () {
+            this.expLowLabel.string = "距提升到下一段位还需要" + rest + "积分";
+            this.processStep();
+        }, 3);
+    },
 
-        this.expLowLabel.string = "距提升到下一个段位还需要" + rest + "积分";
+    showNewGrade: function () {
+        if (this.gradeAndFillInfoFrom.grade != this.gradeAndFillInfoTo.grade) {
+            let originalScale = this.selfPlayerInfo.gradeIcon.node.scale;
+            debug.log("originalScale " + originalScale);
+            let seq = cc.sequence(
+                cc.scaleTo(0.5, 0),
+                cc.callFunc(function () {
+                    debug.log(this.gradeInfoTo.imgPath);
+                    this.selfPlayerInfo.setGradeIcon(this.gradeInfoTo.imgPath);
+                }, this),
+                cc.scaleTo(0.5, originalScale)
+            );
+            this.selfPlayerInfo.gradeIcon.node.runAction(seq);
+        }
 
         this.scheduleOnce(function () {
-            this.step = 6;
             this.processStep();
         }, 1);
     },

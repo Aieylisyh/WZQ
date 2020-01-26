@@ -10,7 +10,7 @@
 
 // 表现属性：(根据本质属性计算出，也接受微调))
 // 根据本质属性计算出来的具体在游戏中可以体现出来的属性
-
+let DialogTypes = require("DialogTypes");
 let Ai = require("Ai");
 
 let Dummy = cc.Class({
@@ -292,7 +292,7 @@ let Dummy = cc.Class({
             switch (param.grade) {
                 case 1:
                     missChance = 65;
-                    offlineChance = 3;
+                    offlineChance = 0;
                     rawSolutionTurns = 2 + Math.floor(Math.random() * 2.7);
                     admitLooseChance = 15;
                     grabFirstChance = 10;
@@ -302,7 +302,7 @@ let Dummy = cc.Class({
 
                 case 2:
                     missChance = 50;
-                    offlineChance = 2;
+                    offlineChance = 1;
                     rawSolutionTurns = 2 + Math.floor(Math.random() * 1.8);
                     admitLooseChance = 25;
                     grabFirstChance = 8;
@@ -312,7 +312,7 @@ let Dummy = cc.Class({
 
                 case 3:
                     missChance = 38;
-                    offlineChance = 2;
+                    offlineChance = 1;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 2);
                     admitLooseChance = 30;
                     grabFirstChance = 15;
@@ -322,7 +322,7 @@ let Dummy = cc.Class({
 
                 case 4:
                     missChance = 28;
-                    offlineChance = 2;
+                    offlineChance = 1;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 1.5);
                     admitLooseChance = 20;
                     grabFirstChance = 25;

@@ -47,7 +47,6 @@ cc.Class({
 
         debug.log(user);
 
-        // todo
         let sex = user.basic.sex;
         if (this.sexTagImg != null) {
             let sexTagPath = sex === 1 ? LoadResPath.ImgPath.boyTag : LoadResPath.ImgPath.girlTag;
@@ -59,7 +58,6 @@ cc.Class({
         }
 
         if (this.nicknameLabel != null) {
-            // todo
             let nickname = user.basic.nickname;
             if (StringUtil.isNotEmpty(nickname)) {
                 this.nicknameLabel.string = StringUtil.trimString(nickname, 10);
@@ -76,8 +74,8 @@ cc.Class({
         let winCount = user.basic.winCount;
         let roundCount = user.basic.roundCount;
         if (this.winRateLabel != null) {
-            let winRate = Math.round((winCount / roundCount) * 1000) / 10;
-            this.winRateLabel.string = (winRate || 50) + "%";
+            let winRate = Math.round((winCount / roundCount) * 100);
+            this.winRateLabel.string = (winRate || 100) + "%";
         }
         if (this.winCountLabel != null) {
             this.winCountLabel.string = winCount;

@@ -270,7 +270,8 @@ cc.Class({
                 winCount: 0,
                 roundCount: 0,
                 lastWin: false,
-                currentScore: 990,//这是总分，总分不会小于0。 显示出来的得分是计算段位之后的总分
+                currentScore: 1090,//1090
+                //这是总分，总分不会小于0。 显示出来的得分是计算段位之后的总分
                 //  let scoreInfo = appContext.getUxManager().getScoreInfo(currentScore);
                 // todaySafeScore // from SC2. the score to prevent rank loose, not sure to use it or not
             },
@@ -377,17 +378,18 @@ cc.Class({
         info.fromScore = userInfo.basic.currentScore;
         userInfo.basic.roundCount += 1;
         userInfo.basic.currentScore += info.gradeScoreAdd;
-        info.toScore = userInfo.basic.currentScore;
 
         if (userInfo.basic.currentScore < 0) {
             userInfo.basic.currentScore = 0;
         }
+        info.toScore = userInfo.basic.currentScore;
+        
         if (info.win) {
             userInfo.basic.crtKeepWin += 1;
             userInfo.basic.lastWin = true;
             userInfo.basic.winCount += 1;
             if (userInfo.basic.crtKeepWin > userInfo.basic.maxKeepWin) {
-                userInfo.basic.maxKeepWin = userInfo.basic.crtKeepWinfalse;
+                userInfo.basic.maxKeepWin = userInfo.basic.crtKeepWin;
             }
         } else {
             userInfo.basic.crtKeepWin = 0;
