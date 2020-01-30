@@ -37,7 +37,11 @@ cc.Class({
 
         confirmBoxPrefabPath: "",
 
-        grabFirstPrefabPath: "grabFirstPrefabPath",
+        grabFirstPrefabPath: "",
+
+        checkinDialogPath: "",
+
+        shopDialogPrefabPath: "",
     },
 
     onDialogHide: function (type) {

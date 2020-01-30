@@ -29,19 +29,25 @@ cc.Class({
         this.sp.spriteFrame = sf;
         this.node.active = true;
 
-        this.node.stopAllActions();
-        let action1 = cc.scaleTo(2, 1, 1);
-        let action2 = cc.moveTo(2, this.targetX, this.targetY);
+        this.reset();
+        let action1 = cc.scaleTo(1.5, 1.25, 1.25);
+        let action2 = cc.moveTo(1.5, this.targetX, this.targetY);
         this.node.runAction(cc.spawn(action1, action2));
         this.timer = this.duration;
         this.playing = true;
     },
 
     hide: function () {
+        this.reset();
         this.playing = false;
+        this.node.active = false;
+    },
+
+    reset() {
+        this.node.stopAllActions();
         this.node.scale = 1;
         this.node.x = this.startX;
         this.node.y = this.startY;
-        this.node.active = false;
     },
+
 });

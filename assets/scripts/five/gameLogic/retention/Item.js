@@ -1,50 +1,67 @@
 let item = {
-    Mine: {
-        desc: "手气卡",
-        subDesc: "手气卡",
-        imgUrl: "image/item/Mine",
-        thumbName: "Mine",
-        name: "矿物",
-        unit: "块",
+    Gold: {
+        desc: "金币",
+        subDesc: "金币",
+        imgUrl: "image/item/Gold",
+        thumbName: "Gold",
+        name: "金币",
+        unit: "",
         price: 1,
         short: "A",
     },
 
-    TurtleRock: {
-        desc: "加速卡",
-        subDesc: "加速卡",
-        imgUrl: "image/item/Turt",
-        thumbName: "Turt",
-        name: "龟岩",
-        unit: "块",
-        price: 100, 
-        usage: {
-            type: "sell",
-        },
+    GrabFirstCard: {
+        desc: "先手卡",
+        subDesc: "先手卡",
+        imgUrl: "image/item/GrabFirstCard",
+        thumbName: "GrabFirstCard",
+        name: "先手卡",
+        unit: "张",
+        price: 120,
         short: "B",
     },
 
-    getDuplicatedItemInfo: function(index) {
+    KeepGradeCard: {
+        desc: "保段卡",
+        subDesc: "保段卡",
+        imgUrl: "image/item/KeepGradeCard",
+        thumbName: "KeepGradeCard",
+        name: "保段卡",
+        unit: "张",
+        price: 250,
+        short: "C",
+    },
+
+    getDuplicatedItemInfo: function (index) {
         if (this[index]) {
             let str = JSON.stringify(this[index]);
             return str ? JSON.parse(str) : null;
         }
     },
 
-    getSalePriceRate: function() {
-        let playedDays = appContext.getUxManager().playedDays;
-        if (playedDays <= 1) {
-            return 2;
-        } else if (playedDays <= 2) {
-            return 2.5;
-        } else if (playedDays <= 4) {
-            return 3;
-        } else if (playedDays <= 6) {
-            return 4;
+    getTextByItem(list) {
+        let res = "";
+        let isFirst = true;
+
+        for (let i in list) {
+            let itemInfo = list[i];
+            let item = this[itemInfo.type];
+            if (!item) {
+                continue;
+            }
+
+            if (!isFirst) {
+                res += " ";
+            }
+            res += item.name + itemInfo.count + item.unit;
+            if (isFirst) {
+                isFirst = false;
+            }
         }
 
-        return 5;
-    }
+
+        return res;
+    },
 };
 
 

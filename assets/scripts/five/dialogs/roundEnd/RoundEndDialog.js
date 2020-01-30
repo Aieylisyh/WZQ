@@ -61,6 +61,10 @@ cc.Class({
         crtGradeIcon: cc.Sprite,
 
         nextGradeIcon: cc.Sprite,
+
+        goldPart: cc.Node,
+
+        goldLabel: cc.Label,
     },
 
     show: function (info) {
@@ -150,22 +154,26 @@ cc.Class({
                 break;
 
             case 4:
-                this.showGradeExp();
+                this.showGold();
                 break;
 
             case 5:
-                this.showGradeDelta();
+                this.showGradeExp();
                 break;
 
             case 6:
-                this.showNewGrade();
+                this.showGradeDelta();
                 break;
 
             case 7:
-                this.showButtons();
+                this.showNewGrade();
                 break;
 
             case 8:
+                this.showButtons();
+                break;
+
+            case 9:
                 this.showBannerAd();
                 break;
 
@@ -236,6 +244,18 @@ cc.Class({
         }, 0.5);
     },
 
+    showGold: function () {
+        this.goldPart.scale=0;
+        this.goldPart.active = true;
+        this.goldLabel.string =  this.info.gold;
+        let action1 = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
+        this.goldPart.runAction(action1);
+
+        this.scheduleOnce(function () {
+            this.processStep();
+        }, 1);
+    },
+    
     showGradeExp: function () {
         //  info.gradeScoreAdd 
         //  info.toScore
@@ -260,8 +280,6 @@ cc.Class({
             this.setPBIcon(gradeFrom, gradeFrom + 1);
         }
 
-
-
         this.scheduleOnce(function () {
             this.processStep();
         }, 0.5);
@@ -285,18 +303,27 @@ cc.Class({
         this.isExpAddInfo = {
             from: this.info.fromScore,
             to: this.info.toScore,
-            time: 2,
+            time: 3,
             timer: 0,
             crtGrade: this.gradeAndFillInfoFrom.grade,
         };
-        //debug.log(this.isExpAddInfo);
-        let total = this.gradeAndFillInfoTo.fillTop - this.gradeAndFillInfoTo.fillBottom;
-        let rest = total - this.gradeAndFillInfoTo.fillAmount;
 
         this.scheduleOnce(function () {
-            this.expLowLabel.string = "距提升到下一段位还需要" + rest + "积分";
+            this.expLowLabel.string = this.getExpLowLabel();
             this.processStep();
-        }, 3);
+        }, 2.5);
+    },
+
+    getExpLowLabel() {
+        if (this.info.usedBonusScore) {
+            return "每日首场胜利，获得100额外积分！";
+        } else if (this.info.usedKeepGradeCard) {
+            return "已使用1张保段卡,不扣积分！";
+        }
+
+        let total = this.gradeAndFillInfoTo.fillTop - this.gradeAndFillInfoTo.fillBottom;
+        let rest = total - this.gradeAndFillInfoTo.fillAmount;
+        return "距提升到下一段位，还需" + rest + "积分";
     },
 
     showNewGrade: function () {
@@ -304,7 +331,7 @@ cc.Class({
             let originalScale = this.selfPlayerInfo.gradeIcon.node.scale;
             debug.log("originalScale " + originalScale);
             let seq = cc.sequence(
-                cc.scaleTo(0.5, 0),
+                cc.scaleTo(0.3, 0),
                 cc.callFunc(function () {
                     debug.log(this.gradeInfoTo.imgPath);
                     this.selfPlayerInfo.setGradeIcon(this.gradeInfoTo.imgPath);
@@ -329,7 +356,6 @@ cc.Class({
         this.buttons.runAction(action);
 
         this.scheduleOnce(function () {
-            this.step = 7;
             this.processStep();
         }, 1);
     },

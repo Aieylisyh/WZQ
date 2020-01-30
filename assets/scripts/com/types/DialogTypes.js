@@ -22,6 +22,10 @@ let DialogTypes = {
     Toast: "Toast",
 
     GrabFirst: "GrabFirst",
+
+    Checkin: "Checkin",
+
+    Shop: "Shop",
 }
 
 module.exports = DialogTypes;

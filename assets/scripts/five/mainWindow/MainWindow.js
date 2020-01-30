@@ -6,7 +6,7 @@ cc.Class({
     properties: {
         btnMatchMode: cc.Node,
 
-        btnTodo: cc.Node,
+        blockSF: cc.SpriteFrame,
 
         btnRank: cc.Node,
 
@@ -97,7 +97,7 @@ cc.Class({
 
         this.playerInfoBoard.node.active = true;
         let positionX = this.playerInfoBoard.node.x;
-        let action1 = cc.moveTo(1, positionX, 483).easing(cc.easeElasticOut());
+        let action1 = cc.moveTo(1.5, positionX, 483).easing(cc.easeElasticOut());
         let finishCallback = cc.callFunc(function () {
             this.swingTime = 0;
         }, this);
@@ -117,19 +117,28 @@ cc.Class({
     // 点击"敬请期待"
     onClickBtnTodo: function () {
         // debug.log("敬请期待");
-        appContext.getDialogManager().showDialog(DialogTypes.Toast, "敬请期待");
+        appContext.getDialogManager().showDialog(DialogTypes.Toast, "棋局变化万千，棋手连续下棋，极易走火入魔，不知此诸境界，乃自己心识所变现之幻象，日益执著，而导致精神失常，此即所谓的“入魔”。");
     },
 
     // 点击"排行"todo
     onClickBtnRank: function () {
-        // let info = null;
-        // appContext.getDialogManager().showDialog(DialogTypes.Rank, info);
-        appContext.getDialogManager().showDialog(DialogTypes.Toast, "敬请期待");
-        //tester.test_showRankDialog();
+        appContext.getDialogManager().showDialog(DialogTypes.Rank);
     },
 
     // 点击"设置"
     onClickBtnSetting: function () {
         appContext.getDialogManager().showDialog(DialogTypes.GameSetting);
+    },
+
+    onClickBtnCheckin: function () {
+        appContext.getDialogManager().showDialog(DialogTypes.Checkin);
+    },
+
+    onClickBtnShop: function () {
+        appContext.getDialogManager().showDialog(DialogTypes.Shop);
+    },
+    
+    onClickReset(){
+        appContext.getUxManager().resetGameInfo();
     },
 });

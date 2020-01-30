@@ -277,7 +277,7 @@ cc.Class({
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "本局由对面先手");
         }
 
-        appContext.getDialogManager().showDialog(DialogTypes.Toast, "游戏开始");
+        //appContext.getDialogManager().showDialog(DialogTypes.Toast, "游戏开始");
     },
 
     //更新当前的游戏，newGame中的每一条属性，都会覆盖当前的currentGame的对应属性。
@@ -377,7 +377,7 @@ cc.Class({
 
     getDone() {
         //10秒出  20秒出
-        let index = Math.floor(Math.random() * 7);
+        let index = Math.floor(Math.random() * 15);
         let p1 = "";
 
         if (index == 0) {

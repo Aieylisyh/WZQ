@@ -194,14 +194,14 @@ let Dummy = cc.Class({
         }
 
         this.addTask({
-            turns: Math.random() * 5 + 0.5,
+            turns: Math.random() * 4.8 + 0.2,
             type: 3,
             param: grab,
         });
     },
 
     addOffLineTask() {
-        let time = Math.random() * 5 + 35;
+        let time = Math.random() * 5 + 25;
         debug.log("dummy addOffLineTask " + time);
         this.addTask({
             turns: time,
@@ -293,9 +293,9 @@ let Dummy = cc.Class({
                 case 1:
                     missChance = 65;
                     offlineChance = 0;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 2.7);
+                    rawSolutionTurns = 2 + Math.floor(Math.random() * 2.8);
                     admitLooseChance = 15;
-                    grabFirstChance = 10;
+                    grabFirstChance = 5;
                     fastChance = 90;
                     turnTimeAdd = 0;
                     break;
@@ -303,7 +303,7 @@ let Dummy = cc.Class({
                 case 2:
                     missChance = 50;
                     offlineChance = 1;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 1.8);
+                    rawSolutionTurns = 2 + Math.floor(Math.random() * 1.9);
                     admitLooseChance = 25;
                     grabFirstChance = 8;
                     fastChance = 80;
@@ -313,7 +313,7 @@ let Dummy = cc.Class({
                 case 3:
                     missChance = 38;
                     offlineChance = 1;
-                    rawSolutionTurns = 1 + Math.floor(Math.random() * 2);
+                    rawSolutionTurns = 1 + Math.floor(Math.random() * 2.2);
                     admitLooseChance = 30;
                     grabFirstChance = 15;
                     fastChance = 70;

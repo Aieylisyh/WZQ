@@ -12,9 +12,9 @@ cc.Class({
 
     show: function () {
         //如果有0张也显示这个，这个对话框10秒后消失
-        let num = appContext.getUxManager().getGrabFirstCardCount();
         this.fadeInBackground();
 
+        let num = appContext.getUxManager().gameInfo.grabFirstCardCount;
         this.numLabel.string = "有先手卡" + num + "张";
         this.artNumLabel.string = num;
 

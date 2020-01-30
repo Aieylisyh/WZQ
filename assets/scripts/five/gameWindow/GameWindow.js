@@ -117,7 +117,7 @@ cc.Class({
         if (content == "" || content == null) {
             return;
         }
-        
+
         if (isSelf) {
             this.selfChatBubble.play(content);
         } else {
@@ -150,5 +150,13 @@ cc.Class({
         }
 
         return sf;
-    }
+    },
+
+    onClickWhite() {
+        appContext.getGameManager().playerWin(2, false, true);
+    },
+
+    onClickBlack() {
+        appContext.getGameManager().playerWin(1, false, true);
+    },
 });

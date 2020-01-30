@@ -36,7 +36,7 @@ let ToastDialog = cc.Class({
                 let w = Math.floor(this.text.node.width * this.text.node.scaleX);
                 this.bg.width = w + 90;
                 let h = Math.floor(this.text.node.height * this.text.node.scaleY);
-                this.bg.height = h + 32;
+                this.bg.height = h + 30;
 
                 this.mildShowAnim();
                 // debug.log(h);

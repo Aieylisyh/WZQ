@@ -1,10 +1,11 @@
 let StorageKey = require("StorageKey");
 let VitaSystem = require("VitaSystem");
+// let DialogTypes = require("DialogTypes");
 let Grade = require('Grade');
+// let Item = require('Item');
 
 let shareVitaCountPerDay = 3;
 
-//has 3 all storage files
 cc.Class({
     properties: {
         _data: null, //数据
@@ -270,7 +271,7 @@ cc.Class({
                 winCount: 0,
                 roundCount: 0,
                 lastWin: false,
-                currentScore: 1090,//1090
+                currentScore: 0,//1090
                 //这是总分，总分不会小于0。 显示出来的得分是计算段位之后的总分
                 //  let scoreInfo = appContext.getUxManager().getScoreInfo(currentScore);
                 // todaySafeScore // from SC2. the score to prevent rank loose, not sure to use it or not
@@ -316,6 +317,21 @@ cc.Class({
         return this.userPool;//简简单单就是一个数组 保存本地游戏生命周期出现过的玩家id
     },
 
+    resetGameInfo() {
+        WechatAPI.setStorageSync(StorageKey.UserInfo, null);
+        WechatAPI.setStorageSync(StorageKey.uxData, null);
+        WechatAPI.setStorageSync(StorageKey.GameInfo, null);
+
+        this.init();
+        this.getUserInfo();
+        this.userPool = [];
+        this.initGameInfo();
+
+        this.toSaveUserInfo = false;
+        this.toSaveUxData = false;
+        this.toSaveGameInfo = false;
+    },
+
     initGameInfo: function () {
         let info = WechatAPI.getStorageSync(StorageKey.GameInfo, true);
 
@@ -324,6 +340,16 @@ cc.Class({
 
         if (info == null || info == "" || typeof info != "object") {
             this.gameInfo = {};
+            this.gameInfo.gold = 0;
+            this.gameInfo.grabFirstCardCount = 3;
+            this.gameInfo.keepGradeCardCount = 0;
+            this.gameInfo.bonusScoreDay = 0;
+            this.gameInfo.randomGoldDay = 0;
+            this.gameInfo.randomCardDay = 0;
+            this.gameInfo.randomGoldCount = 0;
+            this.gameInfo.randomCardCount = 0;
+            this.gameInfo.checkinLastDay = 0;
+            this.gameInfo.checkinValidDayCount = 0;
             this.vitaSystem.init();
         } else {
             debug.log("load existing game info");
@@ -336,8 +362,8 @@ cc.Class({
     },
 
     useGrabFirstCard() {
-        if (this.getGrabFirstCardCount() >= 1) {
-            this.gameInfo.grabFirstCardCount = this.getGrabFirstCardCount() - 1;
+        if (this.gameInfo.grabFirstCardCount >= 1) {
+            this.gameInfo.grabFirstCardCount = this.gameInfo.grabFirstCardCount - 1;
             this.saveGameInfo();
             return true;
         }
@@ -345,18 +371,127 @@ cc.Class({
         return false;
     },
 
-    addGrabFirstCard(count) {
-        this.gameInfo.grabFirstCardCount = this.getGrabFirstCardCount() + count;
-        this.saveGameInfo();
+    useGold(count) {
+        if (this.gameInfo.gold >= count) {
+            this.gameInfo.gold = this.gameInfo.gold - count;
+            this.saveGameInfo();
+            return true;
+        }
+
+        return false;
     },
 
-    getGrabFirstCardCount() {
-        if (!this.gameInfo.grabFirstCardCount) {
-            this.gameInfo.grabFirstCardCount = 3;
+    useKeepGradeCard() {
+        if (this.gameInfo.keepGradeCardCount >= 1) {
+            this.gameInfo.keepGradeCardCount = this.gameInfo.keepGradeCardCount - 1;
+            this.saveGameInfo();
+            return true;
+        }
+
+        return false;
+    },
+
+    tryUseBonusScore() {
+        if (this.gameInfo.bonusScoreDay < this.uxData.dayInfo.day) {
+            this.gameInfo.bonusScoreDay = this.uxData.dayInfo.day;
+            this.saveGameInfo();
+            return true;
+        }
+
+        return false;
+    },
+
+    getAndRefineRandomCardUsedCount() {
+        if (this.gameInfo.randomCardDay < this.uxData.dayInfo.day) {
+            this.gameInfo.randomCardDay = this.uxData.dayInfo.day;
+            this.gameInfo.randomCardCount = 0;
             this.saveGameInfo();
         }
 
-        return this.gameInfo.grabFirstCardCount;
+        return this.gameInfo.randomCardCount;
+    },
+
+    canUseRandomCard() {
+        let count = this.getAndRefineRandomCardUsedCount();
+        return count < 1;
+    },
+
+    useRandomCard() {
+        if (this.canUseRandomGold()) {
+            this.gameInfo.randomCardCount++;
+            this.saveGameInfo();
+        }
+    },
+
+    getAndRefineRandomGoldUsedCount() {
+        if (this.gameInfo.randomGoldDay < this.uxData.dayInfo.day) {
+            this.gameInfo.randomGoldDay = this.uxData.dayInfo.day;
+            this.gameInfo.randomGoldCount = 0;
+            this.saveGameInfo();
+        }
+
+        return this.gameInfo.randomGoldCount;
+    },
+
+    canUseRandomGold() {
+        let count = this.getAndRefineRandomGoldUsedCount();
+        return count < 3;
+    },
+
+    useRandomGold() {
+        if (this.canUseRandomGold()) {
+            this.gameInfo.randomGoldCount++;
+            this.saveGameInfo();
+        }
+    },
+
+    getAndRefineCheckinDayCounts() {
+        if (!this.todayCheckedin()) {
+            if (this.lastDayCheckedin()) {
+                if (this.gameInfo.checkinValidDayCount >= 6) {
+                    this.gameInfo.checkinValidDayCount = 0;
+                    this.saveGameInfo();
+                }
+            } else {
+                this.gameInfo.checkinValidDayCount = 0;
+                this.saveGameInfo();
+            }
+        }
+
+        return this.gameInfo.checkinValidDayCount;
+    },
+
+    checkinProcess() {
+        let c = this.getAndRefineCheckinDayCounts();
+        this.gameInfo.checkinValidDayCount = c + 1;
+        this.gameInfo.checkinLastDay = this.uxData.dayInfo.day;
+        this.saveGameInfo();
+    },
+
+    todayCheckedin() {
+        return this.gameInfo.checkinLastDay == this.uxData.dayInfo.day;
+    },
+
+    lastDayCheckedin() {
+        return this.gameInfo.checkinLastDay == this.uxData.dayInfo.day - 1;
+    },
+
+    rewardItems(list, showDialog = true) {
+        for (let i in list) {
+            let itemInfo = list[i];
+            if (itemInfo.type == "Gold") {
+                this.gameInfo.gold += itemInfo.count;
+            } else if (itemInfo.type == "GrabFirstCard") {
+                this.gameInfo.grabFirstCardCount += itemInfo.count;
+            } else if (itemInfo.type == "KeepGradeCard") {
+                this.gameInfo.keepGradeCardCount += itemInfo.count;
+            }
+        }
+
+        // if (showDialog) {
+        //     //todo
+        // }
+        this.saveGameInfo();
     },
 
     saveGameInfo: function () {
@@ -373,6 +508,20 @@ cc.Class({
         let grade2 = Grade.getGradeAndFillInfoByScore(info.opponentPlayer.basic.currentScore).grade;
 
         info.gradeScoreAdd = Grade.getScoreByGradeDelta(grade1, grade2, info.win);
+        if (info.win) {
+            if (this.tryUseBonusScore()) {
+                info.gradeScoreAdd += 100;
+                info.usedBonusScore = true;
+            }
+        } else {
+            if (this.gameInfo.keepGradeCardCount >= 1) {
+                this.useKeepGradeCard();
+                info.usedKeepGradeCard = true;
+                info.gradeScoreAdd = 0;
+            }
+        }
+
+
         let userInfo = this.getUserInfo();
         debug.log(userInfo.basic.currentScore);
         info.fromScore = userInfo.basic.currentScore;
@@ -383,7 +532,7 @@ cc.Class({
             userInfo.basic.currentScore = 0;
         }
         info.toScore = userInfo.basic.currentScore;
-        
+
         if (info.win) {
             userInfo.basic.crtKeepWin += 1;
             userInfo.basic.lastWin = true;
@@ -396,13 +545,21 @@ cc.Class({
             userInfo.basic.lastWin = false;
         }
 
+        info.gold = this.getGoldByGameEnd(info.win, grade1);
+        this.rewardItems([{ type: "Gold", count: info.gold }]);
+
         this.saveUserInfo(userInfo);
         return info;
     },
 
-    registerLoose: function (levelPassed) {
-        let data = {};
+    getGoldByGameEnd(win, grade) {
+        //average 30
+        let res = 10 + grade + Math.random() * 15;
 
-        return data;
+        if (win) {
+            res += 15;
+        }
+
+        return Math.floor(res);
     },
 });

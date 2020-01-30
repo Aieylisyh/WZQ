@@ -23,17 +23,17 @@ cc.Class({
                 ceilChessTimer = 0;
                 this.onPlayChessTimeOut();
             } else {
-                if (this.getChessTurnTime() - ceilChessTimer > 10 && !this.flag_think1) {
+                if (this.getChessTurnTime() - ceilChessTimer > 8 && !this.flag_think1) {
                     this.flag_think1 = true;
                     appContext.getGameManager().playChat("think1");
                 }
 
-                if (this.getChessTurnTime() - ceilChessTimer > 20 && !this.flag_think2) {
+                if (this.getChessTurnTime() - ceilChessTimer > 16 && !this.flag_think2) {
                     this.flag_think2 = true;
                     appContext.getGameManager().playChat("think2");
                 }
 
-                if (this.getChessTurnTime() - ceilChessTimer > 30 && !this.flag_hurry) {
+                if (this.getChessTurnTime() - ceilChessTimer > 24 && !this.flag_hurry) {
                     this.flag_hurry = true;
                     appContext.getGameManager().playChat("hurry");
                 }
@@ -98,6 +98,6 @@ cc.Class({
 
     // todo根据段位重置倒计时
     getChessTurnTime: function () {
-        return 40;
+        return 30;
     },
 });
