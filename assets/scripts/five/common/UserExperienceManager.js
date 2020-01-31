@@ -268,6 +268,7 @@ cc.Class({
                 headIconPath: null,//prior
                 maxKeepWin: 0,
                 crtKeepWin: 0,
+                totalHands: 0,
                 winCount: 0,
                 roundCount: 0,
                 lastWin: false,
@@ -544,6 +545,8 @@ cc.Class({
             userInfo.basic.crtKeepWin = 0;
             userInfo.basic.lastWin = false;
         }
+
+        userInfo.basic.totalHands += info.totalHands;
 
         info.gold = this.getGoldByGameEnd(info.win, grade1);
         this.rewardItems([{ type: "Gold", count: info.gold }]);

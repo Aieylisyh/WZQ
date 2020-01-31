@@ -253,7 +253,7 @@ cc.Class({
 
         this.scheduleOnce(function () {
             this.processStep();
-        }, 1);
+        }, 0.75);
     },
     
     showGradeExp: function () {
@@ -311,7 +311,7 @@ cc.Class({
         this.scheduleOnce(function () {
             this.expLowLabel.string = this.getExpLowLabel();
             this.processStep();
-        }, 2.5);
+        }, 2);
     },
 
     getExpLowLabel() {

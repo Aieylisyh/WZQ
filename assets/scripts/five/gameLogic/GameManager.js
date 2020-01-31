@@ -219,7 +219,7 @@ cc.Class({
 
         info.isLooserOffline = isLooserOffline;
         info.isSurrender = isSurrender;
-       
+        info.totalHands = Math.floor((this.game.currentTurn + 1) / 2);
         info = appContext.getUxManager().registerGameEnd(info);
         appContext.getDialogManager().showDialog(DialogTypes.RoundEnd, info);
 

@@ -252,9 +252,9 @@
     "_opacity": 170,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
+      "r": 122,
       "g": 0,
-      "b": 143,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -737,7 +737,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 562,
+      "width": 519,
       "height": 500
     },
     "_anchorPoint": {
@@ -800,9 +800,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 214,
-      "g": 214,
-      "b": 214,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -819,7 +819,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        51.5,
+        101.5,
         0,
         0,
         0,
@@ -901,9 +901,9 @@
     "transition": 1,
     "_N$normalColor": {
       "__type__": "cc.Color",
-      "r": 214,
-      "g": 214,
-      "b": 214,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_N$pressedColor": {
@@ -1011,9 +1011,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 214,
-      "g": 214,
-      "b": 214,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -1030,7 +1030,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        204.5,
+        284.5,
         0,
         0,
         0,
@@ -1112,9 +1112,9 @@
     "transition": 1,
     "_N$normalColor": {
       "__type__": "cc.Color",
-      "r": 214,
-      "g": 214,
-      "b": 214,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_N$pressedColor": {
@@ -1204,7 +1204,7 @@
       "__id__": 18
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 32
@@ -1433,9 +1433,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 214,
-      "g": 214,
-      "b": 214,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -1452,7 +1452,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        510.5,
+        467.5,
         0,
         0,
         0,
@@ -1534,9 +1534,9 @@
     "transition": 1,
     "_N$normalColor": {
       "__type__": "cc.Color",
-      "r": 214,
-      "g": 214,
-      "b": 214,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_N$pressedColor": {
@@ -1628,7 +1628,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 562,
+      "width": 519,
       "height": 500
     },
     "_resize": 1,
@@ -1640,11 +1640,11 @@
       "height": 40
     },
     "_N$startAxis": 0,
-    "_N$paddingLeft": 0,
+    "_N$paddingLeft": 50,
     "_N$paddingRight": 0,
     "_N$paddingTop": 0,
     "_N$paddingBottom": 0,
-    "_N$spacingX": 50,
+    "_N$spacingX": 80,
     "_N$spacingY": 20,
     "_N$verticalDirection": 1,
     "_N$horizontalDirection": 0,
@@ -1735,7 +1735,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        1000,
+        900,
         0,
         0,
         0,
@@ -2283,7 +2283,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 320,
+      "width": 48,
       "height": 70.56
     },
     "_anchorPoint": {
@@ -3249,6 +3249,7 @@
       "__id__": 85
     },
     "roundCountLabel": null,
+    "winHandLabel": null,
     "gradeLevelLabel": null,
     "gradeNameLabel": {
       "__id__": 62

@@ -25,11 +25,17 @@ cc.Class({
 
         roundCountLabel: cc.Label, // 总场次
 
+        winHandLabel: cc.Label, // 平均对局回合
+
         gradeLevelLabel: cc.Label, // 段位
 
         gradeNameLabel: cc.Label, // 段位
 
         gradeScoreLabel: cc.Label, // 段位积分
+
+
+
+
 
         gradePB: cc.ProgressBar,
 
@@ -44,8 +50,6 @@ cc.Class({
         if (user == null) {
             return;
         }
-
-        debug.log(user);
 
         let sex = user.basic.sex;
         if (this.sexTagImg != null) {
@@ -82,6 +86,13 @@ cc.Class({
         }
         if (this.roundCountLabel != null) {
             this.roundCountLabel.string = roundCount;
+        }
+        if (this.winHandLabel != null) {
+            let winHand = Math.floor(user.basic.totalHands / roundCount * 10) * 0.1;
+            if(!winHand){
+                winHand=0;
+            }
+            this.winHandLabel.string = winHand;
         }
 
 

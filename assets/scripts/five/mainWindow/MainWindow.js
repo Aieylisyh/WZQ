@@ -52,7 +52,7 @@ cc.Class({
         let finishCallback = cc.callFunc(function () {
             this.playBtnMatchModeEffect();
         }, this);
-        let btnMatchModeSequence = cc.sequence(cc.delayTime(0.2), btnMatchModeAction, finishCallback);
+        let btnMatchModeSequence = cc.sequence(cc.delayTime(0.1), btnMatchModeAction, finishCallback);
         this.btnMatchMode.runAction(btnMatchModeSequence);
 
         // 敬请期待左移动画
@@ -137,12 +137,12 @@ cc.Class({
     onClickBtnShop: function () {
         appContext.getDialogManager().showDialog(DialogTypes.Shop);
     },
-    
-    onClickReset(){
+
+    onClickReset() {
         appContext.getUxManager().resetGameInfo();
     },
 
-    onClickProfil(){
-        appContext.getDialogManager().showDialog(DialogTypes.SetBio);
+    onClickProfil() {
+        appContext.getDialogManager().showDialog(DialogTypes.PlayerInfo);
     },
 });

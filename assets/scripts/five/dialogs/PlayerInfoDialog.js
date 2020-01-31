@@ -1,60 +1,159 @@
 let DialogTypes = require("DialogTypes");
+let Grade = require("Grade");
+let PlayerInfo = require("PlayerInfo");
 
 cc.Class({
     extends: require("BaseDialog"),
 
     properties: {
-        _totalAttributeLength: 151, // 总的属性长度(固定写死)
+        playerinfo: PlayerInfo, // 昵称
 
-        triangle01: cc.Node, // 这个不太好方便命名
+        nicknameEB: cc.EditBox, // 昵称
 
-        triangle02: cc.Node,
-        
-        triangle03: cc.Node,
+        triangle01: cc.Node,// 上连胜h左技巧w
 
-        triangle04: cc.Node,
+        triangle02: cc.Node,// 左技巧h下胜率w
+
+        triangle03: cc.Node,// 下胜率h右段位w
+
+        triangle04: cc.Node,// 右段位h上连胜w
     },
 
     show: function (info) {
-        this.setCharacterAttribute(info);
+        this.setCharacterAttribute();
+        this.playerinfo.setup(appContext.getUxManager().getUserInfo());
 
         this.fadeInBackground();
         this.fastShowAnim();
     },
 
     // 设置人物属性图
-    setCharacterAttribute: function (info) {
+    setCharacterAttribute: function () {
         // todo
-        let keepWin = 0.6;
-        let grade = 0.5;
-        let winRate = 0.45;
-        let skill = 0.70;
+        let userBasic = appContext.getUxManager().getUserInfo().basic;
+        debug.log(userBasic);
+        // maxKeepWin: 0
+        // crtKeepWin: 0
+        // totalHands: 0
+        // winCount: 0
+        // roundCount: 0
+        // currentScore: 0
 
-        this.triangle01.width = skill * this._totalAttributeLength;
-        this.triangle01.height = keepWin * this._totalAttributeLength;
+        let gradeAndFillInfo = Grade.getGradeAndFillInfoByScore(userBasic.currentScore);
+        //let gradeInfo = Grade.getGradeInfo(gradeAndFillInfo.grade);
 
-        this.triangle02.height = keepWin * this._totalAttributeLength;
-        this.triangle02.width = grade * this._totalAttributeLength;
+        let to_keepWin = 0.5;
+        to_keepWin = userBasic.maxKeepWin / 12;
+        if (to_keepWin > 1) {
+            to_keepWin = 1;
+        }
 
-        this.triangle03.width = skill * this._totalAttributeLength;
-        this.triangle03.height = winRate * this._totalAttributeLength;
+        let to_grade = 0.5;
+        to_grade = gradeAndFillInfo.grade / 10;
 
-        this.triangle04.width = grade * this._totalAttributeLength;
-        this.triangle04.height = winRate * this._totalAttributeLength;
+        let to_winRate = 0.5;
+        if (userBasic.roundCount > 0) {
+            to_winRate = userBasic.winCount / userBasic.roundCount;
+        }
+
+        let to_skill = 0.5;
+        if (userBasic.totalHands > 0 && userBasic.roundCount > 0) {
+            averageHands = userBasic.totalHands / userBasic.roundCount;
+            to_skill = (averageHands - 15) / 60;
+            if (to_skill > 1) {
+                to_skill = 1;
+            }
+            if (to_skill < 0) {
+                to_skill = 0;
+            }
+            to_skill = 1 - to_skill;
+        }
+
+        debug.log("to_keepWin " + to_keepWin);
+        debug.log("to_grade " + to_grade);
+        debug.log("to_winRate " + to_winRate);
+        debug.log("to_skill " + to_skill);
+        this.to_keepWin = to_keepWin;
+        this.to_grade = to_grade;
+        this.to_winRate = to_winRate;
+        this.to_skill = to_skill;
+
+        this.settingCharacterAttribute = true;
+        this.settingCharacterAttributeTimer = 0;
+        this.settingCharacterAttributeTime = 1;
+        this.settingCharacterAttributeStep = 1;
     },
 
-    // 点击"？"按钮
-    onClickBtnHelp: function () {
-        appContext.getDialogManager().showDialog(DialogTypes.GradeInfo);
+    update(dt) {
+        if (this.settingCharacterAttribute) {
+            this.settingCharacterAttributeTimer += dt;
+            if (this.settingCharacterAttributeTimer > this.settingCharacterAttributeTime) {
+                this.settingCharacterAttributeTimer = this.settingCharacterAttributeTime;
+                if (this.settingCharacterAttributeStep == 1) {
+                    this.settingCharacterAttributeTimer = 0;
+                    this.settingCharacterAttributeStep = 2;
+                    this.settingCharacterAttributeTime = 1.5;
+                } else {
+                    this.settingCharacterAttribute = false;
+                }
+
+            }
+
+            let length = 120;
+            let ratio = this.settingCharacterAttributeTimer / this.settingCharacterAttributeTime * length;
+
+            let keepWin, grade, winRate, skill;
+            if (this.settingCharacterAttributeStep == 1) {
+                let r = 0.5 * ratio;
+                keepWin = r;
+                grade = r;
+                winRate = r;
+                skill = r;
+
+                this.triangle01.width = skill;
+                this.triangle01.height = keepWin;
+
+                this.triangle02.width = winRate;
+                this.triangle02.height = skill;
+
+                this.triangle03.width = grade;
+                this.triangle03.height = winRate;
+
+                this.triangle04.width = keepWin;
+                this.triangle04.height = grade;
+            } else {
+                let rest = (length - ratio) * 0.5;
+                keepWin = this.to_keepWin * ratio + rest;
+                grade = this.to_grade * ratio + rest;
+                winRate = this.to_winRate * ratio + rest;
+                skill = this.to_skill * ratio + rest;
+
+                this.triangle01.width = skill;
+                this.triangle01.height = keepWin;
+
+                this.triangle02.width = winRate;
+                this.triangle02.height = skill;
+
+                this.triangle03.width = grade;
+                this.triangle03.height = winRate;
+
+                this.triangle04.width = keepWin;
+                this.triangle04.height = grade;
+            }
+        }
+    },
+
+    onClickBtnNickname: function () {
+
+    },
+
+
+    onClickBtnProfile: function () {
     },
 
     // 点击"分享"按钮
     onClickBtnShare: function () {
-        debug.log("分享");
-        WechatAPI.wxShare.shareByType();
-    },
-
-    onClickBtnClose: function () {
-        this.hide();
+        // debug.log("分享");
+        // WechatAPI.wxShare.shareByType();
     },
 });

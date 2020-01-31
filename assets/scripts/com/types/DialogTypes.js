@@ -15,8 +15,6 @@ let DialogTypes = {
 
     PlayerInfo: "PlayerInfo",
 
-    GradeInfo: "GradeInfo",
-
     Toast: "Toast",
 
     GrabFirst: "GrabFirst",
@@ -24,8 +22,6 @@ let DialogTypes = {
     Checkin: "Checkin",
 
     Shop: "Shop",
-
-    SetBio: "SetBio",
 }
 
 

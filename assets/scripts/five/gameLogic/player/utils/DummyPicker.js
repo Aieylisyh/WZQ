@@ -32,6 +32,7 @@ cc.Class({
                     headIconUrl: "http://g.hiphotos.baidu.com/zhidao/pic/item/5366d0160924ab18c9b4abbc37fae6cd7a890b9e.jpg",
                     headIconPath: null,//prior
                     maxKeepWin: 1,
+                    totalHands:13,
                     winCount: 2,
                     roundCount: 4,
                     currentScore: 1000,//这是总分，总分不会小于0。 显示出来的得分是计算段位之后的总分

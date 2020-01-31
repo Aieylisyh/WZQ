@@ -53,11 +53,6 @@ cc.Class({
         this.opponentPlayer.showTimer(!isSelfRound);
     },
 
-    // 点击"悔棋"按钮
-    onClickBtnUndo: function () {
-        appContext.getDialogManager().showDialog(DialogTypes.Toast, "暂时不能悔棋 敬请期待");
-    },
-
     // 点击"认输"按钮
     onClickBtnSurrender: function () {
         let info = {
@@ -101,10 +96,11 @@ cc.Class({
         this.chessSPLeft.spriteFrame = firstIsSelfPlayer ? this.chessSFBlack : this.chessSFWhite;
         this.chessSPRight.spriteFrame = firstIsSelfPlayer ? this.chessSFWhite : this.chessSFBlack;
 
-        this.chessSPLeft.node.runAction(cc.scaleTo(0.75, 1).easing(cc.easeCubicActionOut()));
-        this.scheduleOnce(function () {
-            this.chessSPRight.node.runAction(cc.scaleTo(0.75, 1).easing(cc.easeCubicActionOut()));
-        }, 0.5);
+        this.chessSPLeft.node.runAction(cc.scaleTo(2, 1).easing(cc.easeElasticOut()));
+        this.chessSPRight.node.runAction(cc.scaleTo(2, 1).easing(cc.easeElasticOut()));
+        // this.scheduleOnce(function () {
+        //     this.chessSPRight.node.runAction(cc.scaleTo(1, 1).easing(cc.easeElasticOut()));
+        // }, 1);
 
     },
 

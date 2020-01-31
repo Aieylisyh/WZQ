@@ -40,8 +40,6 @@ cc.Class({
         checkinDialogPath: "",
 
         shopDialogPrefabPath: "",
-
-        setBioDialogPrefabPath: "",
     },
 
     onDialogHide: function (type) {
@@ -290,10 +288,6 @@ cc.Class({
 
             case DialogTypes.GrabFirst:
                 prefabPath = this.grabFirstPrefabPath;
-                break;
-
-            case DialogTypes.SetBio:
-                prefabPath = this.setBioDialogPrefabPath;
                 break;
 
             default:
