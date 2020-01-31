@@ -7,8 +7,6 @@ let DialogTypes = {
 
     ConfirmBox: "ConfirmBox",
 
-    AuthorizeGetReward: "AuthorizeGetReward",//和GetAward公用一个prefab 但是同时只能显示一个
-
     Match: "Match",
 
     Rank: "Rank",
@@ -26,6 +24,9 @@ let DialogTypes = {
     Checkin: "Checkin",
 
     Shop: "Shop",
+
+    SetBio: "SetBio",
 }
+
 
 module.exports = DialogTypes;

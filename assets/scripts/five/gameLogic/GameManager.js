@@ -153,7 +153,7 @@ cc.Class({
         }
 
         this.setupFirstPlay();
-        this.getGameWindow().onStartGame();
+        this.getGameWindow().onStartGame(this.game.firstIsSelfPlayer);
         if (this.game.firstIsSelfPlayer) {
             this.chessboardManager.setMyChessType(true);
         } else {
@@ -377,7 +377,7 @@ cc.Class({
 
     getDone() {
         //10秒出  20秒出
-        let index = Math.floor(Math.random() * 15);
+        let index = Math.floor(Math.random() * 20);
         let p1 = "";
 
         if (index == 0) {

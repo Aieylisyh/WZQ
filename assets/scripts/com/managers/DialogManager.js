@@ -31,8 +31,6 @@ cc.Class({
 
         playerInfoDialogPrefabPath: "",
 
-        gradeInfoDialogPrefabPath: "",
-
         toastPrefabPath: "",
 
         confirmBoxPrefabPath: "",
@@ -42,6 +40,8 @@ cc.Class({
         checkinDialogPath: "",
 
         shopDialogPrefabPath: "",
+
+        setBioDialogPrefabPath: "",
     },
 
     onDialogHide: function (type) {
@@ -256,10 +256,6 @@ cc.Class({
                 prefabPath = this.mailDialogPath;
                 break;
 
-            case DialogTypes.GradeInfo:
-                prefabPath = this.gradeInfoDialogPrefabPath;
-                break;
-
             case DialogTypes.RoundEnd:
                 prefabPath = this.roundEndDialogPrefabPath;
                 break;
@@ -294,6 +290,10 @@ cc.Class({
 
             case DialogTypes.GrabFirst:
                 prefabPath = this.grabFirstPrefabPath;
+                break;
+
+            case DialogTypes.SetBio:
+                prefabPath = this.setBioDialogPrefabPath;
                 break;
 
             default:

@@ -141,4 +141,8 @@ cc.Class({
     onClickReset(){
         appContext.getUxManager().resetGameInfo();
     },
+
+    onClickProfil(){
+        appContext.getDialogManager().showDialog(DialogTypes.SetBio);
+    },
 });

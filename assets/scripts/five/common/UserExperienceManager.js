@@ -417,7 +417,7 @@ cc.Class({
     },
 
     useRandomCard() {
-        if (this.canUseRandomGold()) {
+        if (this.canUseRandomCard()) {
             this.gameInfo.randomCardCount++;
             this.saveGameInfo();
         }

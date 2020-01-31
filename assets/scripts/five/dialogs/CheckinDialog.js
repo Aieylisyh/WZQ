@@ -44,7 +44,7 @@ cc.Class({
 
 
         let text = Item.getTextByItem(reward);
-        appContext.getDialogManager().showDialog(DialogTypes.Toast, "签到成功\n获得:" + text);
+        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "签到成功\n获得:" + text);
     },
 
     getReward(day) {

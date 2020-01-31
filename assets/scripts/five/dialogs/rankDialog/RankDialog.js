@@ -10,10 +10,12 @@ cc.Class({
     },
 
     show: function (info) {
-        if (info == null) {
-            return;
-        }
 
+        //this.resizeFrame();
+        this.fadeInBackground();
+        this.fastShowAnim();
+
+        return;//TODO
         // 根据段位和积分排序todo
         let rankList = info.rankList;
         if (rankList != null && rankList.length > 0) {
@@ -21,9 +23,6 @@ cc.Class({
             this.createRankItems(rankList);
         }
 
-        this.resizeFrame();
-        this.fadeInBackground();
-        this.fastShowAnim();
     },
 
     sortRankList: function (rankList) {

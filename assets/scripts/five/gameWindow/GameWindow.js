@@ -26,6 +26,14 @@ cc.Class({
         emoji_normal: cc.SpriteFrame,
         emoji_die: cc.SpriteFrame,
         emoji_love: cc.SpriteFrame,
+
+        chessSPLeft: cc.Sprite,
+
+        chessSPRight: cc.Sprite,
+
+        chessSFBlack: cc.SpriteFrame,
+
+        chessSFWhite: cc.SpriteFrame,
     },
 
     reset: function () {
@@ -85,9 +93,19 @@ cc.Class({
         this.chatBoard.active = true;
     },
 
-    onStartGame() {
+    onStartGame(firstIsSelfPlayer) {
         //show surrender
         this.btnSurrender.active = true;
+        this.chessSPLeft.node.scale = 0;
+        this.chessSPRight.node.scale = 0;
+        this.chessSPLeft.spriteFrame = firstIsSelfPlayer ? this.chessSFBlack : this.chessSFWhite;
+        this.chessSPRight.spriteFrame = firstIsSelfPlayer ? this.chessSFWhite : this.chessSFBlack;
+
+        this.chessSPLeft.node.runAction(cc.scaleTo(0.75, 1).easing(cc.easeCubicActionOut()));
+        this.scheduleOnce(function () {
+            this.chessSPRight.node.runAction(cc.scaleTo(0.75, 1).easing(cc.easeCubicActionOut()));
+        }, 0.5);
+
     },
 
     closeChatBoard() {
@@ -152,11 +170,16 @@ cc.Class({
         return sf;
     },
 
-    onClickWhite() {
-        appContext.getGameManager().playerWin(2, false, true);
+    onClickSelfChess() {
+        let firstIsSelfPlayer = appContext.getGameManager().game.firstIsSelfPlayer;
+        if (firstIsSelfPlayer) {
+            appContext.getGameManager().playerWin(1, false, true);
+        } else {
+            appContext.getGameManager().playerWin(2, false, true);
+        }
     },
 
-    onClickBlack() {
-        appContext.getGameManager().playerWin(1, false, true);
+    onClickOppoChess() {
+
     },
 });

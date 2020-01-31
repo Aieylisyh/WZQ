@@ -20,6 +20,10 @@ cc.Class({
         // info.btn2.clickFunction
         // info.btn2.clickFunctionCaller
         // info.btn2.isRed//默认为红色
+        if (typeof info == "string") {
+            info = { content: info };
+        }
+
         if (info == null || info.content == null) {
             this.hide();
             return;

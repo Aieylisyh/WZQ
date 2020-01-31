@@ -13,6 +13,8 @@ cc.Class({
         randomCardNumLabel: cc.Label,
 
         randomGoldNumLabel: cc.Label,
+
+        goldNumLabel: cc.Label,
     },
 
     show: function () {
@@ -22,6 +24,8 @@ cc.Class({
     },
 
     refresh() {
+        this.goldNumLabel.string = appContext.getUxManager().gameInfo.gold;
+
         this.grabFirstCardNumLabel.string = appContext.getUxManager().gameInfo.grabFirstCardCount;
         this.keepGradeCardNumLabel.string = appContext.getUxManager().gameInfo.keepGradeCardCount;
         this.randomCardNumLabel.string = appContext.getUxManager().getAndRefineRandomCardUsedCount();
@@ -84,6 +88,6 @@ cc.Class({
         appContext.getUxManager().rewardItems(reward);
         let text = Item.getTextByItem(reward);
         let text1 = isBuyOrLottery ? "购买" : "领取";
-        appContext.getDialogManager().showDialog(DialogTypes.Toast, text1 + "成功\n获得:" + text);
+        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, text1 + "成功\n获得:" + text);
     },
 });

@@ -1,5 +1,6 @@
 let GameUtil = require("GameUtil");
 let DummyPicker = require("DummyPicker");
+let DialogTypes = require("DialogTypes");
 
 cc.Class({
     extends: require("BaseDialog"),
@@ -149,6 +150,11 @@ cc.Class({
             }
         } else {
             //TODO 匹配失败
+            appContext.getDialogManager().showDialog(DialogTypes.Toast, "匹配失败\n请重试");
+            this.scheduleOnce(function () {
+                this.hide();
+                appContext.getAppController().clearGameData();
+            }, 2);
         }
     },
 
@@ -160,7 +166,7 @@ cc.Class({
 
     requireOpponenetInfo: function () {
         this.opponent = null;
-        let time = 0.4 + Math.random() * 3.6;
+        let time = 0.5 + Math.random() * 4;
 
         this.scheduleOnce(function () {
             this.onMatchedOpponent();

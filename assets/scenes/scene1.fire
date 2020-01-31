@@ -550,6 +550,7 @@
     "grabFirstPrefabPath": "GrabFirstDialog",
     "checkinDialogPath": "CheckinDialog",
     "shopDialogPrefabPath": "ShopDialog",
+    "setBioDialogPrefabPath": "SetBioDialog",
     "_id": "82PstscXpM0Yz1ZLqEpUL2"
   },
   {

@@ -56,8 +56,8 @@ let Ai = cc.Class({
                         debug.log("随便下");
                         return this.getRawSolution(param);
                     } else {
-                        debug.log("是关键棋，95%几率不失误");
-                        if (Math.random() < 0.95) {
+                        debug.log("是关键棋，96%几率不失误");
+                        if (Math.random() < 0.96) {
                             debug.log("不失误");
                             return res;
                         }

@@ -6846,7 +6846,7 @@
       "ctor": "Float64Array",
       "array": [
         259,
-        358,
+        360,
         0,
         0,
         0,
@@ -6885,9 +6885,7 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_spriteFrame": {
-      "__uuid__": "f8506163-832c-423a-8a36-bc53c5fa8985"
-    },
+    "_spriteFrame": null,
     "_type": 0,
     "_sizeMode": 2,
     "_fillType": 0,
@@ -6985,7 +6983,7 @@
     },
     "component": "",
     "_componentId": "913e8ygGypIkb8Sg1e3+Xy8",
-    "handler": "onClickBlack",
+    "handler": "onClickOppoChess",
     "customEventData": ""
   },
   {
@@ -7042,7 +7040,7 @@
       "ctor": "Float64Array",
       "array": [
         -253.4,
-        358,
+        360,
         0,
         0,
         0,
@@ -7081,9 +7079,7 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_spriteFrame": {
-      "__uuid__": "f82fa7cf-2a62-4787-8b15-142df621bc23"
-    },
+    "_spriteFrame": null,
     "_type": 0,
     "_sizeMode": 2,
     "_fillType": 0,
@@ -7181,7 +7177,7 @@
     },
     "component": "",
     "_componentId": "913e8ygGypIkb8Sg1e3+Xy8",
-    "handler": "onClickWhite",
+    "handler": "onClickSelfChess",
     "customEventData": ""
   },
   {
@@ -10551,6 +10547,18 @@
     },
     "emoji_love": {
       "__uuid__": "5222b223-8060-489e-a2bc-d6db1e6e49c2"
+    },
+    "chessSPLeft": {
+      "__id__": 193
+    },
+    "chessSPRight": {
+      "__id__": 188
+    },
+    "chessSFBlack": {
+      "__uuid__": "f8506163-832c-423a-8a36-bc53c5fa8985"
+    },
+    "chessSFWhite": {
+      "__uuid__": "f82fa7cf-2a62-4787-8b15-142df621bc23"
     },
     "_id": ""
   },
