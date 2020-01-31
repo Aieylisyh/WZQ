@@ -73,7 +73,7 @@ cc.Class({
             return;
         }
 
-        window.re = this;
+        //window.re = this;
         debug.log(info);
 
         this.fadeInBackground();

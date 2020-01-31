@@ -117,7 +117,7 @@ cc.Class({
     // 点击"敬请期待"
     onClickBtnTodo: function () {
         // debug.log("敬请期待");
-        appContext.getDialogManager().showDialog(DialogTypes.Toast, "棋局变化万千，棋手连续下棋，极易走火入魔，不知此诸境界，乃自己心识所变现之幻象，日益执著，而导致精神失常，此即所谓的“入魔”。");
+        appContext.getDialogManager().showDialog(DialogTypes.Toast, "棋局变化万千，棋手连续下棋，极易走火入魔，不知此诸境界，乃自己心识所变现之幻象，日益执著，而导致精神失常，此即所谓的“入魔”");
     },
 
     // 点击"排行"todo

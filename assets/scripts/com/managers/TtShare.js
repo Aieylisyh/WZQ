@@ -5,7 +5,7 @@ let DataUtil = require("DataUtil");
 let TtShare = {
 
     //根据类型获取query
-    getQuery: function(param) {
+    getQuery: function (param) {
         let query = "";
         if (param) {
             if (param.items) {
@@ -16,7 +16,7 @@ let TtShare = {
         return this.refineQuery(query);
     },
 
-    refineQuery: function(query) {
+    refineQuery: function (query) {
         let res = {};
 
         let cardCode = null;
@@ -33,15 +33,15 @@ let TtShare = {
         return res;
     },
 
-    getShareInfo: function(param) {
+    getShareInfo: function (param) {
         debug.log("getShareInfo");
 
         //https://developer.toutiao.com/app/setting/share/ttf14d87f06e671d2f
-        //9md3idq61ek5a673kk
-        //2mib4c3o24ab5b2507
+        //8ee2j69haaaijm7gid
+        //ch4n5gsi0njkflegg5
         let shareObj = {
-            templateId: '2mib4c3o24ab5b2507', // 替换成通过审核的分享ID
-            title: '分分钟上手，89%的人难以精通的潜艇作战',
+            templateId: '8ee2j69haaaijm7gid', // 替换成通过审核的分享ID
+            title: '官方正版五子棋作战，休闲免费1秒上手',
             imageUrl: "customRes/shareImg.png",
             success() {
                 console.log('分享成功');
@@ -71,16 +71,18 @@ let TtShare = {
         return shareObj;
     },
 
-    onShow: function() {},
+    onShow: function () { },
 
-    listenOnShare: function() {
+    listenOnShare: function () {
         //这个方法会在初始化游戏时执行，除非在回调函数里，否则请不要使用运行时定义的全局变量如debug
-        tt.onShareAppMessage(function(res) {
+        tt.onShareAppMessage(function (res) {
             console.log('tt分享');
             //这里的成功失败是选择分享方式后确定的，不能保证一定分享出去
+            //8ee2j69haaaijm7gid
+            //ch4n5gsi0njkflegg5
             return {
-                title: '分分钟上手，89%的人难以精通的潜艇作战',
-                templateId: '9md3idq61ek5a673kk',
+                title: '官方正版五子棋作战，休闲免费1秒上手',
+                templateId: '8ee2j69haaaijm7gid',
                 imageUrl: "customRes/shareImg2.png",
                 success() {
                     console.log('tt成功')
@@ -93,7 +95,7 @@ let TtShare = {
         });
     },
 
-    share: function(param) {
+    share: function (param) {
         let shareObj = this.getShareInfo(param);
 
         if (shareObj.cardCode != null) {
@@ -135,20 +137,22 @@ let TtShare = {
         if (delta == null || delta <= 3000) {
             recordTimeEnough = false;
         }
-        
+
         if (!recordTimeEnough) {
             appContext.getDialogManager().showDialog("Toast", "请至少录制3秒视频")
             return;
 
         }
+        //8ee2j69haaaijm7gid
+        //ch4n5gsi0njkflegg5
         tt.shareAppMessage({
             channel: 'video',
             imageUrl: '',
-            templateId: '2mib4c3o24ab5b2507',
+            templateId: '8ee2j69haaaijm7gid',
             query: '',
             extra: {
                 videoPath: path,
-                videoTopics: ['潜艇', '战争']
+                videoTopics: ['五子棋', '棋牌']
             },
             success() {
                 console.log('分享视频成功');

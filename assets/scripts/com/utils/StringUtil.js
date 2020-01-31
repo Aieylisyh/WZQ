@@ -191,11 +191,17 @@ let StringUtil = {
         return string;
     },
 
+    trimSpace: function (string) {
+        string = this.trimEndingSpace(string);
+        string = this.trimStartingSpace(string);
+
+        return string;
+    },
+
     //截断过长的文字，用...代替过长的部分，注意这里判断是基于文字的渲染长度
     trimString: function (string, renderLengthMax, trimSpace = true) {
         if (trimSpace) {
-            string = this.trimEndingSpace(string);
-            string = this.trimStartingSpace(string);
+            string = this.trimSpace(string);
         }
 
         let len = string.length;

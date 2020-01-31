@@ -2,6 +2,7 @@
 let Encoder = require("Encoder");
 let DataUtil = require("DataUtil");
 
+
 let WxShare = {
     basePath: "customRes/",
 

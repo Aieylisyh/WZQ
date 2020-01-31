@@ -1,6 +1,7 @@
 let DialogTypes = require("DialogTypes");
 let Grade = require("Grade");
 let PlayerInfo = require("PlayerInfo");
+let StringUtil = require("StringUtil");
 
 cc.Class({
     extends: require("BaseDialog"),
@@ -19,7 +20,7 @@ cc.Class({
         triangle04: cc.Node,// 右段位h上连胜w
     },
 
-    show: function (info) {
+    show: function () {
         this.setCharacterAttribute();
         this.playerinfo.setup(appContext.getUxManager().getUserInfo());
 
@@ -144,16 +145,81 @@ cc.Class({
     },
 
     onClickBtnNickname: function () {
+        appContext.getSoundManager().playSmallBtn();
+        let s = this.nicknameEB.string;
+        s = StringUtil.trimSpace(s);
+        debug.log("onClickBtnNickname " + s);
+        if (StringUtil.isEmpty(s)) {
+            appContext.getDialogManager().showDialog(DialogTypes.Toast, "请输入昵称");
+        } else {
+            let userInfo = appContext.getUxManager().getUserInfo();
+            let crtNickname = userInfo.basic.nickname;
+            if (crtNickname == s) {
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "昵称没有变化");
+            } else {
+                userInfo.basic.nickname = s;
+                appContext.getUxManager().saveUserInfo(userInfo);
 
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "昵称修改并上传成功！");
+                this.scheduleOnce(function () {
+                    this.playerinfo.setup(appContext.getUxManager().getUserInfo());
+                }, 1);
+            }
+        }
     },
 
 
     onClickBtnProfile: function () {
+        appContext.getSoundManager().playSmallBtn();
+        if (WechatAPI.isTT) {
+            let self = this;
+            tt.chooseImage({
+                sourceType: ["album"],
+                count: 1,
+                success(res) {
+                    self.onUploadFileOK(res.tempFilePaths[0]);
+                },
+                fail(res) {
+                    console.log(`chooseImage调用失败`);
+                }
+            });
+        } else {
+            appContext.getDialogManager().showDialog(DialogTypes.Toast, "抱歉，暂时不能上传头像");
+
+        }
+    },
+
+    onUploadFileOK(tempFilePath) {
+        debug.log("onUploadFileOK " + tempFilePath);
+        let self = this;
+
+        tt.compressImage({
+            src: tempFilePath, // 图片路径
+            quality: 75, // 压缩质量
+            success(compressedTempFilePath) {
+                debug.log("compressImage " + compressedTempFilePath);
+                tt.saveFile({
+                    tempFilePath: compressedTempFilePath,
+                    success(res) {
+                        debug.log("saveFile " + res);
+                        appContext.getDialogManager().showDialog(DialogTypes.Toast, "头像上传成功！");
+                        userInfo.basic.headIconUrl = null;
+                        userInfo.basic.headIconPath = res;
+
+                        appContext.getUxManager().saveUserInfo(userInfo);
+                        this.scheduleOnce(function () {
+                            this.playerinfo.setup(appContext.getUxManager().getUserInfo());
+                        }, 1.5);
+                    }
+                });
+            },
+        });
+
     },
 
     // 点击"分享"按钮
     onClickBtnShare: function () {
-        // debug.log("分享");
-        // WechatAPI.wxShare.shareByType();
+        appContext.getSoundManager().playSmallBtn();
+        WechatAPI.shareUtil.share();
     },
 });
