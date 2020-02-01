@@ -24,6 +24,7 @@ cc.Class({
     },
 
     onClickBtnCheck: function () {
+        appContext.getSoundManager().playBtn();
         if (!appContext.getUxManager().todayCheckedin()) {
             this.checkinSuc();
         } else {
@@ -32,6 +33,7 @@ cc.Class({
     },
 
     checkinSuc() {
+        appContext.getSoundManager().playUseGold();
         this.giveReward();
         appContext.getUxManager().checkinProcess();
         this.refresh();

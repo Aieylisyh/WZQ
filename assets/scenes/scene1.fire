@@ -1164,7 +1164,7 @@
     "_enabled": true,
     "_backgroundAudio": null,
     "_isPlayBackgroundMusic": false,
-    "backgroundMusicUrl": "/music/11.mp3",
+    "backgroundMusicUrl": "customRes/sound/wuziqi.mp3",
     "audioCache": [],
     "soufix": ".mp3",
     "appSoundManager": null,

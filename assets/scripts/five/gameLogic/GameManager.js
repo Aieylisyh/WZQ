@@ -176,6 +176,7 @@ cc.Class({
         if (winRes && winRes.win) {
             this.delayedPlayerWin(lastChessType);
         } else {
+            appContext.getSoundManager().playChess();
             this.startNextTurn(lastChessType);
         }
     },
@@ -276,7 +277,7 @@ cc.Class({
             this.game.opponentPlayer.setFirst(true);
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "本局由对面先手");
         }
-
+        appContext.getSoundManager().playStartRound();
         //appContext.getDialogManager().showDialog(DialogTypes.Toast, "游戏开始");
     },
 

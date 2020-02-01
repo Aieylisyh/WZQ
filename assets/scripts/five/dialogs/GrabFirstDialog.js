@@ -32,6 +32,7 @@ cc.Class({
     },
 
     onClickBtnUse: function () {
+        appContext.getSoundManager().playBtn();
         if (appContext.getUxManager().useGrabFirstCard()) {
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "您使用了先手卡");
             appContext.getGameManager().game.selfPlayer.grabFirst(true);
@@ -45,6 +46,7 @@ cc.Class({
 
 
     onClickBtnCancel: function () {
+        appContext.getSoundManager().playBtn();
         appContext.getGameManager().game.selfPlayer.grabFirst(false);
         this.hide();
     },

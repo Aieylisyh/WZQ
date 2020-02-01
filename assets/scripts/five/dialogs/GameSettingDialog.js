@@ -15,6 +15,7 @@ cc.Class({
 
     // 点击"背景音乐"
     onClickBgMusic: function () {
+        appContext.getSoundManager().playBtn();
         let gameSettingManager = appContext.getGameSettingManager();
 
         if (this.bgMusicCheck.isChecked) {
@@ -26,6 +27,7 @@ cc.Class({
 
     // 点击"下棋音效"
     onClickBtnSoundEffect: function () {
+        appContext.getSoundManager().playBtn();
         let gameSettingManager = appContext.getGameSettingManager();
 
         if (this.soundEffectCheck.isChecked) {

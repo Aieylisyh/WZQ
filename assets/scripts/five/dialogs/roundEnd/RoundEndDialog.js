@@ -75,7 +75,7 @@ cc.Class({
 
         //window.re = this;
         debug.log(info);
-
+        appContext.getSoundManager().playStartRound();
         this.fadeInBackground();
         this.info = info;
         this.step = 1;
@@ -245,21 +245,24 @@ cc.Class({
     },
 
     showGold: function () {
-        this.goldPart.scale=0;
+        this.goldPart.scale = 0;
         this.goldPart.active = true;
-        this.goldLabel.string =  this.info.gold;
+        this.goldLabel.string = this.info.gold;
         let action1 = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
         this.goldPart.runAction(action1);
-
+        appContext.getSoundManager().playUseGold();
+        
         this.scheduleOnce(function () {
             this.processStep();
         }, 0.75);
     },
-    
+
     showGradeExp: function () {
         //  info.gradeScoreAdd 
         //  info.toScore
         //  info.fromScore
+        appContext.getSoundManager().playChess();
+
         this.gradeAndFillInfoFrom = Grade.getGradeAndFillInfoByScore(this.info.fromScore);
         this.gradeAndFillInfoTo = Grade.getGradeAndFillInfoByScore(this.info.toScore);
         let gradeFrom = this.gradeAndFillInfoFrom.grade;
@@ -366,6 +369,7 @@ cc.Class({
 
     // 点击"返回首页"按钮
     onClickBtnBack: function () {
+        appContext.getSoundManager().playBtn();
         appContext.getAppController().clearGameData();
         appContext.getAppController().backToMain();
         this.hide();
@@ -373,6 +377,7 @@ cc.Class({
 
     // 点击"再来一局"按钮
     onClickBtnContinue: function () {
+        appContext.getSoundManager().playBtn();
         this.hide();
         // let gm = appContext.getGameManager();
         // let p2 = DummyPicker.pickTestDummy();
@@ -384,11 +389,13 @@ cc.Class({
 
     // 点击"炫耀"按钮
     onClickBtnShowoff: function () {
+        appContext.getSoundManager().playBtn();
         WechatAPI.wxShare.shareByType();
     },
 
     // 点击"段位保护"按钮
     onClickBtnProtectGrade: function () {
+        appContext.getSoundManager().playBtn();
         this.hide();
     },
 

@@ -117,6 +117,8 @@ cc.Class({
         this.cancelBtn.active = false;
 
         if (info.success) {
+            appContext.getSoundManager().playStartRound();
+
             this.hasMatchedOpponent = true;
             this.matchVsTag.node.active = true;
             this.matchVsTag.fastShowUp();
@@ -208,6 +210,7 @@ cc.Class({
     },
 
     onClickBtnCancel: function () {
+        appContext.getSoundManager().playBtn();
         this.hide();
         appContext.getAppController().clearGameData();
     },

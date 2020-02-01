@@ -366,7 +366,7 @@ let Dummy = cc.Class({
             modifier.toLoose = true;
         }
 
-        appContext.getGameManager().showChat(false, appContext.getGameManager().getGameWindow().getEmojiType(modifier));
+        appContext.getGameManager().showChat(false, Dummy.getEmojiType(modifier));
     },
 
     onPro: function () {
@@ -601,11 +601,11 @@ let Dummy = cc.Class({
             }
 
             if (Math.random() * 100 > fastChance) {
-                turnTimeMin = 1.2 + turnTimeAdd;
-                turnTimeMax = 15 + turnTimeAdd;
+                turnTimeMin = 1 + turnTimeAdd;
+                turnTimeMax = 13 + turnTimeAdd;
             } else {
                 turnTimeMin = 0.4 + turnTimeAdd;
-                turnTimeMax = 3.2 + turnTimeAdd;
+                turnTimeMax = 3 + turnTimeAdd;
             }
 
             // turnTimeMin = 0;//test

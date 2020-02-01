@@ -145,7 +145,7 @@ cc.Class({
     },
 
     onClickBtnNickname: function () {
-        appContext.getSoundManager().playSmallBtn();
+        appContext.getSoundManager().playBtn();
         let s = this.nicknameEB.string;
         s = StringUtil.trimSpace(s);
         debug.log("onClickBtnNickname " + s);
@@ -168,46 +168,78 @@ cc.Class({
 
 
     onClickBtnProfile: function () {
-        appContext.getSoundManager().playSmallBtn();
+        appContext.getSoundManager().playBtn();
         if (WechatAPI.isTT) {
             let self = this;
 
             if (typeof tt.authorize == "function") {
-                tt.authorize({
-                    scope: "scope.album",
-                    success() {
-                        tt.chooseImage({
-                            sourceType: ["album"],
-                            count: 1,
-                            
-                            success(res) {
-                                self.onUploadFileOK(res.tempFilePaths[0]);
-                            },
+                tt.getSetting({
+                    success(res) {
+                        debug.log("getSetting success");
+                        debug.log(res);
+                        debug.log(res.authSetting["scope.album"]);
+                        if(res.authSetting["scope.album"]){
+                            tt.authorize({
+                                scope: "scope.album",
+                                success() {
+                                    debug.log("authorize success");
+                                    self.uploadFile();
+                                },
+    
+                                fail() {
+                                    debug.log("authorize fail");
+                                    tt.openSetting({
+                                        success(res) {
+                                            debug.log("openSetting success");
+                                            self.uploadFile();
+                                        },
+                                        fail() {
+                                            debug.log("openSetting fail");
+                                            appContext.getDialogManager().showDialog(DialogTypes.Toast, "请授权以使用头像");
+                                        }
+                                    })
+                                }
+                            });
+                        }else{
+                            appContext.getDialogManager().showDialog(DialogTypes.Toast, "请授权以使用头像");
+                            tt.openSetting({
+                                success(res) {
+                                    debug.log("openSetting success");
+                                    self.uploadFile();
+                                },
+                                fail() {
+                                    debug.log("openSetting fail");
+                                   
+                                }
+                            })
+                        }
+                    },
 
-                            fail() {
-                                tt.openSetting({
-                                    success(res) {
-                                        self.onUploadFileOK(res.tempFilePaths[0]);
-                                    },
-                                    fail() {
-                                        appContext.getDialogManager().showDialog(DialogTypes.Toast, "请授权以使用头像");
-                                    }
-                                })
-                            }
-                        });
+                    fail() {
+                        debug.log("getSetting fail");
+                        appContext.getDialogManager().showDialog(DialogTypes.Toast, "无法授权");
                     }
                 });
-            } else {
 
+            } else {
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "您的应用版本不能上传头像");
             }
-
-
-
         } else {
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "抱歉，暂时不能上传头像");
 
         }
+    },
+
+    uploadFile() {
+        let self = this;
+        tt.chooseImage({
+            sourceType: ["album"],
+            count: 1,
+
+            success(res) {
+                self.onUploadFileOK(res.tempFilePaths[0]);
+            },
+        });
     },
 
     onUploadFileOK(tempFilePath) {
@@ -252,7 +284,7 @@ cc.Class({
 
     // 点击"分享"按钮
     onClickBtnShare: function () {
-        appContext.getSoundManager().playSmallBtn();
+        appContext.getSoundManager().playBtn();
         WechatAPI.shareUtil.share();
     },
 

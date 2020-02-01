@@ -34,18 +34,22 @@ cc.Class({
 
     onClickBtnGrabFirstCard: function () {
         if (appContext.getUxManager().useGold(Item.GrabFirstCard.price)) {
+            appContext.getSoundManager().playUseGold();
             this.giveReward([{ type: "GrabFirstCard", count: 1 }]);
             this.refresh();
         } else {
+            appContext.getSoundManager().playBtn();
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "金币不足");
         }
     },
 
     onClickBtnKeepGradeCard: function () {
         if (appContext.getUxManager().useGold(Item.KeepGradeCard.price)) {
+            appContext.getSoundManager().playUseGold();
             this.giveReward([{ type: "KeepGradeCard", count: 1 }]);
             this.refresh();
         } else {
+            appContext.getSoundManager().playBtn();
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "金币不足");
         }
     },
@@ -53,6 +57,7 @@ cc.Class({
     onClickBtnRandomCard: function () {
         if (appContext.getUxManager().canUseRandomCard()) {
             this.watchAdReward(function () {
+                appContext.getSoundManager().playUseGold();
                 if (Math.random() < 0.5) {
                     this.giveReward([{ type: "GrabFirstCard", count: 1 }], false);
                 } else {
@@ -62,6 +67,7 @@ cc.Class({
                 this.refresh();
             }, this);
         } else {
+            appContext.getSoundManager().playBtn();
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "今日次数已达上限");
         }
     },
@@ -69,12 +75,14 @@ cc.Class({
     onClickBtnRandomGold: function () {
         if (appContext.getUxManager().canUseRandomGold()) {
             this.watchAdReward(function () {
+                appContext.getSoundManager().playUseGold();
                 let count = Math.floor(Math.random() * 41 + 80);
                 this.giveReward([{ type: "Gold", count: count }], false);
                 appContext.getUxManager().useRandomGold();
                 this.refresh();
             }, this);
         } else {
+            appContext.getSoundManager().playBtn();
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "今日次数已达上限");
         }
     },

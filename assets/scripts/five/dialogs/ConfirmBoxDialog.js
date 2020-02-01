@@ -81,6 +81,7 @@ cc.Class({
     },
 
     onClickClose: function () {
+        appContext.getSoundManager().playBtn();
         if (this.clickFunctionClose != null && typeof this.clickFunctionClose === "function") {
             this.clickFunctionClose.call(this.clickFunctionCloseCaller);
         }
@@ -88,6 +89,7 @@ cc.Class({
     },
 
     onClickBtnConfirm: function () {
+        appContext.getSoundManager().playBtn();
         if (this.clickFunction != null && typeof this.clickFunction === "function") {
             this.clickFunction.call(this.clickFunctionCaller);
         }
@@ -96,6 +98,7 @@ cc.Class({
     },
 
     onClickBtn2Confirm: function () {
+        appContext.getSoundManager().playBtn();
         if (this.clickFunction2 != null && typeof this.clickFunction2 === "function") {
             this.clickFunction2.call(this.clickFunctionCaller2);
         }

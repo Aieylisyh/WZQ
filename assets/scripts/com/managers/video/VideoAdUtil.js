@@ -96,9 +96,7 @@ cc.Class({
         //     this._loaded = false;
         // this.customLoad();
         this._isLoading = false;
-        if (!appContext.getWindowManager().isInGameWindow()) {
-            appContext.getSoundManager().startBackgroundMusic();
-        }
+        appContext.getSoundManager().startBackgroundMusic();
         //debug.log("onCease!!");
         this._loaded = true;
         this._isLoading = false;
@@ -109,10 +107,7 @@ cc.Class({
         this._loaded = false;
         this._isLoading = false;
         this.customLoad();
-
-        if (!appContext.getWindowManager().isInGameWindow()) {
-            appContext.getSoundManager().startBackgroundMusic();
-        }
+        appContext.getSoundManager().startBackgroundMusic();
     },
 
     onError: function(err) {
@@ -126,9 +121,7 @@ cc.Class({
     getYXCallback() {
         let self = WechatAPI.videoAdUtil;
         return function(isEnd) {
-            if (!appContext.getWindowManager().isInGameWindow()) {
-                appContext.getSoundManager().startBackgroundMusic();
-            }
+            appContext.getSoundManager().startBackgroundMusic();
             if (isEnd) {
                 console.log('video success');
                 self.cb && self.cb.finishCb && self.cb.finishCb.call(self.cb.caller);

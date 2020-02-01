@@ -7,7 +7,8 @@ cc.Class({
         // 是否播放背景音乐
         _isPlayBackgroundMusic: false,
 
-        backgroundMusicUrl: "customRes/sound/mainbg.mp3",
+        backgroundMusicUrl: "customRes/sound/wuziqi.mp3",
+        //s.backgroundMusicUrl="customRes/sound/wuziqi.mp3"
 
         audioCache: [],
 
@@ -102,121 +103,20 @@ cc.Class({
         }
     },
 
-    playExplode1: function() {
-        this.playSFX("BoulderImpact1" + this.soufix);
-    },
-
-    playExplode2: function() {
-        this.playSFX("BoulderImpact2" + this.soufix);
-    },
-
-    playStar: function() {
-        this.playSFX("star" + this.soufix);
-    },
-
-    playAcc: function() {
-        this.playSFX("acc" + this.soufix);
-    },
-
-    playBoardWindow: function() {
-        this.playSFX("boardWindow" + this.soufix);
-    },
-
-    playBomb: function() {
-        let r = Math.random();
-        if (r < 0.5) {
-            this.playClick1();
-        } else {
-            this.playClick2();
-        }
-    },
-
-    playClick1: function() {
+    playBtn: function() {
         this.playSFX("ClickSimple" + this.soufix);
     },
 
-    playClick2: function() {
+    playChess: function() {
         this.playSFX("clk" + this.soufix);
     },
 
-    playFireCannon: function() {
-        this.playSFX("firecannon" + this.soufix);
-    },
-
-    playHint: function() {
-        this.playSFX("hint" + this.soufix);
-    },
-
-    playSmallBtn: function() {
-        this.playSFX("smallBtn" + this.soufix);
-    },
-
-    playLoose: function() {
-        this.playSFX("loose" + this.soufix);
-    },
-
-    playMainBg: function() {
-        this.playSFX("mainbg" + this.soufix);
-    },
-
-    playUpgrade: function() {
-        this.playSFX("upgrade" + this.soufix);
-    },
-
-    playTorpedo: function() {
-        this.playSFX("torpedo" + this.soufix);
-    },
-
-    playWin: function() {
-        this.playSFX("win" + this.soufix);
-    },
-
-    playReward: function() {
-        this.playSFX("reward" + this.soufix);
-    },
-
-    playDing: function() {
-        this.playSFX("ding" + this.soufix); //shuijing to use
-    },
-
-    playBubble: function() {
-        this.playSFX("bubble" + this.soufix); //chat bubble to use
-    },
-
-    playElecDing: function() {
-        this.playSFX("elecDing" + this.soufix);
-    },
-
-    playEnterRoom: function() {
-        this.playSFX("enterRoom" + this.soufix); // to use
-    },
-
-    playHurry: function() {
-        this.playSFX("hurry" + this.soufix);
-    },
-
-    playJump: function() {
-        this.playSFX("jump" + this.soufix);
-    },
-
-    playPopBloom: function() {
-        this.playSFX("popBloom" + this.soufix); // to use
-    },
-
-    playString: function() {
-        this.playSFX("string" + this.soufix);
-    },
-
-    playSelectAvatar: function() {
-        this.playSFX("SelectAvatar" + this.soufix);
+    playStartRound: function() {
+        this.playSFX("ding" + this.soufix);
     },
 
     playUseGold: function() {
         this.playSFX("use_gold" + this.soufix);
-    },
-
-    playHit: function() {
-        this.playSFX("hit" + this.soufix);
     },
 
     // 播放背景音乐

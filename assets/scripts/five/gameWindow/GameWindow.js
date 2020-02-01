@@ -55,6 +55,7 @@ cc.Class({
 
     // 点击"认输"按钮
     onClickBtnSurrender: function () {
+        appContext.getSoundManager().playBtn();
         let info = {
             content: "您真的要认输吗",
             btn1: {
@@ -79,12 +80,14 @@ cc.Class({
 
     // 点击"设置"按钮
     onClickBtnSetting: function () {
+        appContext.getSoundManager().playBtn();
         appContext.getDialogManager().showDialog(DialogTypes.GameSetting);
     },
 
     // 点击"聊天"按钮
     onClickBtnChat: function () {
         //appContext.getDialogManager().showDialog(DialogTypes.Toast, "暂时不能聊天 敬请期待");
+        appContext.getSoundManager().playBtn();
         this.chatBoard.active = true;
     },
 
@@ -113,6 +116,7 @@ cc.Class({
     },
 
     onClickChat(e, param) {
+        appContext.getSoundManager().playBtn();
         debug.log("onClickChat " + param);
         appContext.getGameManager().showChat(true, param);
         appContext.getGameManager().notifyReplyChat(param);
@@ -180,11 +184,12 @@ cc.Class({
 
     onClickOppoChess() {
         if (debug.enableLog) {
-            appContext.getGameManager().showChat(false, this.getEmojiType());
+            appContext.getGameManager().showChat(false, "happy");
         }
     },
 
     onClickProfil() {
+        appContext.getSoundManager().playBtn();
         appContext.getDialogManager().showDialog(DialogTypes.PlayerInfo);
     },
 
