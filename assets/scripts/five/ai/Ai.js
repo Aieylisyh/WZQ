@@ -36,10 +36,7 @@ let Ai = cc.Class({
                 param = this.getAnalyseParam();
             }
 
-            let res;
-            if (param.rawSolution !== true) {
-                res = this.getZebraSolution(param.list, param.type, false, param.evaluatingParam);
-            }
+            let res = this.getZebraSolution(param.list, param.type, false, param.evaluatingParam);
 
             if (res != null) {
                 debug.log(res);
@@ -49,12 +46,19 @@ let Ai = cc.Class({
 
                     if (res.oppoPro < 0.25 && res.selfPro < 0.25) {
                         debug.log("没有关键棋");
+                        if (param.rawSolution) {
+                            debug.log("是rawSolution");
+                            return this.getRawSolution(param);
+                        }
+                        
                         if (Math.random() < 0.5) {
+                            res.isMiss=true;
                             return this.randomlyMovePointBy1(res, param);
                         }
 
                         debug.log("随便下");
                         return this.getRawSolution(param);
+
                     } else {
                         debug.log("是关键棋，96%几率不失误");
                         if (Math.random() < 0.96) {
@@ -62,6 +66,7 @@ let Ai = cc.Class({
                             return res;
                         }
 
+                        res.isMiss=true;
                         res = this.randomlyMovePointBy1(res, param);
                     }
                 }

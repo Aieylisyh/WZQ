@@ -312,7 +312,7 @@ cc.Class({
     },
 
     showChat(isSelf, chatType) {
-        debug.log("showChat " + chatType);
+        debug.log("showChat " + isSelf + " " + chatType);
         this.getGameWindow().playEmoji(isSelf, chatType);
     },
 
@@ -406,4 +406,8 @@ cc.Class({
                 break;
         }
     },
+
+    notifyReplyChat(type) {
+        this.game.opponentPlayer.replyChat(type);
+    }
 });

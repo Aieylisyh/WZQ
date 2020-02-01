@@ -26,7 +26,7 @@ cc.Class({
     update: function (dt) {
         // 信息栏动画
         if (this.swingTime != null) {
-            this.playerInfoBoard.node.x = Math.floor(Math.sin(this.swingTime * 2.5) * 220) * 0.1;
+            this.playerInfoBoard.node.x = Math.floor(Math.sin(this.swingTime * 1.5) * 220) * 0.1;
             this.swingTime += dt;
         }
     },
@@ -139,10 +139,16 @@ cc.Class({
     },
 
     onClickReset() {
-        appContext.getUxManager().resetGameInfo();
+        if (debug.enableLog) {
+            appContext.getUxManager().resetGameInfo();
+        }
     },
 
     onClickProfil() {
         appContext.getDialogManager().showDialog(DialogTypes.PlayerInfo);
+    },
+
+    onPlayerInfoDialogHide(){
+        this.playerInfoBoard.setup(appContext.getUxManager().getUserInfo());
     },
 });

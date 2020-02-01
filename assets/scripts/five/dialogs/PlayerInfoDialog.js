@@ -59,8 +59,8 @@ cc.Class({
 
         let to_skill = 0.5;
         if (userBasic.totalHands > 0 && userBasic.roundCount > 0) {
-            averageHands = userBasic.totalHands / userBasic.roundCount;
-            to_skill = (averageHands - 15) / 60;
+            let averageHands = userBasic.totalHands / userBasic.roundCount;
+            to_skill = (averageHands - 12) / 60;
             if (to_skill > 1) {
                 to_skill = 1;
             }
@@ -81,7 +81,7 @@ cc.Class({
 
         this.settingCharacterAttribute = true;
         this.settingCharacterAttributeTimer = 0;
-        this.settingCharacterAttributeTime = 1;
+        this.settingCharacterAttributeTime = 0.8;
         this.settingCharacterAttributeStep = 1;
     },
 
@@ -93,7 +93,7 @@ cc.Class({
                 if (this.settingCharacterAttributeStep == 1) {
                     this.settingCharacterAttributeTimer = 0;
                     this.settingCharacterAttributeStep = 2;
-                    this.settingCharacterAttributeTime = 1.5;
+                    this.settingCharacterAttributeTime = 1.2;
                 } else {
                     this.settingCharacterAttribute = false;
                 }
@@ -161,9 +161,7 @@ cc.Class({
                 appContext.getUxManager().saveUserInfo(userInfo);
 
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "昵称修改并上传成功！");
-                this.scheduleOnce(function () {
-                    this.playerinfo.setup(appContext.getUxManager().getUserInfo());
-                }, 1);
+                this.playerinfo.setup(userInfo);
             }
         }
     },
@@ -173,16 +171,39 @@ cc.Class({
         appContext.getSoundManager().playSmallBtn();
         if (WechatAPI.isTT) {
             let self = this;
-            tt.chooseImage({
-                sourceType: ["album"],
-                count: 1,
-                success(res) {
-                    self.onUploadFileOK(res.tempFilePaths[0]);
-                },
-                fail(res) {
-                    console.log(`chooseImage调用失败`);
-                }
-            });
+
+            if (typeof tt.authorize == "function") {
+                tt.authorize({
+                    scope: "scope.album",
+                    success() {
+                        tt.chooseImage({
+                            sourceType: ["album"],
+                            count: 1,
+                            
+                            success(res) {
+                                self.onUploadFileOK(res.tempFilePaths[0]);
+                            },
+
+                            fail() {
+                                tt.openSetting({
+                                    success(res) {
+                                        self.onUploadFileOK(res.tempFilePaths[0]);
+                                    },
+                                    fail() {
+                                        appContext.getDialogManager().showDialog(DialogTypes.Toast, "请授权以使用头像");
+                                    }
+                                })
+                            }
+                        });
+                    }
+                });
+            } else {
+
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "您的应用版本不能上传头像");
+            }
+
+
+
         } else {
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "抱歉，暂时不能上传头像");
 
@@ -193,33 +214,53 @@ cc.Class({
         debug.log("onUploadFileOK " + tempFilePath);
         let self = this;
 
-        tt.compressImage({
-            src: tempFilePath, // 图片路径
-            quality: 75, // 压缩质量
-            success(compressedTempFilePath) {
-                debug.log("compressImage " + compressedTempFilePath);
-                tt.saveFile({
-                    tempFilePath: compressedTempFilePath,
-                    success(res) {
-                        debug.log("saveFile " + res);
-                        appContext.getDialogManager().showDialog(DialogTypes.Toast, "头像上传成功！");
-                        userInfo.basic.headIconUrl = null;
-                        userInfo.basic.headIconPath = res;
+        // tt.compressImage({
+        //     src: tempFilePath, // 图片路径
+        //     quality: 75, // 压缩质量
+        //     success(compressedTempFilePath) {
+        //         debug.log("compressImage " + compressedTempFilePath);
+        //         tt.saveFile({
+        //             tempFilePath: compressedTempFilePath,
+        //             success(res) {
+        //                 debug.log("saveFile " + res);
+        //                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "头像上传成功！");
+        //                 userInfo.basic.headIconUrl = null;
+        //                 userInfo.basic.headIconPath = res;
 
-                        appContext.getUxManager().saveUserInfo(userInfo);
-                        this.scheduleOnce(function () {
-                            this.playerinfo.setup(appContext.getUxManager().getUserInfo());
-                        }, 1.5);
-                    }
-                });
-            },
+        //                 appContext.getUxManager().saveUserInfo(userInfo);
+        //                 this.playerinfo.setup(userInfo);
+        //             }
+        //         });
+        //     },
+        // });
+        tt.saveFile({
+            tempFilePath: tempFilePath,
+            success(res) {
+                // debug.log("saveFile");
+                // debug.log(res);
+
+                let userInfo = appContext.getUxManager().getUserInfo();
+                userInfo.basic.headIconRawUrl = res.savedFilePath;
+                appContext.getUxManager().saveUserInfo(userInfo);
+                self.playerinfo.setup(userInfo);
+                self.scheduleOnce(function () {
+                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "头像上传成功！\n建议使用方形图片作为头像");
+                }, 1);
+            }
         });
-
     },
 
     // 点击"分享"按钮
     onClickBtnShare: function () {
         appContext.getSoundManager().playSmallBtn();
         WechatAPI.shareUtil.share();
+    },
+
+    onHideFunc() {
+        let w = appContext.getWindowManager().currentWindowNode;
+        let gw = w.getComponent("GameWindow");
+        let mw = w.getComponent("MainWindow");
+        mw && mw.onPlayerInfoDialogHide();
+        gw && gw.onPlayerInfoDialogHide();
     },
 });

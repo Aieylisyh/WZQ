@@ -115,6 +115,7 @@ cc.Class({
     onClickChat(e, param) {
         debug.log("onClickChat " + param);
         appContext.getGameManager().showChat(true, param);
+        appContext.getGameManager().notifyReplyChat(param);
         this.closeChatBoard();
     },
 
@@ -167,15 +168,27 @@ cc.Class({
     },
 
     onClickSelfChess() {
-        let firstIsSelfPlayer = appContext.getGameManager().game.firstIsSelfPlayer;
-        if (firstIsSelfPlayer) {
-            appContext.getGameManager().playerWin(1, false, true);
-        } else {
-            appContext.getGameManager().playerWin(2, false, true);
+        if (debug.enableLog) {
+            let firstIsSelfPlayer = appContext.getGameManager().game.firstIsSelfPlayer;
+            if (firstIsSelfPlayer) {
+                appContext.getGameManager().playerWin(1, false, true);
+            } else {
+                appContext.getGameManager().playerWin(2, false, true);
+            }
         }
     },
 
     onClickOppoChess() {
+        if (debug.enableLog) {
+            appContext.getGameManager().showChat(false, this.getEmojiType());
+        }
+    },
 
+    onClickProfil() {
+        appContext.getDialogManager().showDialog(DialogTypes.PlayerInfo);
+    },
+
+    onPlayerInfoDialogHide() {
+        this.selfPlayer.playerinfo.setup(appContext.getUxManager().getUserInfo());
     },
 });

@@ -34,9 +34,6 @@ cc.Class({
         gradeScoreLabel: cc.Label, // 段位积分
 
 
-
-
-
         gradePB: cc.ProgressBar,
 
         gradePBTop: cc.Label,
@@ -58,7 +55,16 @@ cc.Class({
         }
 
         if (this.headIconImg != null) {
-            GameUtil.setHeadIcon(user.basic.headIconUrl, user.basic.headIconPath, this.headIconImg);
+            // let w = this.headIconImg.node.width;
+            // let h = this.headIconImg.node.height;
+            if (user.basic.headIconRawUrl != null && typeof user.basic.headIconRawUrl == "string") {
+                GameUtil.applyHeadIcon(user.basic.headIconRawUrl, this.headIconImg);
+
+            } else {
+                GameUtil.setHeadIcon(user.basic.headIconUrl, user.basic.headIconPath, this.headIconImg);
+            }
+            // this.headIconImg.node.width = w;
+            // this.headIconImg.node.height = h;
         }
 
         if (this.nicknameLabel != null) {
@@ -88,9 +94,9 @@ cc.Class({
             this.roundCountLabel.string = roundCount;
         }
         if (this.winHandLabel != null) {
-            let winHand = Math.floor(user.basic.totalHands / roundCount * 10) * 0.1;
-            if(!winHand){
-                winHand=0;
+            let winHand = Math.round(user.basic.totalHands / roundCount);
+            if (!winHand) {
+                winHand = 0;
             }
             this.winHandLabel.string = winHand;
         }

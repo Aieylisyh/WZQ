@@ -21,11 +21,11 @@ let GameUtil = {
 
     // 设置头像图片
     setHeadIconImg: function (headIconUrl, targetSprite, defaultIconPath = "") {
-        // debug.log("设置头像图片setHeadIconImg " + headIconUrl);
-        // debug.log(arguments);
+        debug.log("设置头像图片setHeadIconImg " + headIconUrl);
         if (StringUtil.isNotEmpty(headIconUrl)) {
+            debug.log("isNotEmpty");
             appContext.getFileManager().hasImageFile(headIconUrl, function (path) {
-                // debug.log("setHeadIconImg path " + path);
+                debug.log("setHeadIconImg path " + path);
                 if (path) {
                     this.applyHeadIcon(path, targetSprite);
                 } else {
@@ -33,17 +33,18 @@ let GameUtil = {
                 }
             }, this);
         } else {
+            debug.log("isEmpty");
             this.setDefaultHeadIcon(defaultIconPath, targetSprite);
         }
     },
 
     downloadAndApplyHeadIcon: function (headIconUrl, targetSprite, defaultIconPath = "") {
-        //debug.log("downloadAndApplyHeadIcon");
+        debug.log("downloadAndApplyHeadIcon");
         appContext.getFileManager().downloadAndSaveFile(headIconUrl, function (path) {
             if (targetSprite == null || targetSprite.node == null) {
                 return;
             }
-            //debug.log("downloadAndApplyHeadIcon path " + path);
+            debug.log("downloadAndApplyHeadIcon path " + path);
             if (path) {
                 this.applyHeadIcon(path, targetSprite);
             } else {
@@ -53,6 +54,7 @@ let GameUtil = {
     },
 
     applyHeadIcon: function (path, targetSprite) {
+        debug.log("applyHeadIcon "+path);
         if (targetSprite == null || targetSprite.node == null) {
             return;
         }

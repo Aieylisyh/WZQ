@@ -121,6 +121,10 @@ let Dummy = cc.Class({
                 case 4:
                     this.surrender();
                     break;
+
+                case 5:
+                    //chat
+                    this.chat(task.param);
             }
         }
 
@@ -141,7 +145,7 @@ let Dummy = cc.Class({
         debug.log("dummy playChess");
         let myTurn = Math.floor((game.currentTurn + 1) / 2);
 
-        if (myTurn > 3 && Math.random() < this.status.offlineChance / 100) {
+        if (myTurn > 7 && Math.random() < this.status.offlineChance / 100) {
             debug.log("dummy will addOffLineTask");
             this.addOffLineTask();
             return;
@@ -150,15 +154,12 @@ let Dummy = cc.Class({
         let param = Ai.getAnalyseParam();
         param.type = this.chessType;
 
-
-        if (myTurn <= this.status.rawSolutionTurns) {
-            debug.log("dummy will use raw solution");
-            param.rawSolution = true;
-        }
-
         if (Math.random() < this.status.missChance / 100) {
             debug.log("dummy will miss play ");
             param.missPlay = true;
+        } else if (myTurn <= this.status.rawSolutionTurns) {
+            debug.log("dummy will use raw solution");
+            param.rawSolution = true;
         }
 
         param.evaluatingParam = this.status.evaluatingParam;
@@ -225,6 +226,26 @@ let Dummy = cc.Class({
         });
     },
 
+    addChatTask(param, enableMultiAdd = true, isReAdd = false) {
+        let time = Math.random() * 1 + 0.5;
+        if (isReAdd) {
+            time = Math.random() * 0.5 + 0.3;
+        }
+
+        debug.log("dummy addChatTask " + time);
+        debug.log(param);
+        this.addTask({
+            turns: time,
+            type: 5,
+            param: param,
+        });
+
+        if (enableMultiAdd && Math.random() > 0.8) {
+            debug.log("re addChatTask ");
+            this.addChatTask(param, true, true);
+        }
+    },
+
     grabFirst: function (grab) {
         debug.log("假人抢先手:" + grab);
         if (grab) {
@@ -239,6 +260,7 @@ let Dummy = cc.Class({
         }
 
         if (solution == null) {
+            debug.log("因为solution == null掉线");
             this.addOffLineTask();  // 如果返回空，默认为对手掉线
             return;
         }
@@ -254,6 +276,10 @@ let Dummy = cc.Class({
             return;
         }
 
+        if (solution.isMiss) {
+            this.onMiss();
+        }
+
         if (solution.oppoPro >= 1) {
             //有劣势
             this.onCon();
@@ -267,15 +293,184 @@ let Dummy = cc.Class({
         if (solution.selfPro >= 1) {
             //有优势
             this.onPro();
-            if (Math.random() > 0.25) {
-                //chat
-            }
         }
 
         cbm.commitChessAt(solution.x, solution.y, solution.type);
     },
 
+    replyChat(replyOriginType) {
+        if (Math.random() > 0.6) {
+            this.addChatTask({
+                isReply: true,
+                replyOriginType: replyOriginType,
+            });
+        }
+    },
+
+    chat(param) {
+        if (!param) {
+            return;
+        }
+
+        let modifier = {};
+        debug.log("dummy chat");
+        debug.log(param);
+
+        if (param.isReply) {
+            switch (param.replyOriginType) {
+                case "happy":
+                    modifier.happy = true;
+                    modifier.smile = true;
+                    break;
+
+                case "normal":
+                    modifier.normal = true;
+                    modifier.happy = true;
+                    modifier.smile = true;
+                    modifier.die = true;
+                    break;
+
+                case "die":
+                    modifier.die = true;
+                    modifier.smile = true;
+                    modifier.happy = true;
+                    break;
+
+                case "love":
+                    modifier.love = true;
+                    modifier.normal = true;
+                    modifier.die = true;
+                    break;
+
+                case "smile":
+                    modifier.smile = true;
+                    modifier.happy = true;
+                    break;
+
+                default:
+                    modifier.happy = true;
+                    modifier.smile = true;
+                    modifier.love = true;
+                    break;
+
+            }
+        }
+
+        if (param.miss) {
+            modifier.miss = true;
+        }
+        if (param.toWin) {
+            modifier.toWin = true;
+        }
+        if (param.toLoose) {
+            modifier.toLoose = true;
+        }
+
+        appContext.getGameManager().showChat(false, appContext.getGameManager().getGameWindow().getEmojiType(modifier));
+    },
+
+    onPro: function () {
+        debug.log("假人的机会来了");
+        if (Math.random() > 0.85) {
+            this.addChatTask({
+                toWin: true,
+            });
+        }
+    },
+
+    onCon: function () {
+        debug.log("假人快没希望了");
+        if (Math.random() > 0.9) {
+            this.addChatTask({
+                toLoose: true,
+            });
+        }
+    },
+
+    onMiss() {
+        if (Math.random() > 0.4) {
+            this.addChatTask({
+                miss: true,
+            });
+        }
+    },
+
+    destroy: function () {
+        this.tasks = [];
+    },
+
     statics: {
+        getEmojiType(modifier) {
+            debug.log("getEmojiType");
+            debug.log(modifier);
+            let pool = [];
+            pool.push("happy");
+            pool.push("normal");
+            pool.push("die");
+            pool.push("love");
+            pool.push("smile");
+            if (modifier) {
+                if (modifier.miss) {
+                    pool.push("die");
+                    pool.push("die");
+                    pool.push("normal");
+                    pool.push("normal");
+                    pool.push("normal");
+                }
+
+                if (modifier.toWin) {
+                    pool.push("happy");
+                    pool.push("happy");
+                    pool.push("happy");
+                    pool.push("smile");
+                    pool.push("smile");
+                    pool.push("smile");
+                    pool.push("die");
+                }
+
+                if (modifier.toLoose) {
+                    pool.push("normal");
+                    pool.push("normal");
+                    pool.push("normal");
+                    pool.push("die");
+                    pool.push("die");
+                    pool.push("love");
+                }
+
+                if (modifier.happy) {
+                    for (let i = 0; i < 4; i++) {
+                        pool.push("happy");
+                    }
+                }
+
+                if (modifier.normal) {
+                    for (let i = 0; i < 4; i++) {
+                        pool.push("normal");
+                    }
+                }
+
+                if (modifier.die) {
+                    for (let i = 0; i < 4; i++) {
+                        pool.push("die");
+                    }
+                }
+
+                if (modifier.love) {
+                    for (let i = 0; i < 4; i++) {
+                        pool.push("love");
+                    }
+                }
+
+                if (modifier.smile) {
+                    for (let i = 0; i < 4; i++) {
+                        pool.push("smile");
+                    }
+                }
+            }
+
+            return pool[Math.floor(pool.length * Math.random())];
+        },
+
         getPlayChessTask: function (status) {
             let turnTime = status.turnTimeMin + Math.random() * (status.turnTimeMax - status.turnTimeMin);
 
@@ -306,27 +501,27 @@ let Dummy = cc.Class({
                     missChance = 50;
                     offlineChance = 0;
                     rawSolutionTurns = 2 + Math.floor(Math.random() * 2.8);
-                    admitLooseChance = 15;
-                    grabFirstChance = 5;
+                    admitLooseChance = 0;
+                    grabFirstChance = 10;
                     fastChance = 90;
                     turnTimeAdd = 0;
                     break;
 
                 case 2:
                     missChance = 35;
-                    offlineChance = 0.2;
+                    offlineChance = 0;
                     rawSolutionTurns = 2 + Math.floor(Math.random() * 1.9);
-                    admitLooseChance = 25;
-                    grabFirstChance = 8;
+                    admitLooseChance = 35;
+                    grabFirstChance = 10;
                     fastChance = 80;
                     turnTimeAdd = 0;
                     break;
 
                 case 3:
                     missChance = 25;
-                    offlineChance = 0.15;
+                    offlineChance = 0.03;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 2);
-                    admitLooseChance = 30;
+                    admitLooseChance = 35;
                     grabFirstChance = 15;
                     fastChance = 70;
                     turnTimeAdd = 0;
@@ -334,7 +529,7 @@ let Dummy = cc.Class({
 
                 case 4:
                     missChance = 18;
-                    offlineChance = 0.15;
+                    offlineChance = 0.03;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 1.4);
                     admitLooseChance = 20;
                     grabFirstChance = 25;
@@ -344,30 +539,30 @@ let Dummy = cc.Class({
 
                 case 5:
                     missChance = 10;
-                    offlineChance = 0.1;
+                    offlineChance = 0.02;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 1.1);
                     admitLooseChance = 15;
-                    grabFirstChance = 35;
+                    grabFirstChance = 40;
                     fastChance = 70;
                     turnTimeAdd = 0;
                     break;
 
                 case 6:
                     missChance = 8;
-                    offlineChance = 0.1;
+                    offlineChance = 0.02;
                     rawSolutionTurns = Math.floor(Math.random() * 2);
                     admitLooseChance = 12;
-                    grabFirstChance = 45;
+                    grabFirstChance = 50;
                     fastChance = 70;
                     turnTimeAdd = 0;
                     break;
 
                 case 7:
                     missChance = 5;
-                    offlineChance = 0.05;
-                    rawSolutionTurns = Math.floor(Math.random() * 1.3);
+                    offlineChance = 0;
+                    rawSolutionTurns = Math.floor(Math.random() * 1.1);
                     admitLooseChance = 7;
-                    grabFirstChance = 50;
+                    grabFirstChance = 60;
                     fastChance = 70;
                     turnTimeAdd = 0;
                     break;
@@ -375,9 +570,9 @@ let Dummy = cc.Class({
                 case 8:
                     missChance = 2;
                     offlineChance = 0;
-                    rawSolutionTurns = Math.floor(Math.random() * 1.1);
+                    rawSolutionTurns = 0;
                     admitLooseChance = 5;
-                    grabFirstChance = 60;
+                    grabFirstChance = 70;
                     fastChance = 60;
                     turnTimeAdd = 0;
                     break;
@@ -387,7 +582,7 @@ let Dummy = cc.Class({
                     offlineChance = 0;
                     rawSolutionTurns = 0;
                     admitLooseChance = 1;
-                    grabFirstChance = 70;
+                    grabFirstChance = 80;
                     per.playStyle = 0;//强制没有风格
                     fastChance = 50;
                     turnTimeAdd = 0.6;
@@ -398,7 +593,7 @@ let Dummy = cc.Class({
                     offlineChance = 0;
                     rawSolutionTurns = 0;
                     admitLooseChance = 0;
-                    grabFirstChance = 80;
+                    grabFirstChance = 85;
                     per.playStyle = 0;//强制没有风格
                     fastChance = 55;
                     turnTimeAdd = 0.9;
@@ -413,8 +608,8 @@ let Dummy = cc.Class({
                 turnTimeMax = 3.2 + turnTimeAdd;
             }
 
-            turnTimeMin = 0;
-            turnTimeMax = 0;//test
+            // turnTimeMin = 0;//test
+            // turnTimeMax = 0;//test
 
             let evaluatingParam = null; //设置下棋风格
             //平均，原有参数为   [[0, 1], [2, 3], [4, 12], [10, 64], [256, 256]],
@@ -453,16 +648,4 @@ let Dummy = cc.Class({
         },
     },
 
-    onPro: function () {
-        debug.log("假人的机会来了");
-        // 根据敌我情势 oppoPro selfPro 实现特殊行为，比如炫耀表情 主动认输等等
-    },
-
-    onCon: function () {
-        debug.log("假人快没希望了");
-    },
-
-    destroy: function () {
-        this.tasks = [];
-    },
 });

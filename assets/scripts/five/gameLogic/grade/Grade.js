@@ -174,6 +174,15 @@ let Grade = {
             res *= 1 - delta * 0.1;
         } else {
             res *= -1 - delta * 0.1;
+            if (selfGrade > 3) {
+                res -= 5;
+                if (selfGrade > 5) {
+                    res -= 5;
+                    if (selfGrade > 8) {
+                        res -= 5;
+                    }
+                }
+            }
         }
 
         return Math.floor(res);

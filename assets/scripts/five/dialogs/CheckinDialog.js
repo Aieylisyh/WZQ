@@ -51,14 +51,14 @@ cc.Class({
         switch (day) {
             case 1:
                 return [{
-                    type: "GrabFirstCard",
-                    count: 1,
+                    type: "Gold",
+                    count: 80,
                 }];
 
             case 2:
                 return [{
-                    type: "Gold",
-                    count: 80,
+                    type: "GrabFirstCard",
+                    count: 1,
                 }];
 
             case 3:

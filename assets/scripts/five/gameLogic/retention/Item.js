@@ -17,7 +17,7 @@ let item = {
         thumbName: "GrabFirstCard",
         name: "先手卡",
         unit: "张",
-        price: 120,
+        price: 150,
         short: "B",
     },
 
@@ -28,7 +28,7 @@ let item = {
         thumbName: "KeepGradeCard",
         name: "保段卡",
         unit: "张",
-        price: 250,
+        price: 300,
         short: "C",
     },
 

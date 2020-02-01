@@ -1,18 +1,14 @@
-let GameUtil = require("GameUtil");
 let DummyPicker = require("DummyPicker");
 let DialogTypes = require("DialogTypes");
+let PlayerInfo = require("PlayerInfo");
 
 cc.Class({
     extends: require("BaseDialog"),
 
     properties: {
-        selfIcon: cc.Sprite,
+        selfInfo: PlayerInfo,
 
-        selfNickname: cc.Label,
-
-        opponentIcon: cc.Sprite,
-
-        opponentNickname: cc.Label,
+        oppoInfo: PlayerInfo,
 
         selfPlayerNode: cc.Node,
 
@@ -62,7 +58,6 @@ cc.Class({
         this.hideQuestionTimer = 0;
         this.questionNode.active = false;
         this.matchVsTag.node.active = false;
-        this.opponentNickname.string = "正在寻找对手";
     },
 
     runCustomAction: function () {
@@ -74,7 +69,7 @@ cc.Class({
     },
 
     onAnimComplete: function () {
-        this.setSelfPlayerInfo();
+        this.selfInfo.setup(appContext.getUxManager().getUserInfo());
         this.requireOpponenetInfo();
 
         this.startLinesAnimation();
@@ -128,9 +123,8 @@ cc.Class({
             this.questionNode.active = false;
 
             this.opponent = info.dummyPlayer;
-            this.opponentIcon.node.active=true;
             this.scheduleOnce(function () {
-                this.setOpponentInfo();
+                this.oppoInfo.setup(this.opponent);
                 this.opponentPlayerAnim.shake();
             }, 0.25);
 
@@ -158,12 +152,6 @@ cc.Class({
         }
     },
 
-    setSelfPlayerInfo: function () {
-        let selfInfo = appContext.getUxManager().getUserInfo();
-        this.selfNickname.string = selfInfo.basic.nickname;
-        GameUtil.setHeadIcon(selfInfo.basic.headIconUrl, selfInfo.basic.headIconPath, this.selfIcon);
-    },
-
     requireOpponenetInfo: function () {
         this.opponent = null;
         let time = 0.5 + Math.random() * 4;
@@ -171,12 +159,6 @@ cc.Class({
         this.scheduleOnce(function () {
             this.onMatchedOpponent();
         }, time);
-    },
-
-    // 设置对手的昵称头像
-    setOpponentInfo: function () {
-        this.opponentNickname.string = this.opponent.basic.nickname;
-        GameUtil.setHeadIcon(this.opponent.basic.headIconUrl, this.opponent.basic.headIconPath, this.opponentIcon);
     },
 
     // 开始下棋

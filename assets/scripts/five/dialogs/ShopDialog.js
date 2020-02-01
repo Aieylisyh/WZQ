@@ -33,7 +33,7 @@ cc.Class({
     },
 
     onClickBtnGrabFirstCard: function () {
-        if (appContext.getUxManager().useGold(120)) {
+        if (appContext.getUxManager().useGold(Item.GrabFirstCard.price)) {
             this.giveReward([{ type: "GrabFirstCard", count: 1 }]);
             this.refresh();
         } else {
@@ -42,7 +42,7 @@ cc.Class({
     },
 
     onClickBtnKeepGradeCard: function () {
-        if (appContext.getUxManager().useGold(250)) {
+        if (appContext.getUxManager().useGold(Item.KeepGradeCard.price)) {
             this.giveReward([{ type: "KeepGradeCard", count: 1 }]);
             this.refresh();
         } else {
