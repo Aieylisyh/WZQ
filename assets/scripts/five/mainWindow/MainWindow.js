@@ -164,7 +164,7 @@ cc.Class({
     },
 
     createFollowBtn() {
-        if (WechatAPI.isTT) {
+        if (!WechatAPI.isTT) {
             return;
         }
 
@@ -182,10 +182,10 @@ cc.Class({
                             type: "image",
                             image: "customRes/follow.png",
                             style: {
-                                left: gameSize.width * ratio - 88 * ratio,
-                                top: gameSize.height * 0.5 * ratio - 20 * ratio,
-                                width: 82 * ratio,
-                                height: 82 * ratio,
+                                left: gameSize.width * ratio - 80 * ratio,
+                                top: gameSize.height * 0.5 * ratio - 300 * ratio,
+                                width: 75 * ratio,
+                                height: 75 * ratio,
                                 lineHeight: 40,
                                 backgroundColor: "#00000000",
                                 borderWidth: 0,

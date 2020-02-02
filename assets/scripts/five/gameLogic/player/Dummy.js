@@ -12,6 +12,7 @@
 // 根据本质属性计算出来的具体在游戏中可以体现出来的属性
 let DialogTypes = require("DialogTypes");
 let Ai = require("Ai");
+let Grade = require("Grade");
 
 let Dummy = cc.Class({
 
@@ -145,7 +146,7 @@ let Dummy = cc.Class({
         debug.log("dummy playChess");
         let myTurn = Math.floor((game.currentTurn + 1) / 2);
 
-        if (myTurn > 7 && Math.random() < this.status.offlineChance / 100) {
+        if (myTurn > 8 && Math.random() < this.status.offlineChance / 100) {
             debug.log("dummy will addOffLineTask");
             this.addOffLineTask();
             return;
@@ -181,7 +182,7 @@ let Dummy = cc.Class({
             return;
         }
 
-        try { throw new Exception(); } catch (e) { debug.log(e) }
+        //try { throw new Exception(); } catch (e) { debug.log(e) }
         debug.log("假人掉线了");
         appContext.getGameManager().playerWin(3 - this.chessType, true);
     },
@@ -227,9 +228,9 @@ let Dummy = cc.Class({
     },
 
     addChatTask(param, enableMultiAdd = true, isReAdd = false) {
-        let time = Math.random() * 2 + 0.6;
+        let time = Math.random() * 2.4 + 0.5;
         if (isReAdd) {
-            time = Math.random() * 0.6 + 0.6;
+            time = Math.random() * 0.6 + 0.5;
         }
 
         debug.log("dummy addChatTask " + time);
@@ -482,11 +483,12 @@ let Dummy = cc.Class({
         },
 
         getStatus: function (param) {
-            debug.log("dummy getStatus");
+            let grade = Grade.getGradeAndFillInfoByScore(param.basic.currentScore).grade;
             debug.log(param);
+            debug.log("dummy getStatus " + grade);
 
             let missChance = 18;
-            let offlineChance = 8;
+            let offlineChance = 0;
             let rawSolutionTurns = 3;
             let admitLooseChance = 15;
             let grabFirstChance = 1;
@@ -496,7 +498,7 @@ let Dummy = cc.Class({
             let fastChance = 0.5;
             let turnTimeAdd = 0;
 
-            switch (param.grade) {
+            switch (grade) {
                 case 1:
                     missChance = 50;
                     offlineChance = 0;
@@ -513,13 +515,13 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 2 + Math.floor(Math.random() * 2);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
-                    fastChance = 80;
+                    fastChance = 75;
                     turnTimeAdd = 0;
                     break;
 
                 case 3:
                     missChance = 25;
-                    offlineChance = 0;
+                    offlineChance = 0.2;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 2.4);
                     admitLooseChance = 35;
                     grabFirstChance = 15;
@@ -529,17 +531,17 @@ let Dummy = cc.Class({
 
                 case 4:
                     missChance = 18;
-                    offlineChance = 0.03;
+                    offlineChance = 0.5;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 1.5);
                     admitLooseChance = 20;
                     grabFirstChance = 25;
-                    fastChance = 70;
+                    fastChance = 65;
                     turnTimeAdd = 0;
                     break;
 
                 case 5:
                     missChance = 10;
-                    offlineChance = 0.03;
+                    offlineChance = 0.5;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 1.2);
                     admitLooseChance = 15;
                     grabFirstChance = 40;
@@ -549,7 +551,7 @@ let Dummy = cc.Class({
 
                 case 6:
                     missChance = 8;
-                    offlineChance = 0.02;
+                    offlineChance = 0.3;
                     rawSolutionTurns = Math.floor(Math.random() * 2);
                     admitLooseChance = 12;
                     grabFirstChance = 50;
@@ -559,9 +561,9 @@ let Dummy = cc.Class({
 
                 case 7:
                     missChance = 5;
-                    offlineChance = 0;
-                    rawSolutionTurns = Math.floor(Math.random() * 1.1);
-                    admitLooseChance = 7;
+                    offlineChance = 0.1;
+                    rawSolutionTurns = Math.floor(Math.random() * 1.4);
+                    admitLooseChance = 10;
                     grabFirstChance = 60;
                     fastChance = 70;
                     turnTimeAdd = 0;
@@ -596,7 +598,7 @@ let Dummy = cc.Class({
                     grabFirstChance = 85;
                     per.playStyle = 0;//强制没有风格
                     fastChance = 55;
-                    turnTimeAdd = 0.9;
+                    turnTimeAdd = 1;
                     break;
             }
 

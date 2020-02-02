@@ -48,13 +48,22 @@ cc.Class({
         if (to_keepWin > 1) {
             to_keepWin = 1;
         }
+        if (to_keepWin <= 0.05) {
+            to_keepWin = 0.05;
+        }
 
         let to_grade = 0.5;
         to_grade = gradeAndFillInfo.grade / 10;
+        if (to_grade <= 0.05) {
+            to_grade = 0.05;
+        }
 
         let to_winRate = 0.5;
         if (userBasic.roundCount > 0) {
             to_winRate = userBasic.winCount / userBasic.roundCount;
+        }
+        if (to_winRate <= 0.05) {
+            to_winRate = 0.05;
         }
 
         let to_skill = 0.5;
@@ -68,6 +77,9 @@ cc.Class({
                 to_skill = 0;
             }
             to_skill = 1 - to_skill;
+        }
+        if (to_skill <= 0.05) {
+            to_skill = 0.05;
         }
 
         debug.log("to_keepWin " + to_keepWin);
@@ -178,20 +190,20 @@ cc.Class({
                         debug.log("getSetting success");
                         debug.log(res);
                         debug.log(res.authSetting["scope.album"]);
-                        if(res.authSetting["scope.album"]){
+                        if (res.authSetting["scope.album"]) {
                             tt.authorize({
                                 scope: "scope.album",
                                 success() {
                                     debug.log("authorize success");
                                     self.uploadFile();
                                 },
-    
+
                                 fail() {
                                     debug.log("authorize fail");
                                     self.openSettings();
                                 }
                             });
-                        }else{
+                        } else {
                             self.openSettings();
                         }
                     },
@@ -211,7 +223,7 @@ cc.Class({
         }
     },
 
-    openSettings(){
+    openSettings() {
         let self = this;
         let info = {
             content: "请授权以使用头像",
@@ -225,7 +237,7 @@ cc.Class({
                         },
                         fail() {
                             debug.log("openSetting fail");
-                           
+
                         }
                     })
                 },
