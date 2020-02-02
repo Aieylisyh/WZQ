@@ -188,30 +188,11 @@ cc.Class({
     
                                 fail() {
                                     debug.log("authorize fail");
-                                    tt.openSetting({
-                                        success(res) {
-                                            debug.log("openSetting success");
-                                            self.uploadFile();
-                                        },
-                                        fail() {
-                                            debug.log("openSetting fail");
-                                            appContext.getDialogManager().showDialog(DialogTypes.Toast, "请授权以使用头像");
-                                        }
-                                    })
+                                    self.openSettings();
                                 }
                             });
                         }else{
-                            appContext.getDialogManager().showDialog(DialogTypes.Toast, "请授权以使用头像");
-                            tt.openSetting({
-                                success(res) {
-                                    debug.log("openSetting success");
-                                    self.uploadFile();
-                                },
-                                fail() {
-                                    debug.log("openSetting fail");
-                                   
-                                }
-                            })
+                            self.openSettings();
                         }
                     },
 
@@ -228,6 +209,31 @@ cc.Class({
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "抱歉，暂时不能上传头像");
 
         }
+    },
+
+    openSettings(){
+        let self = this;
+        let info = {
+            content: "请授权以使用头像",
+            btn1: {
+                name: "好 的",
+                clickFunction: function () {
+                    tt.openSetting({
+                        success(res) {
+                            debug.log("openSetting success");
+                            self.uploadFile();
+                        },
+                        fail() {
+                            debug.log("openSetting fail");
+                           
+                        }
+                    })
+                },
+                isRed: true,
+            },
+        };
+
+        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
     },
 
     uploadFile() {
@@ -276,7 +282,7 @@ cc.Class({
                 appContext.getUxManager().saveUserInfo(userInfo);
                 self.playerinfo.setup(userInfo);
                 self.scheduleOnce(function () {
-                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "头像上传成功！\n建议使用方形图片作为头像");
+                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "头像上传成功\n使用方形图片效果较佳哦！");
                 }, 1);
             }
         });

@@ -227,9 +227,9 @@ let Dummy = cc.Class({
     },
 
     addChatTask(param, enableMultiAdd = true, isReAdd = false) {
-        let time = Math.random() * 1 + 0.5;
+        let time = Math.random() * 2 + 0.6;
         if (isReAdd) {
-            time = Math.random() * 0.5 + 0.3;
+            time = Math.random() * 0.6 + 0.6;
         }
 
         debug.log("dummy addChatTask " + time);
@@ -500,7 +500,7 @@ let Dummy = cc.Class({
                 case 1:
                     missChance = 50;
                     offlineChance = 0;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 2.8);
+                    rawSolutionTurns = 2 + Math.floor(Math.random() * 3);
                     admitLooseChance = 0;
                     grabFirstChance = 10;
                     fastChance = 90;
@@ -510,7 +510,7 @@ let Dummy = cc.Class({
                 case 2:
                     missChance = 35;
                     offlineChance = 0;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 1.9);
+                    rawSolutionTurns = 2 + Math.floor(Math.random() * 2);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
                     fastChance = 80;
@@ -519,8 +519,8 @@ let Dummy = cc.Class({
 
                 case 3:
                     missChance = 25;
-                    offlineChance = 0.03;
-                    rawSolutionTurns = 1 + Math.floor(Math.random() * 2);
+                    offlineChance = 0;
+                    rawSolutionTurns = 1 + Math.floor(Math.random() * 2.4);
                     admitLooseChance = 35;
                     grabFirstChance = 15;
                     fastChance = 70;
@@ -530,7 +530,7 @@ let Dummy = cc.Class({
                 case 4:
                     missChance = 18;
                     offlineChance = 0.03;
-                    rawSolutionTurns = 1 + Math.floor(Math.random() * 1.4);
+                    rawSolutionTurns = 1 + Math.floor(Math.random() * 1.5);
                     admitLooseChance = 20;
                     grabFirstChance = 25;
                     fastChance = 70;
@@ -539,8 +539,8 @@ let Dummy = cc.Class({
 
                 case 5:
                     missChance = 10;
-                    offlineChance = 0.02;
-                    rawSolutionTurns = 1 + Math.floor(Math.random() * 1.1);
+                    offlineChance = 0.03;
+                    rawSolutionTurns = 1 + Math.floor(Math.random() * 1.2);
                     admitLooseChance = 15;
                     grabFirstChance = 40;
                     fastChance = 70;
@@ -604,7 +604,7 @@ let Dummy = cc.Class({
                 turnTimeMin = 1 + turnTimeAdd;
                 turnTimeMax = 13 + turnTimeAdd;
             } else {
-                turnTimeMin = 0.4 + turnTimeAdd;
+                turnTimeMin = 0.5 + turnTimeAdd;
                 turnTimeMax = 3 + turnTimeAdd;
             }
 

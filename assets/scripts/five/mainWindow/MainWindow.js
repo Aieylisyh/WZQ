@@ -23,6 +23,8 @@ cc.Class({
         this.playerInfoBoard.setup(appContext.getUxManager().getUserInfo());
 
         appContext.getSoundManager().startBackgroundMusic();
+
+        this.createFollowBtn();
     },
 
     update: function (dt) {
@@ -157,7 +159,58 @@ cc.Class({
         appContext.getDialogManager().showDialog(DialogTypes.PlayerInfo);
     },
 
-    onPlayerInfoDialogHide(){
+    onPlayerInfoDialogHide() {
         this.playerInfoBoard.setup(appContext.getUxManager().getUserInfo());
+    },
+
+    createFollowBtn() {
+        if (WechatAPI.isTT) {
+            return;
+        }
+
+        //console.log(WechatAPI.followBtn);
+        if (WechatAPI.followBtn == null && typeof tt.checkFollowState == "function" && typeof tt.createFollowButton == "function") {
+            tt.checkFollowState({
+                success(res) {
+                    console.log(res.result);//true 为已关注，false 为未关注
+
+                    let ratio = WechatAPI.deviceManager.getPixelRatio(); //0.33
+                    let gameSize = WechatAPI.deviceManager.getCanvasSize(); //w640 h 1386
+
+                    if (!res.result) {
+                        const btn = tt.createFollowButton({
+                            type: "image",
+                            image: "customRes/follow.png",
+                            style: {
+                                left: gameSize.width * ratio - 88 * ratio,
+                                top: gameSize.height * 0.5 * ratio - 20 * ratio,
+                                width: 82 * ratio,
+                                height: 82 * ratio,
+                                lineHeight: 40,
+                                backgroundColor: "#00000000",
+                                borderWidth: 0,
+                                textColor: "#ffffff",
+                                textAlign: "center",
+                                fontSize: 16,
+                                borderRadius: 0
+                            },
+                            data: {
+
+                            }
+                        });
+
+                        btn.onTap(res => {
+                            if (res.errCode === 0) {
+                                btn.destroy();
+                            } else {
+                                console.log(res);
+                            }
+                        });
+
+                        WechatAPI.followBtn = btn;
+                    }
+                }
+            })
+        }
     },
 });

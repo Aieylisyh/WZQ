@@ -36,6 +36,13 @@ cc.Class({
         chessSFWhite: cc.SpriteFrame,
     },
 
+    start(){
+        if (WechatAPI.followBtn && typeof WechatAPI.followBtn.destroy == "function") {
+            WechatAPI.followBtn.destroy();
+            WechatAPI.followBtn = null;
+        }
+    },
+    
     reset: function () {
         this.selfPlayer.reset();
         this.opponentPlayer.reset();

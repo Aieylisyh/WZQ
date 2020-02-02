@@ -39,7 +39,7 @@ cc.Class({
             return;
         }
 
-        if (appContext.getGameSettingManager().noSound) {
+        if (appContext.getGameSettingManager()._muteSound) {
             return;
         }
 
@@ -127,7 +127,7 @@ cc.Class({
         }
 
         debug.log("start bg Music");
-        if (!WechatAPI.isEnabled() || appContext.getGameSettingManager().noSound) {
+        if (!WechatAPI.isEnabled() || appContext.getGameSettingManager()._muteMusic) {
             this.stopBackgroundMusic();
             return;
         }
