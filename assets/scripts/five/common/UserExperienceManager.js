@@ -522,7 +522,6 @@ cc.Class({
             }
         }
 
-
         let userInfo = this.getUserInfo();
         debug.log(userInfo.basic.currentScore);
         info.fromScore = userInfo.basic.currentScore;

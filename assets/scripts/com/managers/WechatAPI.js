@@ -46,7 +46,7 @@ let WechatAPI = {
                 qg.setEnableDebug({
                     //enableDebug: debug.enableLog, // true 为打开，false 为关闭  不要开log才方便chrome调试
                     enableDebug: false,
-                    success: function() {
+                    success: function () {
                         // 以下语句将会在 vConsole 面板输出 
                         console.log("oppo");
                         console.info("qg info");
@@ -81,12 +81,12 @@ let WechatAPI = {
                     qg.login({
                         pkgName: oppOpackageName,
 
-                        success: function(res) {
+                        success: function (res) {
                             var data = JSON.stringify(res);
                             debug.log("!oppo login");
                             debug.log(data);
                         },
-                        fail: function(res) {
+                        fail: function (res) {
                             debug.log('!Oppo login fail')
                             debug.log(JSON.stringify(res));
                         },
@@ -98,12 +98,12 @@ let WechatAPI = {
 
                                 //  isDebug: debug.enableLog, // true 为打开，false 为关闭
                                 isDebug: true,
-                                success: function(res) {
+                                success: function (res) {
                                     debug.log("Oppo广告成功");
                                     debug.log(res);
                                     self.initAdUtils();
                                 },
-                                fail: function(res) {
+                                fail: function (res) {
                                     debug.log("Oppo广告失败:" + res.code + res.msg);
                                 },
                             })
@@ -119,7 +119,7 @@ let WechatAPI = {
 
                 // packageName: "com.xplay.zqt.vivominigame",
                 if (typeof qg.onUpdateReady == "function") {
-                    qg.onUpdateReady(function(res) {
+                    qg.onUpdateReady(function (res) {
                         debug.log("vivo onUpdateReady " + res);
                         if (res == 1) {
                             qg.applyUpdate();
@@ -140,7 +140,7 @@ let WechatAPI = {
                 console.log("platform unknown!");
             }
 
-            qg.onError(function(data) {
+            qg.onError(function (data) {
                 console.log("!QG onError");
                 debug.log(data);
                 debug.log(data.message);
@@ -212,14 +212,14 @@ let WechatAPI = {
                 //     })
                 // }
 
-                wx.onShow(function(res) {
+                wx.onShow(function (res) {
                     WechatAPI.wxOnShow(res);
                 });
                 WechatAPI.wxOnShow(wx.getLaunchOptionsSync());
             }
 
             this.initAdUtils();
-            wx.onAudioInterruptionEnd(function() {
+            wx.onAudioInterruptionEnd(function () {
                 appContext.getSoundManager().onShow();
             });
             this.enableShare = true;
@@ -229,19 +229,19 @@ let WechatAPI = {
 
             if (typeof wx.getUpdateManager === 'function') {
                 const updateManager = wx.getUpdateManager();
-                updateManager.onCheckForUpdate(function(res) {
+                updateManager.onCheckForUpdate(function (res) {
                     if (res.hasUpdate) {
                         console.log("发现新版本");
                     }
                 })
 
-                updateManager.onUpdateReady(function() {
+                updateManager.onUpdateReady(function () {
                     wx.showModal({
                         title: "检测到新版本",
 
                         content: "新的版本已经下载好，是否立即应用新版本?",
 
-                        success: function(res) {
+                        success: function (res) {
                             if (res.confirm) {
                                 console.log("用户选更新");
                                 updateManager.applyUpdate();
@@ -252,7 +252,7 @@ let WechatAPI = {
                     })
                 })
 
-                updateManager.onUpdateFailed(function() {
+                updateManager.onUpdateFailed(function () {
                     console.warn("新版本下载失败");
                 })
             } else {
@@ -301,9 +301,7 @@ let WechatAPI = {
 
     setTTAppLaunchOptions() {
         this.ttAppLaunchOptions = null;
-        if (WechatAPI.systemInfo.platform == 'ios') {
-            return;
-        }
+
         if (typeof tt.showMoreGamesModal !== 'function') {
             if (typeof tt.createMoreGamesButton == 'function') {
                 this.isTTPoor = true;
@@ -347,14 +345,16 @@ let WechatAPI = {
 
     createTTPoorBtn() {
         let ratio = WechatAPI.deviceManager.getPixelRatio(); //0.33
-        //let gameSize = WechatAPI.deviceManager.getCanvasSize(); //w640 h 1386
+        let gameSize = WechatAPI.deviceManager.getCanvasSize(); //w640 h 1386
 
         WechatAPI.PoorTTBtn = tt.createMoreGamesButton({
             type: "image",
             image: "customRes/more.png",
-            style: {
-                left: 30 * ratio,
-                top: 30 * ratio,
+            style: {//-320
+                // left: 30 * ratio,
+                // top: 30 * ratio,
+                left: 20 * ratio,
+                top: gameSize.height * 0.5 * ratio + 320 * ratio,
                 width: 72 * ratio,
                 height: 72 * ratio,
                 lineHeight: 40,
@@ -374,6 +374,27 @@ let WechatAPI = {
 
         WechatAPI.PoorTTBtn.hide();
         debug.log(WechatAPI.PoorTTBtn);
+
+
+        tt.createMoreGamesButton({
+            type: "image",
+            image: "customRes/more.png",
+            style: {
+                left: 20 * 0.33,
+                top: 1136 * 0.5 + 320 * 0.33,
+                width: 72 * 0.33,
+                height: 72 * 0.33,
+                lineHeight: 40,
+                backgroundColor: "#ff0000",
+                textColor: "#ffffff",
+                textAlign: "center",
+                fontSize: 16,
+                borderRadius: 0,
+                borderWidth: 0,
+                borderColor: '#ff0000'
+            },
+            appLaunchOptions: [],
+        });
     },
 
     initCloudDev() {
@@ -419,9 +440,9 @@ let WechatAPI = {
         //console.log(this.YXSDK);
     },
 
-    initAdUtils: function() {
+    initAdUtils: function () {
         debug.log("!initAdUtils");
-        appContext.scheduleOnce(function() {
+        appContext.scheduleOnce(function () {
             debug.log("!initAdUtils done!!");
             WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.init();
 
@@ -431,7 +452,7 @@ let WechatAPI = {
         }, 0.5);
     },
 
-    isEnabled: function() {
+    isEnabled: function () {
         if (this._enabled != null) {
             return this._enabled;
         }
@@ -448,7 +469,7 @@ let WechatAPI = {
         return enabled;
     },
 
-    getWx: function() {
+    getWx: function () {
         if (this._enabled != null) {
             if (this._enabled) {
                 return window.wx;
@@ -459,7 +480,7 @@ let WechatAPI = {
         return null;
     },
 
-    copy: function(content, sucCallback, failCallback, caller) {
+    copy: function (content, sucCallback, failCallback, caller) {
         if (!this.isEnabled()) {
             return;
         }
@@ -474,31 +495,31 @@ let WechatAPI = {
         if (this.isWx) {
             wx.setClipboardData({
                 data: content,
-                success: function(res) {
+                success: function (res) {
                     sucCallback && sucCallback.call(caller);
                 },
 
-                fail: function(res) {
+                fail: function (res) {
                     failCallback && failCallback.call(caller);
                 },
             });
         } else if (this.isVivo) {
             qg.setClipboardData({
                 text: content,
-                success: function() {
+                success: function () {
                     sucCallback && sucCallback.call(caller);
                 },
-                fail: function(res) {
+                fail: function (res) {
                     failCallback && failCallback.call(caller);
                 },
             })
         } else if (this.isOppo) {
             qg.setClipboardData({
                 data: content,
-                success: function() {
+                success: function () {
                     sucCallback && sucCallback.call(caller);
                 },
-                fail: function(res) {
+                fail: function (res) {
                     failCallback && failCallback.call(caller);
                 },
             })
@@ -517,7 +538,7 @@ let WechatAPI = {
         }
     },
 
-    showToast: function(title, milliseconds = 2000, icon, imagePath) {
+    showToast: function (title, milliseconds = 2000, icon, imagePath) {
         if (!this.isEnabled()) {
             return;
         }
@@ -547,7 +568,7 @@ let WechatAPI = {
         }
     },
 
-    showModal: function(title, content, onConfirm, onCancel, caller) {
+    showModal: function (title, content, onConfirm, onCancel, caller) {
         if (!this.isEnabled()) {
             return;
         }
@@ -558,7 +579,7 @@ let WechatAPI = {
 
                 content: content,
 
-                success: function(res) {
+                success: function (res) {
                     if (res.confirm) {
                         if (onConfirm != null) {
                             if (caller != null) {
@@ -586,7 +607,7 @@ let WechatAPI = {
                     text: 'btn',
                     color: '#33dd44'
                 }],
-                success: function(res) {
+                success: function (res) {
                     if (res.confirm) {
                         if (onConfirm != null) {
                             if (caller != null) {
@@ -605,10 +626,10 @@ let WechatAPI = {
                         }
                     }
                 },
-                cancel: function() {
+                cancel: function () {
                     console.log('handling cancel')
                 },
-                fail: function(data, code) {
+                fail: function (data, code) {
                     console.log(`handling fail, code = ${code}`)
                 }
             })
@@ -631,7 +652,7 @@ let WechatAPI = {
         }
     },
 
-    setStorage: function(storageKey, storageData) {
+    setStorage: function (storageKey, storageData) {
         if (!this.isEnabled()) {
             return;
         }
@@ -656,7 +677,7 @@ let WechatAPI = {
         }
     },
 
-    setStorageSync: function(storageKey, storageData) {
+    setStorageSync: function (storageKey, storageData) {
         if (!this.isEnabled()) {
             return;
         }
@@ -689,7 +710,7 @@ let WechatAPI = {
         }
     },
 
-    removeStorageSync: function(storageKey) {
+    removeStorageSync: function (storageKey) {
         if (!this.isEnabled()) {
             return;
         }
@@ -707,7 +728,7 @@ let WechatAPI = {
         }
     },
 
-    getStorageSync: function(storageKey, tryReadAsJSON = false, typeConvertRule) {
+    getStorageSync: function (storageKey, tryReadAsJSON = false, typeConvertRule) {
         if (!this.isEnabled()) {
             return null;
         }
@@ -756,7 +777,7 @@ let WechatAPI = {
         }
     },
 
-    getStorage: function(storageKey, callback, caller) {
+    getStorage: function (storageKey, callback, caller) {
         if (!this.isEnabled()) {
             return;
         }
@@ -765,11 +786,11 @@ let WechatAPI = {
             wx.getStorage({
                 key: storageKey,
 
-                success: function(res) {
+                success: function (res) {
                     callback.call(caller, res.data);
                 },
 
-                fail: function(res) {
+                fail: function (res) {
                     callback.call(caller);
                 },
             });
@@ -794,7 +815,7 @@ let WechatAPI = {
         }
     },
 
-    keepScreenOn: function() {
+    keepScreenOn: function () {
         if (typeof wx.setKeepScreenOn == "function") {
             //屏幕常亮
             //微信 头条 oppo vivo都是这个
@@ -808,7 +829,7 @@ let WechatAPI = {
         }
     },
 
-    getOpenDataContext: function() {
+    getOpenDataContext: function () {
         if (!this.isEnabled() || !this.isWx) {
             return null;
         }
@@ -832,7 +853,7 @@ let WechatAPI = {
         }
     },
 
-    customerService: function() {
+    customerService: function () {
         //https://developers.weixin.qq.com/miniprogram/dev/api/custommsg/callback_help.html
         if (!this.isEnabled() || !this.isWx) {
             return;
@@ -841,12 +862,12 @@ let WechatAPI = {
         try {
             debug.tempBlockOnHideExit = true;
             wx.openCustomerServiceConversation({
-                success: function(res) {
+                success: function (res) {
                     debug.log("csc suc");
                     debug.log(res);
                 },
 
-                fail: function(res) {
+                fail: function (res) {
                     debug.log("csc fail");
                     debug.log(res);
                 }
@@ -857,7 +878,7 @@ let WechatAPI = {
         }
     },
 
-    showGameClubBtn: function() {
+    showGameClubBtn: function () {
         if (!this.isEnabled() || !this.isWx || wx.createGameClubButton == null || typeof wx.createGameClubButton !== "function") {
             return;
         }
@@ -887,13 +908,13 @@ let WechatAPI = {
         }
     },
 
-    hideGameClubBtn: function() {
+    hideGameClubBtn: function () {
         if (this.wxGameClubBtn != null) {
             this.wxGameClubBtn.hide();
         }
     },
 
-    updateWxCloudScore: function(username, score) {
+    updateWxCloudScore: function (username, score) {
         score = score + "";
         if (!this.isEnabled() || !this.isWx) {
             return;
@@ -913,18 +934,18 @@ let WechatAPI = {
                 value: username
             }],
 
-            success: function(res) {
+            success: function (res) {
                 debug.log("updateWxCloudScore success");
             },
 
-            fail: function(res) {
+            fail: function (res) {
                 debug.log("updateWxCloudScore fail");
                 debug.log(res);
             },
         });
     },
 
-    clientService: function() {
+    clientService: function () {
         if (!this.isEnabled() || !this.isWx || typeof wx.openCustomerServiceConversation != "function") {
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "当前微信不支持实时客服");
             return;
@@ -1030,7 +1051,7 @@ let WechatAPI = {
         },
     */
 
-    vibrate: function() {
+    vibrate: function () {
         if (appContext.getGameSettingManager().noVibrate) {
             return;
         }
@@ -1055,7 +1076,7 @@ let WechatAPI = {
         }
     },
 
-    setSystemInfo: function() {
+    setSystemInfo: function () {
         if (!this.isEnabled()) {
             return;
         }
@@ -1135,8 +1156,6 @@ let WechatAPI = {
                     console.log(res);
 
                     // console.log(res.videoPath);
-                    // console.log(WechatAPI);
-                    // console.log(WechatAPI.shareUtil);
                     if (WechatAPI.cache.gameRecording) {
                         WechatAPI.shareUtil.shareVideo(res.videoPath);
                         WechatAPI.cache.gameRecording = false;
@@ -1184,7 +1203,7 @@ let WechatAPI = {
             }
 
             this.gameRecorderManager.start({
-                duration: 180,
+                duration: 240,
             });
         }
     },

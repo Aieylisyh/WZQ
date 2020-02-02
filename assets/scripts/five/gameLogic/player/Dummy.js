@@ -377,6 +377,9 @@ let Dummy = cc.Class({
                 toWin: true,
             });
         }
+
+        //如果是头条 此时应该测试自动录屏 如果玩家没有手动录屏的话
+        WechatAPI.tryStartAutoRecord();
     },
 
     onCon: function () {
@@ -386,6 +389,9 @@ let Dummy = cc.Class({
                 toLoose: true,
             });
         }
+
+        //如果是头条 此时应该测试自动录屏 如果玩家没有手动录屏的话
+        WechatAPI.tryStartAutoRecord();
     },
 
     onMiss() {
@@ -502,7 +508,7 @@ let Dummy = cc.Class({
                 case 1:
                     missChance = 50;
                     offlineChance = 0;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 3);
+                    rawSolutionTurns = 2 + Math.floor(Math.random() * 5);
                     admitLooseChance = 0;
                     grabFirstChance = 10;
                     fastChance = 90;
@@ -512,7 +518,7 @@ let Dummy = cc.Class({
                 case 2:
                     missChance = 35;
                     offlineChance = 0;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 2);
+                    rawSolutionTurns = 2 + Math.floor(Math.random() * 4);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
                     fastChance = 75;
@@ -522,9 +528,9 @@ let Dummy = cc.Class({
                 case 3:
                     missChance = 25;
                     offlineChance = 0.2;
-                    rawSolutionTurns = 1 + Math.floor(Math.random() * 2.4);
+                    rawSolutionTurns = 2 + Math.floor(Math.random() * 2.5);
                     admitLooseChance = 35;
-                    grabFirstChance = 15;
+                    grabFirstChance = 10;
                     fastChance = 70;
                     turnTimeAdd = 0;
                     break;
@@ -532,19 +538,19 @@ let Dummy = cc.Class({
                 case 4:
                     missChance = 18;
                     offlineChance = 0.5;
-                    rawSolutionTurns = 1 + Math.floor(Math.random() * 1.5);
+                    rawSolutionTurns = 1 + Math.floor(Math.random() * 3);
                     admitLooseChance = 20;
-                    grabFirstChance = 25;
+                    grabFirstChance = 30;
                     fastChance = 65;
                     turnTimeAdd = 0;
                     break;
 
                 case 5:
                     missChance = 10;
-                    offlineChance = 0.5;
-                    rawSolutionTurns = 1 + Math.floor(Math.random() * 1.2);
+                    offlineChance = 0.4;
+                    rawSolutionTurns = 1 + Math.floor(Math.random() * 2);
                     admitLooseChance = 15;
-                    grabFirstChance = 40;
+                    grabFirstChance = 35;
                     fastChance = 70;
                     turnTimeAdd = 0;
                     break;
@@ -552,39 +558,39 @@ let Dummy = cc.Class({
                 case 6:
                     missChance = 8;
                     offlineChance = 0.3;
-                    rawSolutionTurns = Math.floor(Math.random() * 2);
+                    rawSolutionTurns = Math.floor(Math.random() * 2.4);
                     admitLooseChance = 12;
-                    grabFirstChance = 50;
+                    grabFirstChance = 40;
                     fastChance = 70;
                     turnTimeAdd = 0;
                     break;
 
                 case 7:
-                    missChance = 5;
+                    missChance = 6;
                     offlineChance = 0.1;
-                    rawSolutionTurns = Math.floor(Math.random() * 1.4);
+                    rawSolutionTurns = Math.floor(Math.random() * 1.6);
                     admitLooseChance = 10;
-                    grabFirstChance = 60;
+                    grabFirstChance = 50;
                     fastChance = 70;
                     turnTimeAdd = 0;
                     break;
 
                 case 8:
-                    missChance = 2;
+                    missChance = 3;
                     offlineChance = 0;
                     rawSolutionTurns = 0;
                     admitLooseChance = 5;
-                    grabFirstChance = 70;
+                    grabFirstChance = 55;
                     fastChance = 60;
                     turnTimeAdd = 0;
                     break;
 
                 case 9:
-                    missChance = 1;
+                    missChance = 2;
                     offlineChance = 0;
                     rawSolutionTurns = 0;
                     admitLooseChance = 1;
-                    grabFirstChance = 80;
+                    grabFirstChance = 75;
                     per.playStyle = 0;//强制没有风格
                     fastChance = 50;
                     turnTimeAdd = 0.6;
@@ -595,7 +601,7 @@ let Dummy = cc.Class({
                     offlineChance = 0;
                     rawSolutionTurns = 0;
                     admitLooseChance = 0;
-                    grabFirstChance = 85;
+                    grabFirstChance = 80;
                     per.playStyle = 0;//强制没有风格
                     fastChance = 55;
                     turnTimeAdd = 1;
@@ -603,7 +609,7 @@ let Dummy = cc.Class({
             }
 
             if (Math.random() * 100 > fastChance) {
-                turnTimeMin = 1 + turnTimeAdd;
+                turnTimeMin = 0.5 + turnTimeAdd;
                 turnTimeMax = 13 + turnTimeAdd;
             } else {
                 turnTimeMin = 0.5 + turnTimeAdd;
@@ -620,8 +626,6 @@ let Dummy = cc.Class({
             } else if (param.playStyle == 2) {
                 evaluatingParam = [[0, 1], [4, 5], [10, 12], [10, 64], [256, 256]];     //黑棋防御，白棋进攻
             }
-
-            //TODO 表情相关的属性设置
 
             return {
                 missChance: missChance,//% 点歪或者下错几率

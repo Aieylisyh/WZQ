@@ -708,7 +708,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 168,
+      "width": 180,
       "height": 80.64
     },
     "_anchorPoint": {
@@ -761,7 +761,7 @@
     "_useOriginalSize": false,
     "_string": "抢先手",
     "_N$string": "抢先手",
-    "_fontSize": 56,
+    "_fontSize": 60,
     "_lineHeight": 64,
     "_enableWrapText": true,
     "_N$file": null,
@@ -956,7 +956,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 320,
+      "width": 300,
       "height": 2
     },
     "_anchorPoint": {
@@ -969,7 +969,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        135,
+        130,
         0,
         0,
         0,
@@ -1076,7 +1076,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        115,
+        110,
         0,
         0,
         0,
@@ -1409,8 +1409,8 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 0,
-      "g": 0,
+      "r": 45,
+      "g": 87,
       "b": 0,
       "a": 255
     },

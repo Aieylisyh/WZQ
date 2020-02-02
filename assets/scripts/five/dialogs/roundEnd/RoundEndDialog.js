@@ -251,7 +251,7 @@ cc.Class({
         let action1 = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
         this.goldPart.runAction(action1);
         appContext.getSoundManager().playUseGold();
-        
+
         this.scheduleOnce(function () {
             this.processStep();
         }, 0.75);
@@ -326,6 +326,17 @@ cc.Class({
 
         let total = this.gradeAndFillInfoTo.fillTop - this.gradeAndFillInfoTo.fillBottom;
         let rest = total - this.gradeAndFillInfoTo.fillAmount;
+        if (!this.info.win) {
+            let rnd = Math.random();
+            if (rnd > 0.66) {
+                return "无论输赢都可获得金币。当然，赢了更多";
+            } else if (rnd > 0.33) {
+                return "点击角色信息，可以任意更换头像和昵称";
+            } else {
+                return "每局的积分计算，和双方的段位都有关系";
+            }
+        }
+
         return "距提升到下一段位，还需" + rest + "积分";
     },
 
@@ -350,9 +361,14 @@ cc.Class({
     },
 
     showButtons: function () {
-        this.btnShowOff.active = false;
         this.btnKeepGrade.active = false;
         this.buttons.active = true;
+
+        if (WechatAPI.enableShare) {
+            this.btnShowOff.active = true;
+        } else {
+            this.btnShowOff.active = false;
+        }
 
         this.buttons.y = -520;
         let action = cc.moveTo(0.5, 0, -40).easing(cc.easeCubicActionOut());
@@ -390,7 +406,23 @@ cc.Class({
     // 点击"炫耀"按钮
     onClickBtnShowoff: function () {
         appContext.getSoundManager().playBtn();
-        WechatAPI.wxShare.shareByType();
+        let hasVideo = false;
+        if (WechatAPI.isTT && !this.autoShareVideo && WechatAPI.getCanStopGameRecording()) {
+            hasVideo = true;
+            //在录屏
+            if (WechatAPI.cache.autoRecording) {
+                //自动录屏而不是手动录屏
+
+            }
+        } else {
+            hasVideo = false;
+        }
+        if (hasVideo) {
+            //has Video
+            WechatAPI.recordGameEnd();
+        } else {
+            WechatAPI.shareUtil.share();
+        }
     },
 
     // 点击"段位保护"按钮

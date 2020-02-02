@@ -30,7 +30,6 @@ cc.Class({
 
     // 设置人物属性图
     setCharacterAttribute: function () {
-        // todo
         let userBasic = appContext.getUxManager().getUserInfo().basic;
         debug.log(userBasic);
         // maxKeepWin: 0

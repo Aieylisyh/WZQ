@@ -56,16 +56,21 @@ cc.Class({
 
     onClickBtnRandomCard: function () {
         if (appContext.getUxManager().canUseRandomCard()) {
-            this.watchAdReward(function () {
-                appContext.getSoundManager().playUseGold();
-                if (Math.random() < 0.5) {
-                    this.giveReward([{ type: "GrabFirstCard", count: 1 }], false);
-                } else {
-                    this.giveReward([{ type: "KeepGradeCard", count: 1 }], false);
-                }
-                appContext.getUxManager().useRandomCard();
-                this.refresh();
-            }, this);
+            let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+            if (canWatchAd) {
+                this.watchAdReward(function () {
+                    appContext.getSoundManager().playUseGold();
+                    if (Math.random() < 0.5) {
+                        this.giveReward([{ type: "GrabFirstCard", count: 1 }], false);
+                    } else {
+                        this.giveReward([{ type: "KeepGradeCard", count: 1 }], false);
+                    }
+                    appContext.getUxManager().useRandomCard();
+                    this.refresh();
+                }, this);
+            } else {
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "抽取失败，请稍后重试");
+            }
         } else {
             appContext.getSoundManager().playBtn();
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "今日次数已达上限");
@@ -74,13 +79,19 @@ cc.Class({
 
     onClickBtnRandomGold: function () {
         if (appContext.getUxManager().canUseRandomGold()) {
-            this.watchAdReward(function () {
-                appContext.getSoundManager().playUseGold();
-                let count = Math.floor(Math.random() * 41 + 80);
-                this.giveReward([{ type: "Gold", count: count }], false);
-                appContext.getUxManager().useRandomGold();
-                this.refresh();
-            }, this);
+            let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+            if (canWatchAd) {
+                this.watchAdReward(function () {
+                    appContext.getSoundManager().playUseGold();
+                    let count = Math.floor(Math.random() * 41 + 80);
+                    this.giveReward([{ type: "Gold", count: count }], false);
+                    appContext.getUxManager().useRandomGold();
+                    this.refresh();
+                }, this);
+            } else {
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "抽取失败，请稍后重试");
+            }
+
         } else {
             appContext.getSoundManager().playBtn();
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "今日次数已达上限");
@@ -88,8 +99,31 @@ cc.Class({
     },
 
     watchAdReward(funcSuc, caller) {
-        //todo
-        funcSuc.call(caller);
+        let self = this;
+        WechatAPI.videoAdUtil.updateCb({
+            failCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_shop_fail");
+                appContext.getAnalyticManager().sendTT('videoAd_shop', {
+                    res: 1,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "抽取失败，请稍候重试");
+            },
+            finishCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_shop_ok");
+                appContext.getAnalyticManager().sendTT('videoAd_shop', {
+                    res: 0,
+                });
+                funcSuc.call(caller);
+            },
+            ceaseCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_shop_cease");
+                appContext.getAnalyticManager().sendTT('videoAd_shop', {
+                    res: 2,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以抽取");
+            },
+            caller: self,
+        });
     },
 
     giveReward(reward, isBuyOrLottery = true) {

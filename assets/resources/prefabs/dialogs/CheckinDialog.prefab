@@ -592,7 +592,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 127.56,
+      "width": 136.67,
       "height": 80.64
     },
     "_anchorPoint": {
@@ -645,7 +645,7 @@
     "_useOriginalSize": false,
     "_string": "签 到",
     "_N$string": "签 到",
-    "_fontSize": 56,
+    "_fontSize": 60,
     "_lineHeight": 64,
     "_enableWrapText": true,
     "_N$file": null,
@@ -5543,8 +5543,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 372,
-      "height": 232
+      "width": 378,
+      "height": 290
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5596,7 +5596,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "75037114-b103-4c28-9038-0d11666b3597"
+      "__uuid__": "f1b9cc6b-477e-4b63-b303-d2b908693b95"
     },
     "_type": 0,
     "_sizeMode": 2,
@@ -5672,8 +5672,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 372,
-      "height": 232
+      "width": 378,
+      "height": 290
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5725,7 +5725,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "75037114-b103-4c28-9038-0d11666b3597"
+      "__uuid__": "f1b9cc6b-477e-4b63-b303-d2b908693b95"
     },
     "_type": 0,
     "_sizeMode": 2,
@@ -5798,7 +5798,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 384,
+      "width": 816,
       "height": 70.56
     },
     "_anchorPoint": {
@@ -5849,8 +5849,8 @@
       }
     ],
     "_useOriginalSize": false,
-    "_string": "每天可领签到奖励",
-    "_N$string": "每天可领签到奖励",
+    "_string": "每天可领签到奖励，看广告可领第二次",
+    "_N$string": "每天可领签到奖励，看广告可领第二次",
     "_fontSize": 48,
     "_lineHeight": 56,
     "_enableWrapText": false,

@@ -24,7 +24,7 @@ cc.Class({
 
     start: function () {
         this.game = null;
-        window.gm = this;//TODO
+        //window.gm = this;
     },
 
     setCurrentMatchMakingInfo(info) {
@@ -108,7 +108,12 @@ cc.Class({
 
         //gamewindow
         this.getGameWindow().showInfo();
-
+        
+        if (WechatAPI.cache.autoRecording) {
+            //只撤销自动录屏 不影响手动录屏
+            WechatAPI.recordGameEnd(true);
+        }
+        
         this.chessboardManager.clearBoard();
         this.game.chessMap = this.chessboardManager.chessboard.chessMap;
 
@@ -319,7 +324,7 @@ cc.Class({
 
     getOpening() {
         //暂时不用这个，开局的信息太多，影响用户体验
-        let index = Math.floor(Math.random() * 4);
+        let index = Math.floor(Math.random() * 7);
         let p1 = "";
         let p2 = "";
 
@@ -335,6 +340,15 @@ cc.Class({
         } else if (index == 3) {
             p1 = "五子棋灵指引我前进";
             p2 = "看谁笑到最后";
+        } else if (index == 4) {
+            p1 = "万棋归宗！";
+            p2 = "晚，晚期龟粽？";
+        } else if (index == 5) {
+            p1 = "我下棋可是专业的";
+            p2 = "选的下棋专业的输棋科目吧";
+        } else if (index == 6) {
+            p1 = "在我的棋力下颤抖吧！";
+            p2 = "哇，我好怕怕啊";
         }
         return {
             p1: p1,
@@ -392,18 +406,29 @@ cc.Class({
     },
 
     playChat(type) {
+        let isSelf = this.getCurrentPlayerIsSelf();
+        if (Math.random() > 0.9) {
+            let phrase = this.getOpening();
+            this.getGameWindow().playChat(isSelf, phrase.p1);
+            this.scheduleOnce(function () {
+                this.getGameWindow().playChat(!isSelf, phrase.p2);
+            }, 2);
+
+            return;
+        }
+
         switch (type) {
             case "think1":
             case "think2":
-                this.getGameWindow().playChat(this.getCurrentPlayerIsSelf(), this.getThink());
+                this.getGameWindow().playChat(isSelf, this.getThink());
                 break;
 
             case "hurry":
-                this.getGameWindow().playChat(this.getCurrentPlayerIsSelf(), this.getHurry());
+                this.getGameWindow().playChat(isSelf, this.getHurry());
                 break;
 
             case "done":
-                this.getGameWindow().playChat(this.getCurrentPlayerIsSelf(), this.getDone());
+                this.getGameWindow().playChat(isSelf, this.getDone());
                 break;
         }
     },

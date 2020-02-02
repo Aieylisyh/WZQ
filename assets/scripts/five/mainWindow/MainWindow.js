@@ -13,6 +13,10 @@ cc.Class({
         btnSetting: cc.Node,
 
         playerInfoBoard: require("PlayerInfo"),
+
+        promoPrefab: cc.Prefab,
+
+        btnPromo: cc.Node,
     },
 
     start: function () {
@@ -21,10 +25,12 @@ cc.Class({
         this.autoShowDialogs();
 
         this.playerInfoBoard.setup(appContext.getUxManager().getUserInfo());
-
+        this.playerInfoBoard.notifyClick();
         appContext.getSoundManager().startBackgroundMusic();
 
-        this.createFollowBtn();
+        if (WechatAPI.isWx || WechatAPI.isTT) {
+            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload(true);
+        }
     },
 
     update: function (dt) {
@@ -86,11 +92,10 @@ cc.Class({
         this.btnMatchMode.runAction(finishCallback);
     },
 
-    // TODO
     onBuildAnimDone: function () {
         // 如果有需要在动画完毕后的执行某些操作，可以放在这里
-
         this.playUserInfoAction();
+        this.showPromo();
     },
 
     // 播放用户信息栏动画
@@ -113,7 +118,7 @@ cc.Class({
         appContext.getDialogManager().fireQueuedDialogs();
     },
 
-    // 点击"随机匹配"todo
+    // 点击"随机匹配"
     onClickBtnMatch: function () {
         appContext.getSoundManager().playBtn();
         appContext.getDialogManager().showDialog(DialogTypes.Match);
@@ -126,7 +131,7 @@ cc.Class({
         appContext.getDialogManager().showDialog(DialogTypes.Toast, "棋局变化万千，棋手连续下棋，极易走火入魔，不知此诸境界，乃自己心识所变现之幻象，日益执著，而导致精神失常，此即所谓的“入魔”");
     },
 
-    // 点击"排行"todo
+    // 点击"排行"
     onClickBtnRank: function () {
         appContext.getSoundManager().playBtn();
         appContext.getDialogManager().showDialog(DialogTypes.Rank);
@@ -182,8 +187,9 @@ cc.Class({
                             type: "image",
                             image: "customRes/follow.png",
                             style: {
-                                left: gameSize.width * ratio - 80 * ratio,
-                                top: gameSize.height * 0.5 * ratio - 300 * ratio,
+                                left: 10 * ratio,
+                                //   left: gameSize.width * ratio - 80 * ratio,
+                                top: gameSize.height * 0.5 * ratio - 295 * ratio,
                                 width: 75 * ratio,
                                 height: 75 * ratio,
                                 lineHeight: 40,
@@ -211,6 +217,32 @@ cc.Class({
                     }
                 }
             })
+        }
+    },
+
+    showPromo() {
+        if (WechatAPI.isTT) {
+            this.createFollowBtn();
+            
+            if (WechatAPI.systemInfo.platform != 'ios') {
+                if (WechatAPI.isTTPoor) {
+                    if (WechatAPI.PoorTTBtn) {
+                        WechatAPI.PoorTTBtn.show();
+                    }
+                    return;
+                }
+
+                if (this.btnPromo) {
+                    this.btnPromo.active = true;
+                }
+
+                let hotObj = cc.instantiate(this.promoPrefab);
+                hotObj.parent = this.node;
+                hotObj.x = -264;
+                hotObj.y = -415;
+                this.hotPromo = hotObj.getComponent("PromoItem");
+                this.hotPromo.setHotStyleTT();
+            }
         }
     },
 });

@@ -62,7 +62,6 @@ cc.Class({
         }
 
         this.chessboard.setChessChecker(false, true, true);
-        //TODO 在不需确认模式下用于直接commit结果
     },
 
     clearBoard: function () {

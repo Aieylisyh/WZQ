@@ -27,9 +27,46 @@ cc.Class({
         appContext.getSoundManager().playBtn();
         if (!appContext.getUxManager().todayCheckedin()) {
             this.checkinSuc();
+            // let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+
+            // if (canWatchAd) {
+            //     this.showVideo();
+            // } else {
+            //     appContext.getDialogManager().showDialog(DialogTypes.Toast, "签到失败，请稍后重试");
+            // }
         } else {
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "今天已经签到了");
         }
+    },
+
+    showVideo() {
+        let self = this;
+        WechatAPI.videoAdUtil.updateCb({
+            failCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_checkin_fail");
+                appContext.getAnalyticManager().sendTT('videoAd_checkin', {
+                    res: 1,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "签到失败，请稍候重试");
+            },
+            finishCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_checkin_ok");
+                appContext.getAnalyticManager().sendTT('videoAd_checkin', {
+                    res: 0,
+                });
+                this.checkinSuc();
+            },
+            ceaseCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_checkin_cease");
+                appContext.getAnalyticManager().sendTT('videoAd_checkin', {
+                    res: 2,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以签到");
+            },
+            caller: self,
+        });
+
+        WechatAPI.videoAdUtil.show();
     },
 
     checkinSuc() {

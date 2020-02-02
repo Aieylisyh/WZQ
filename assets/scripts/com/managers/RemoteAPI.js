@@ -31,18 +31,18 @@ cc.Class({
 
     loadBUserInfo() {
         let path = "playerInfo/b/nickname";
-        debug.log("loadBUserInfo " + path);
+        //debug.log("loadBUserInfo " + path);
         let self = this;
         appContext.getFileManager().loadResourceSafe(path, null,
             function (content) {
                 if (content != null) {
                     try {
-                        debug.log(content);
+                        //debug.log(content);
                         let s = content.text.split("\n");
-                        debug.log(s);
+                        //debug.log(s);
 
                         self.fakePlayerInfo.bUserNickNames = s;
-                        debug.log("loadBUserInfo ok");
+                        //debug.log("loadBUserInfo ok");
                     } catch (e) {
                         debug.log(e);
                     }
@@ -55,14 +55,14 @@ cc.Class({
 
     loadBasicUserInfoByIndex(i = 0) {
         let path = "playerInfo/data/" + i;
-        debug.log("loadBasicUserInfoByIndex " + path);
+        //debug.log("loadBasicUserInfoByIndex " + path);
 
         let self = this;
         appContext.getFileManager().loadResourceSafe(path, null,
             function (content) {
                 if (content != null) {
                     try {
-                        debug.log(content);
+                        //debug.log(content);
                         let json = JSON.parse(content);
                         if (json == null) {
                             return;
@@ -77,7 +77,7 @@ cc.Class({
                             });
                         }
 
-                        debug.log("loadBasicUserInfoByIndex ok " + i);
+                        //debug.log("loadBasicUserInfoByIndex ok " + i);
                     } catch (e) {
                         debug.log(e);
                     }
@@ -89,7 +89,7 @@ cc.Class({
     },
 
     applySpriteFrameOfBUserByIndex(targetSprite, path) {
-        debug.log("getSpriteFrameOfBUserByIndex " + path);
+        //debug.log("getSpriteFrameOfBUserByIndex " + path);
         appContext.getFileManager().applySpriteSafe(path, targetSprite, null, true);
     },
 });

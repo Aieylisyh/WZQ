@@ -145,7 +145,6 @@ cc.Class({
                 }, 2);
             }
         } else {
-            //TODO 匹配失败
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "匹配失败\n请重试");
             this.scheduleOnce(function () {
                 this.hide();

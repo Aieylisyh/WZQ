@@ -8,85 +8,140 @@ cc.Class({
 
         //onLaunchRecordUrl: "https://statistic.ttigd.cn/data-analysis/statistic/launch",
 
-        onEventUrl: "https://statistic.ttigd.cn/data-analysis/statistic/eventpacket",
+        /*********** 阿拉丁*/
+
+
+        enableALD: false,
+
+        aldTag: "",
+
+
+
+
+        /************ 阿拉丁*/
+    },
+
+    sendALD(e) {
+        if (!this.enableALD) {
+            return;
+        }
+
+        wx.aldSendEvent(this.aldTag + e);
+    },
+
+    sendTT(eventName, obj) {
+        if (WechatAPI.isTT) {
+            if (!obj) {
+                obj = {};
+            }
+            tt.reportAnalytics(eventName, obj);
+        }
     },
 
     onLoad() {
-        this.eventMap = new Map();
+        // this.eventMap = [];
+        // this.onEventUrl = "https://statistic2.ttigd.cn/statistic-service/statistic/playerEvent";
+
+        // this.param = {};
+    },
+
+    setParam() {
+        // if (user) {
+        //     this.param.uuid = user.getUsername();
+        //     this.param.playerId = this.param.uuid;
+        // }
     },
 
     //每隔一段时间上传一次统计数据
     update(dt) {
-        this._lastUploadTime += dt;
-        if (this._lastUploadTime < this.uploadInterval) {
-            return;
-        }
+        // this._lastUploadTime += dt;
+        // if (this._lastUploadTime < this.uploadInterval) {
+        //     return;
+        // }
 
-        this.uploadEvent();
-        this._lastUploadTime = 0;
+        // this.uploadEvent();
+        // this._lastUploadTime = 0;
     },
 
     //加速上传
     accelerateUpload(delay = 0.5) {
-        if (delay <= 0) {
-            this.uploadEvent();
-            return;
-        }
+        // if (delay <= 0) {
+        //     this.uploadEvent();
+        //     return;
+        // }
 
-        if (this._lastUploadTime < this.uploadInterval - delay) {
-            this._lastUploadTime = this.uploadInterval - delay;
-        }
+        // if (this._lastUploadTime < this.uploadInterval - delay) {
+        //     this._lastUploadTime = this.uploadInterval - delay;
+        // }
+    },
+
+    //上传启动记录
+    uploadLaunchRecord(appId, channelId, deviceId, playerId, okCallback) {
+        // var url = this.onLaunchRecordUrl + "?appId=" + appId + "&channelId=" + channelId
+        //     + "&uuid=" + deviceId + "&playerId=" + playerId;
+
+        // let requestResult = {
+        //     okCallback: okCallback,
+        // };
+
+        //post Request
     },
 
     //上传事件
-    uploadEvent() {
-        if (!this.eventMap || this.eventMap.size <= 0) {
-            return;
-        }
+    uploadEvent(force = false) {
+        // if (!this.eventMap) {
+        //     return;
+        // }
+        // if (!this.param) {
+        //     return;
+        // }
 
-        let eventData = {};
+        // if (this.param.uuid == null || this.param.uuid == "") {
+        //     this.setParam();
+        //     return;
+        // }
 
-        for (let [k, v] of this.eventMap) {
-            eventData[k] = v;
-        }
+        // let events = {};
+        // for (let i in this.eventMap) {
+        //     events[i] = this.eventMap[i];
+        // }
+        // let data = {};
+        // data.appId = debug.appId;
+        // data.uuid = this.param.uuid;
+        // data.playerId = this.param.playerId;
+        // data.eventCounts = events;
 
-        let data = {};
-        data.appId = debug.appId;
-        data.channelId = debug.channelId;
-        data.eventCounts = eventData;
+        // let dataStr = JSON.stringify(data);
 
-        let dataStr = JSON.stringify(data);
+        // if (!force) {
+        //     if (debug.enableLog || debug.useDevLocalServerIp || debug.useDevRemoteServerIp) {
+        //         debug.log("理当上传" + dataStr);
+        //         return;
+        //     }
+        // }
 
-        if (debug.enableLog || debug.useDevLocalServerIp || debug.useDevRemoteServerIp) {
-            debug.log("理当上传事件" + dataStr);
-            return;
-        }
-
-        WechatAPI.webService.postRequest(
-            WechatAPI.webService.getRequestObject(this.onEventUrl, dataStr,
-                function () {
-                    AppContext.getAnalyticManager().clearEvent();
-                },
-                null, null, null, null, false),
-            false);
+        // debug.log("上传 " + dataStr);
+        // appContext.webService.postRequest(
+        //     appContext.webService.getRequestObject(this.onEventUrl, dataStr,
+        //         function () {
+        //             AppContext.getAnalyticManager().clearEvent();
+        //         }),
+        //     false, true);
     },
 
     addEvent(eventName) {
-        if (!eventName) {
-            return;
-        }
+        // if (!eventName) {
+        //     return;
+        // }
 
-        if (this.eventMap.has(eventName)) {
-            let count = this.eventMap.get(eventName);
-            this.eventMap.set(eventName, count + 1);
-            return;
-        }
-
-        this.eventMap.set(eventName, 1);
+        // if (this.eventMap[eventName] != null) {
+        //     this.eventMap[eventName]++;
+        // } else {
+        //     this.eventMap[eventName] = 1;
+        // }
     },
 
     clearEvent() {
-        debug.log("清空eventMap" );
-        this.eventMap.clear();
+        //this.eventMap = [];
     }
 });

@@ -693,7 +693,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 240,
+      "width": 136.67,
       "height": 80.64
     },
     "_anchorPoint": {
@@ -744,8 +744,8 @@
       }
     ],
     "_useOriginalSize": false,
-    "_string": "系统设置",
-    "_N$string": "系统设置",
+    "_string": "设 置",
+    "_N$string": "设 置",
     "_fontSize": 60,
     "_lineHeight": 64,
     "_enableWrapText": true,
@@ -915,7 +915,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -124,
+        -120,
         32,
         0,
         0,
@@ -1027,7 +1027,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        139,
+        120,
         32,
         0,
         0,
@@ -1351,8 +1351,8 @@
     "target": {
       "__id__": 1
     },
-    "component": "GameSettingDialog",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "2d3f0YxGuJKWpg0iBp1P9uU",
     "handler": "onClickBgMusic",
     "customEventData": ""
   },
@@ -1484,7 +1484,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -124,
+        -120,
         -32,
         0,
         0,
@@ -1523,8 +1523,8 @@
       }
     ],
     "_useOriginalSize": false,
-    "_string": "下棋音效",
-    "_N$string": "下棋音效",
+    "_string": "游戏音效",
+    "_N$string": "游戏音效",
     "_fontSize": 48,
     "_lineHeight": 52,
     "_enableWrapText": true,
@@ -1596,7 +1596,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        139,
+        120,
         -32,
         0,
         0,
@@ -1920,8 +1920,8 @@
     "target": {
       "__id__": 1
     },
-    "component": "GameSettingDialog",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "2d3f0YxGuJKWpg0iBp1P9uU",
     "handler": "onClickBtnSoundEffect",
     "customEventData": ""
   },

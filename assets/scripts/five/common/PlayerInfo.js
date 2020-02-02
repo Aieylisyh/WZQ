@@ -137,4 +137,14 @@ cc.Class({
             appContext.getFileManager().applySpriteSafe(imgPath, this.gradeIcon);
         }
     },
+
+    notifyClick() {
+        if (this.nicknameLabel != null) {
+            let s = this.nicknameLabel.string;
+
+            if (StringUtil.isEmpty(s) || s == "我") {
+                this.nicknameLabel.string = "点此修改棋手信息";
+            }
+        }
+    },
 });

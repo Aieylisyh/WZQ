@@ -38,8 +38,7 @@ let SelfPlayer = cc.Class({
     },
 
     notifyGrabFirst: function () {
-        // debug.log("玩家快快决定是否抢先手吧！");
-        // this.grabFirst(false);//TODO ui let player choose
+        // this.grabFirst(false);
         appContext.getDialogManager().showDialog(DialogTypes.GrabFirst);
     },
 

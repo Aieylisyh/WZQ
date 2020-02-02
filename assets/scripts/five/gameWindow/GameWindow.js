@@ -34,15 +34,71 @@ cc.Class({
         chessSFBlack: cc.SpriteFrame,
 
         chessSFWhite: cc.SpriteFrame,
+
+        recordBtn: cc.Node,
+        recordingBtn: cc.Node,
+        recordingTimeLabel: cc.Label,
     },
 
-    start(){
+    onLoad: function () {
         if (WechatAPI.followBtn && typeof WechatAPI.followBtn.destroy == "function") {
             WechatAPI.followBtn.destroy();
             WechatAPI.followBtn = null;
         }
     },
-    
+
+    start() {
+        if (WechatAPI.isTT) {
+            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload(true);
+            this.onResetRecording();
+
+            if (WechatAPI.PoorTTBtn) {
+                WechatAPI.PoorTTBtn.hide();
+            }
+        }
+    },
+
+    onClickRecord() {
+        this.recordBtn.active = false;
+        this.recordingBtn.active = true;
+        WechatAPI.recordGameStart();
+
+        this.gameRecordtime = 0;
+        this.gameRecordtimeInt = 0;
+        this.recordingTimeLabel.string = "0";
+        this.recording = true;
+
+        WechatAPI.cache.autoRecording = false;
+    },
+
+    update(dt) {
+        if (this.recording) {
+            this.gameRecordtime += dt;
+            let tempInt = Math.floor(this.gameRecordtime);
+            if (tempInt != this.gameRecordtimeInt) {
+                if (WechatAPI.getCanStopGameRecording()) {
+                    this.gameRecordtimeInt = tempInt;
+                    this.recordingTimeLabel.string = tempInt;
+                } else {
+                    this.onResetRecording();
+                    this.recording = false;
+                }
+            }
+        }
+    },
+
+    onClickRecording() {
+        WechatAPI.recordGameEnd();
+        this.onResetRecording();
+
+        this.recording = false;
+    },
+
+    onResetRecording() {
+        this.recordBtn.active = true;
+        this.recordingBtn.active = false;
+    },
+
     reset: function () {
         this.selfPlayer.reset();
         this.opponentPlayer.reset();
