@@ -534,7 +534,7 @@
       "ctor": "Float64Array",
       "array": [
         700,
-        100,
+        50,
         0,
         0,
         0,
@@ -1796,8 +1796,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 800,
-      "height": 200
+      "width": 640,
+      "height": 150
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1809,14 +1809,14 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -182,
+        -35,
         0,
         0,
         0,
         0,
         1,
-        0.25,
-        0.25,
+        0.3,
+        0.3,
         1
       ]
     },
@@ -1860,8 +1860,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 380,
-      "height": 60.48
+      "width": 600,
+      "height": 90
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1873,14 +1873,14 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -12,
+        5,
         0,
         0,
         0,
         0,
         1,
-        2,
-        2,
+        1,
+        1,
         1
       ]
     },
@@ -1913,8 +1913,8 @@
     "_useOriginalSize": false,
     "_string": "",
     "_N$string": "",
-    "_fontSize": 40,
-    "_lineHeight": 48,
+    "_fontSize": 56,
+    "_lineHeight": 64,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,

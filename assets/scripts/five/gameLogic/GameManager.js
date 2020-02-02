@@ -416,7 +416,7 @@ cc.Class({
             this.getGameWindow().playChat(isSelf, phrase.p1);
             this.scheduleOnce(function () {
                 this.getGameWindow().playChat(!isSelf, phrase.p2);
-            }, 2);
+            }, 3);
 
             return;
         }

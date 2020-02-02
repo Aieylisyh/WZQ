@@ -99,6 +99,9 @@ cc.Class({
 
     giveReward() {
         let c = appContext.getUxManager().getAndRefineCheckinDayCounts();
+        if (appContext.getUxManager().gameInfo.checkinTodayTimes > 0) {
+            c -= 1;
+        }
         let reward = this.getReward(c + 1);
         appContext.getUxManager().rewardItems(reward);
 

@@ -528,7 +528,7 @@ let Dummy = cc.Class({
 
                 case 3:
                     missChance = 25;
-                    offlineChance = 0.2;
+                    offlineChance = 0.3;
                     rawSolutionTurns = 2 + Math.floor(Math.random() * 2.5);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
@@ -548,7 +548,7 @@ let Dummy = cc.Class({
 
                 case 5:
                     missChance = 10;
-                    offlineChance = 0.4;
+                    offlineChance = 0.5;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 2);
                     admitLooseChance = 15;
                     grabFirstChance = 35;
@@ -616,7 +616,7 @@ let Dummy = cc.Class({
                 turnTimeMin = 0.5 + turnTimeAdd;
                 turnTimeMax = 3 + turnTimeAdd;
             }
-            offlineChance = 100;//test
+            //offlineChance = 100;//test
             // turnTimeMin = 0;//test
             // turnTimeMax = 0;//test
 

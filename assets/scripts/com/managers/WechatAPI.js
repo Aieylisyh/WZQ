@@ -353,7 +353,7 @@ let WechatAPI = {
             style: {//-320
                 //left: 10 * ratio,
                 left: gameSize.width * ratio - 85 * ratio,
-                top: gameSize.height * 0.5 * ratio - 295 * ratio,
+                top: gameSize.height * 0.5 * ratio - 285 * ratio,
                 width: 75 * ratio,
                 height: 75 * ratio,
 

@@ -192,7 +192,7 @@ cc.Class({
                             style: {
                                 left: 10 * ratio,
                                 //   left: gameSize.width * ratio - 80 * ratio,
-                                top: gameSize.height * 0.5 * ratio - 295 * ratio,
+                                top: gameSize.height * 0.5 * ratio - 285 * ratio,
                                 width: 75 * ratio,
                                 height: 75 * ratio,
                                 lineHeight: 40,
@@ -244,7 +244,7 @@ cc.Class({
                 let hotObj = cc.instantiate(this.promoPrefab);
                 hotObj.parent = this.node;
                 hotObj.x = 265;
-                hotObj.y = 250;
+                hotObj.y = 240;
                 this.hotPromo = hotObj.getComponent("PromoItem");
                 this.hotPromo.setHotStyleTT();
             }
