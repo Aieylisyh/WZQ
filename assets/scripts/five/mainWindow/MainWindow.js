@@ -223,7 +223,7 @@ cc.Class({
     showPromo() {
         if (WechatAPI.isTT) {
             this.createFollowBtn();
-            
+
             if (WechatAPI.systemInfo.platform != 'ios') {
                 if (WechatAPI.isTTPoor) {
                     if (WechatAPI.PoorTTBtn) {
@@ -238,8 +238,8 @@ cc.Class({
 
                 let hotObj = cc.instantiate(this.promoPrefab);
                 hotObj.parent = this.node;
-                hotObj.x = -264;
-                hotObj.y = -415;
+                hotObj.x = -265;
+                hotObj.y = -460;
                 this.hotPromo = hotObj.getComponent("PromoItem");
                 this.hotPromo.setHotStyleTT();
             }

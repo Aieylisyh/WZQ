@@ -158,6 +158,11 @@ cc.Class({
         appContext.getAnalyticManager().accelerateUpload(0);
     },
 
+    onLoginFinish: function () {
+        this.init();
+        WechatAPI.setTTAppLaunchOptions();
+    },
+
     setDayInfo: function () {
         let day = Math.floor((Date.now() + 3600000 * 8) / 86400000);
         if (this.uxData.dayInfo == null || this.uxData.dayInfo.day == null || this.uxData.dayInfo.day != day) {

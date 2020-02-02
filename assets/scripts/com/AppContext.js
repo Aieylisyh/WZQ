@@ -128,7 +128,6 @@ cc.Class({
             }
             this.getRemoteAPI().loadFakePlayerInfo();
             this.windowManager.switchToMainWindow();
-            this._uxManager.init();
         }, 0);
     },
 

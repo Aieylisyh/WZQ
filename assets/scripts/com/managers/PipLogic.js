@@ -73,6 +73,7 @@ cc.Class({
 
                 try {
                     self.usePip(content);
+                    self.downloadMisc();
                     debug.log("usePip ok");
                 } catch (e) {
                     debug.warn("usePip fail");
@@ -111,6 +112,10 @@ cc.Class({
             appContext.getAnalyticManager().onEventUrl = statisticUrl;
         }
 
+        this.exit();
+    },
+
+    downloadMisc() {
         try {
             this.downloadPromo();
             this.downloadCfg();
@@ -118,8 +123,6 @@ cc.Class({
             debug.warn("downloadPromo Cfg exception");
             debug.logObj(e);
         }
-
-        this.exit();
     },
 
     downloadPromo: function () {
@@ -128,130 +131,6 @@ cc.Class({
 
 
         //头条微信现在都不再下载推广配置，改为直接在代码中写
-        if (WechatAPI.isTT) {
-            debug.promoInfo = {
-                title: "时下热门",
-                list: [
-                    {
-                        name: "加了米海盗",
-                        localImg: "image/smallModule/promott/jlm",
-                        appid: "tt82ccf4711de6783c"
-                    },
-                    {
-                        name: "枪王战僵尸",
-                        localImg: "image/smallModule/promott/qwzjs",
-                        appid: "ttd419a2a44b33fcbe"
-                    },
-                    {
-                        name: "反恐枪神",
-                        localImg: "image/smallModule/promott/fkqs",
-                        appid: "tt525d24e0cd77896c"
-                    },
-                    {
-                        name: "梦想商业街",
-                        localImg: "image/smallModule/promott/mxsyj",
-                        appid: "ttbfc2c97f20e86aad"
-                    }, {
-                        name: "我的射门会转弯",
-                        localImg: "image/smallModule/promott/wdsm",
-                        appid: "tt78b80e05e792be9d"
-                    }, {
-                        name: "玩转三明治",
-                        localImg: "image/smallModule/promott/smz",
-                        appid: "tt237055cdbc5ad129"
-                    },
-                    {
-                        name: "种子吃吃吃",
-                        localImg: "image/smallModule/promott/zzccc",
-                        appid: "ttd275a4c84d5f18ee"
-                    },
-                    {
-                        name: "超级守门员",
-                        localImg: "image/smallModule/promott/cjsmy",
-                        appid: "tt39254f98a60fd13b"
-                    },
-                    {
-                        name: "别掉进岩浆",
-                        localImg: "image/smallModule/promott/bdjyj",
-                        appid: "tt43e43559dcce8145"
-                    },
-                    {
-                        name: "你好抖腿兔",
-                        localImg: "image/smallModule/promott/nhdtt",
-                        appid: "ttd37da5c04c571966"
-                    },
-                ]
-            };
-
-            WechatAPI.setTTAppLaunchOptions();
-
-        } else if (WechatAPI.isWx) {
-            debug.promoInfo = {
-                title: "时下热门",
-                list: [{
-                    name: "臭弟弟别走",
-                    localImg: "image/smallModule/promo/cddbz",
-                    appid: "wxb0123872d07a84d0",
-                    navQuery: "?channel=wxd439a052b42ffd16&ald_media_id=28792&ald_link_key=3d2fa3e174945924&ald_position_id=0"
-                },
-                {
-                    name: "我的射门会拐弯",
-                    localImg: "image/smallModule/promo/wdsm",
-                    appid: "wx32d4d6af5d05a64b",
-                    navQuery: "?chid=18901&subchid=189zqt"
-                },
-                {
-                    name: "超级飞侠乐迪加速",
-                    localImg: "image/smallModule/promo/cjfx",
-                    appid: "wx0114bf81a726711d",
-                    navQuery: "?ald_media_id=21010&ald_link_key=1fd0881f9b556066&ald_position_id=0"
-                },
-                {
-                    name: "迷宫旋转",
-                    localImg: "image/smallModule/promo/mgxz",
-                    appid: "wxacc2ba058b5f80d6",
-                    navQuery: "?ald_media_id=18982&ald_link_key=9ffa92a9f38470fc&ald_position_id=0"
-                },
-                {
-                    name: "步步揪心",
-                    localImg: "image/smallModule/promo/bbjx",
-                    appid: "wxc17e027e6191feec",
-                    navQuery: "?ald_media_id=17182&ald_link_key=395e661a88211a30&ald_position_id=0"
-                },
-                {
-                    name: "百战坦克",
-                    localImg: "image/smallModule/promo/bztk",
-                    appid: "wxa99b9205c6ba687e",
-                    navQuery: "?ald_media_id=19865&ald_link_key=e94a9cb309ea1a66&ald_position_id=0"
-                },
-                {
-                    name: "猪猪侠之极速狂飙",
-                    localImg: "image/smallModule/promo/zzx",
-                    appid: "wx8735f9b390c59cfd",
-                    navQuery: "?ald_media_id=27969&ald_link_key=c5e54b687b2f9039&ald_position_id=0"
-                },
-                {
-                    name: "一起搭车",
-                    localImg: "image/smallModule/promo/yqdc",
-                    appid: "wx457e584926d33da6",
-                    navQuery: "?ald_media_id=14540&ald_link_key=deb2841171817d81&ald_position_id=0"
-                },
-                {
-                    name: "极速自行车高手",
-                    localImg: "image/smallModule/promo/jszxcgs",
-                    appid: "wx3bccea145a3d578d",
-                    navQuery: "?scene=18"
-                },
-                {
-                    name: "暴走恐龙行动",
-                    localImg: "image/smallModule/promo/bzkl",
-                    appid: "wxa15dbd8df5c6128f",
-                    navQuery: "?ald_media_id=28365&ald_link_key=ea3c338f24b537e0&ald_position_id=0"
-                }
-                ]
-            };
-        }
-
         return;
 
         debug.log("download promo " + debug.promoDataDownloadUrl);
