@@ -38,6 +38,8 @@ cc.Class({
         recordBtn: cc.Node,
         recordingBtn: cc.Node,
         recordingTimeLabel: cc.Label,
+
+        tip: cc.Node,
     },
 
     onLoad: function () {
@@ -50,10 +52,16 @@ cc.Class({
     start() {
         if (WechatAPI.isTT) {
             WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload(true);
-            this.onResetRecording();
 
             if (WechatAPI.PoorTTBtn) {
                 WechatAPI.PoorTTBtn.hide();
+            }
+
+            if (WechatAPI.gameRecorderManager) {
+                this.onResetRecording();
+            } else {
+                this.recordBtn.active = false;
+                this.recordingBtn.active = false;
             }
         }
     },
@@ -258,5 +266,9 @@ cc.Class({
 
     onPlayerInfoDialogHide() {
         this.selfPlayer.playerinfo.setup(appContext.getUxManager().getUserInfo());
+    },
+
+    onPlayerCommitChess() {
+        this.tip.active = false;
     },
 });

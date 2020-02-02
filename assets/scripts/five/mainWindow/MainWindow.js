@@ -28,9 +28,12 @@ cc.Class({
         this.playerInfoBoard.notifyClick();
         appContext.getSoundManager().startBackgroundMusic();
 
-        if (WechatAPI.isWx || WechatAPI.isTT) {
-            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload(true);
-        }
+        appContext.scheduleOnce(function () {
+            if (this.node && WechatAPI.isWx || WechatAPI.isTT) {
+                debug.log("banner 广告mw初次");
+                WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload(true);
+            }
+        }, 1);
     },
 
     update: function (dt) {
@@ -227,6 +230,7 @@ cc.Class({
             if (WechatAPI.systemInfo.platform != 'ios') {
                 if (WechatAPI.isTTPoor) {
                     if (WechatAPI.PoorTTBtn) {
+                        debug.log("展示 PoorTTBtn");
                         WechatAPI.PoorTTBtn.show();
                     }
                     return;
@@ -236,10 +240,11 @@ cc.Class({
                     this.btnPromo.active = true;
                 }
 
+                debug.log("创建 hotObj");
                 let hotObj = cc.instantiate(this.promoPrefab);
                 hotObj.parent = this.node;
-                hotObj.x = -265;
-                hotObj.y = -460;
+                hotObj.x = 265;
+                hotObj.y = 250;
                 this.hotPromo = hotObj.getComponent("PromoItem");
                 this.hotPromo.setHotStyleTT();
             }

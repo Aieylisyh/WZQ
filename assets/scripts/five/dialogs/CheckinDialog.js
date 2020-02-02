@@ -7,6 +7,8 @@ cc.Class({
 
     properties: {
         checkinItems: [require("CheckinItem")],
+
+        text: cc.Label,
     },
 
     show: function () {
@@ -21,21 +23,40 @@ cc.Class({
             let item = this.checkinItems[i];
             item.setFan(i < c);
         }
+
+        let res = appContext.getUxManager().todayCheckedin();
+        if (res) {
+            let canDoubleCheckin = appContext.getUxManager().gameInfo.checkinTodayTimes == 1;
+            if (canDoubleCheckin) {
+                //看广告可领第二次
+                this.text.string = "看个广告，可再领取一次签到奖励！";
+            } else {
+                this.text.string = "已签到，明日可再次签到";
+            }
+        } else {
+            this.text.string = "今天可领签到奖励！";
+        }
     },
 
     onClickBtnCheck: function () {
         appContext.getSoundManager().playBtn();
         if (!appContext.getUxManager().todayCheckedin()) {
             this.checkinSuc();
-            // let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
 
-            // if (canWatchAd) {
-            //     this.showVideo();
-            // } else {
-            //     appContext.getDialogManager().showDialog(DialogTypes.Toast, "签到失败，请稍后重试");
-            // }
         } else {
-            appContext.getDialogManager().showDialog(DialogTypes.Toast, "今天已经签到了");
+            let canDoubleCheckin = appContext.getUxManager().gameInfo.checkinTodayTimes == 1;
+            if (canDoubleCheckin) {
+                let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+
+                if (canWatchAd) {
+                    this.showVideo();
+                } else {
+                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "签到失败，请稍后重试");
+                }
+            } else {
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "今天已签到过了");
+            }
+
         }
     },
 

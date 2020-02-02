@@ -335,12 +335,12 @@ let WechatAPI = {
             this.createTTPoorBtn();
         }
 
-        if (appContext.getWindowManager().isInMainWindow()) {
-            let mw = appContext.getWindowManager().getCurrentWindowNode().getComponent("MainWindow");
-            if (mw && mw.showPromo) {
-                mw.showPromo();
-            }
-        }
+        // if (appContext.getWindowManager().isInMainWindow()) {
+        //     let mw = appContext.getWindowManager().getCurrentWindowNode().getComponent("MainWindow");
+        //     if (mw && mw.showPromo) {
+        //         mw.showPromo();
+        //     }
+        // }
     },
 
     createTTPoorBtn() {
@@ -351,9 +351,9 @@ let WechatAPI = {
             type: "image",
             image: "customRes/more.png",
             style: {//-320
-                left: 10 * ratio,
-                //   left: gameSize.width * ratio - 80 * ratio,
-                top: gameSize.height * 0.5 * ratio + 400 * ratio,
+                //left: 10 * ratio,
+                left: gameSize.width * ratio - 85 * ratio,
+                top: gameSize.height * 0.5 * ratio - 295 * ratio,
                 width: 75 * ratio,
                 height: 75 * ratio,
 
@@ -377,28 +377,28 @@ let WechatAPI = {
         });
 
         WechatAPI.PoorTTBtn.hide();
+        debug.log("创建PoorTTBtn");
         debug.log(WechatAPI.PoorTTBtn);
 
-
-        tt.createMoreGamesButton({
-            type: "image",
-            image: "customRes/more.png",
-            style: {
-                left: 20 * 0.33,
-                top: 1136 * 0.5 + 320 * 0.33,
-                width: 72 * 0.33,
-                height: 72 * 0.33,
-                lineHeight: 40,
-                backgroundColor: "#ff0000",
-                textColor: "#ffffff",
-                textAlign: "center",
-                fontSize: 16,
-                borderRadius: 0,
-                borderWidth: 0,
-                borderColor: '#ff0000'
-            },
-            appLaunchOptions: [],
-        });
+        // tt.createMoreGamesButton({
+        //     type: "image",
+        //     image: "customRes/more.png",
+        //     style: {
+        //         left: 20 * 0.33,
+        //         top: 1136 * 0.5 + 320 * 0.33,
+        //         width: 72 * 0.33,
+        //         height: 72 * 0.33,
+        //         lineHeight: 40,
+        //         backgroundColor: "#ff0000",
+        //         textColor: "#ffffff",
+        //         textAlign: "center",
+        //         fontSize: 16,
+        //         borderRadius: 0,
+        //         borderWidth: 0,
+        //         borderColor: '#ff0000'
+        //     },
+        //     appLaunchOptions: [],
+        // });
     },
 
     initCloudDev() {
@@ -1226,6 +1226,7 @@ let WechatAPI = {
         if (silent) {
             WechatAPI.cache.gameRecording = false;
         }
+        
         if (this.isTT) {
             if (this.gameRecorderManager) {
                 this.gameRecorderManager.stop();

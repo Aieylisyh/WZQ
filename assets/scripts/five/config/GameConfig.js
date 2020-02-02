@@ -126,50 +126,50 @@ cc.Class({
                 list: [
                     {
                         name: "加了米海盗",
-                        localImg: "image/smallModule/promott/jlm",
+                        localImg: "images/smallModule/promott/jlm",
                         appid: "tt82ccf4711de6783c"
                     },
                     {
                         name: "枪王战僵尸",
-                        localImg: "image/smallModule/promott/qwzjs",
+                        localImg: "images/smallModule/promott/qwzjs",
                         appid: "ttd419a2a44b33fcbe"
                     },
                     {
                         name: "反恐枪神",
-                        localImg: "image/smallModule/promott/fkqs",
+                        localImg: "images/smallModule/promott/fkqs",
                         appid: "tt525d24e0cd77896c"
                     },
                     {
                         name: "梦想商业街",
-                        localImg: "image/smallModule/promott/mxsyj",
+                        localImg: "images/smallModule/promott/mxsyj",
                         appid: "ttbfc2c97f20e86aad"
                     }, {
                         name: "我的射门会转弯",
-                        localImg: "image/smallModule/promott/wdsm",
+                        localImg: "images/smallModule/promott/wdsm",
                         appid: "tt78b80e05e792be9d"
                     }, {
                         name: "玩转三明治",
-                        localImg: "image/smallModule/promott/smz",
+                        localImg: "images/smallModule/promott/smz",
                         appid: "tt237055cdbc5ad129"
                     },
                     {
                         name: "种子吃吃吃",
-                        localImg: "image/smallModule/promott/zzccc",
+                        localImg: "images/smallModule/promott/zzccc",
                         appid: "ttd275a4c84d5f18ee"
                     },
                     {
                         name: "超级守门员",
-                        localImg: "image/smallModule/promott/cjsmy",
+                        localImg: "images/smallModule/promott/cjsmy",
                         appid: "tt39254f98a60fd13b"
                     },
                     {
                         name: "别掉进岩浆",
-                        localImg: "image/smallModule/promott/bdjyj",
+                        localImg: "images/smallModule/promott/bdjyj",
                         appid: "tt43e43559dcce8145"
                     },
                     {
                         name: "你好抖腿兔",
-                        localImg: "image/smallModule/promott/nhdtt",
+                        localImg: "images/smallModule/promott/nhdtt",
                         appid: "ttd37da5c04c571966"
                     },
                 ]

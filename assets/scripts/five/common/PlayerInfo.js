@@ -143,7 +143,7 @@ cc.Class({
             let s = this.nicknameLabel.string;
 
             if (StringUtil.isEmpty(s) || s == "我") {
-                this.nicknameLabel.string = "点此修改棋手信息";
+                this.nicknameLabel.string = "点此修改信息";
             }
         }
     },

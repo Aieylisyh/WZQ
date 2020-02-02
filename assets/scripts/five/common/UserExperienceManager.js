@@ -356,6 +356,7 @@ cc.Class({
             this.gameInfo.randomCardCount = 0;
             this.gameInfo.checkinLastDay = 0;
             this.gameInfo.checkinValidDayCount = 0;
+            this.gameInfo.checkinTodayTimes = 0;
             this.vitaSystem.init();
         } else {
             debug.log("load existing game info");
@@ -456,10 +457,12 @@ cc.Class({
             if (this.lastDayCheckedin()) {
                 if (this.gameInfo.checkinValidDayCount >= 6) {
                     this.gameInfo.checkinValidDayCount = 0;
+                    this.gameInfo.checkinTodayTimes = 0;
                     this.saveGameInfo();
                 }
             } else {
                 this.gameInfo.checkinValidDayCount = 0;
+                this.gameInfo.checkinTodayTimes = 0;
                 this.saveGameInfo();
             }
         }
@@ -469,8 +472,14 @@ cc.Class({
 
     checkinProcess() {
         let c = this.getAndRefineCheckinDayCounts();
-        this.gameInfo.checkinValidDayCount = c + 1;
         this.gameInfo.checkinLastDay = this.uxData.dayInfo.day;
+      
+        if( this.gameInfo.checkinTodayTimes==0){
+            this.gameInfo.checkinValidDayCount = c + 1;
+        }
+
+        this.gameInfo.checkinTodayTimes++;
+
         this.saveGameInfo();
     },
 

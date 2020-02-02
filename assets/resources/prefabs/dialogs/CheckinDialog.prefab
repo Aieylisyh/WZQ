@@ -5791,14 +5791,14 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 228,
+      "g": 202,
+      "b": 153,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 816,
+      "width": 0,
       "height": 70.56
     },
     "_anchorPoint": {
@@ -5849,8 +5849,8 @@
       }
     ],
     "_useOriginalSize": false,
-    "_string": "每天可领签到奖励，看广告可领第二次",
-    "_N$string": "每天可领签到奖励，看广告可领第二次",
+    "_string": "",
+    "_N$string": "",
     "_fontSize": 48,
     "_lineHeight": 56,
     "_enableWrapText": false,
@@ -6170,6 +6170,9 @@
         "__id__": 152
       }
     ],
+    "text": {
+      "__id__": 165
+    },
     "_id": ""
   },
   {

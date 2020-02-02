@@ -94,9 +94,9 @@ cc.Class({
         debug.log("下棋倒计时超时");
         let firstIsSelfPlayer = appContext.getGameManager().game.firstIsSelfPlayer;
         if (this.isSelf && firstIsSelfPlayer || (!this.isSelf && !firstIsSelfPlayer)) {
-            appContext.getGameManager().playerWin(1, true);
-        } else {
             appContext.getGameManager().playerWin(2, true);
+        } else {
+            appContext.getGameManager().playerWin(1, true);
         }
         //appContext.getGameManager().playerWin(3 - appContext.getGameManager().lastChessType);
     },

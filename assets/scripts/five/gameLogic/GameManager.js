@@ -108,12 +108,12 @@ cc.Class({
 
         //gamewindow
         this.getGameWindow().showInfo();
-        
+
         if (WechatAPI.cache.autoRecording) {
             //只撤销自动录屏 不影响手动录屏
             WechatAPI.recordGameEnd(true);
         }
-        
+
         this.chessboardManager.clearBoard();
         this.game.chessMap = this.chessboardManager.chessboard.chessMap;
 
@@ -182,6 +182,10 @@ cc.Class({
             this.delayedPlayerWin(lastChessType);
         } else {
             appContext.getSoundManager().playChess();
+            if (this.getCurrentPlayerIsSelf()) {
+                this.getGameWindow().onPlayerCommitChess();
+            }
+
             this.startNextTurn(lastChessType);
         }
     },

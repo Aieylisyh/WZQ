@@ -124,12 +124,14 @@ cc.Class({
             },
             caller: self,
         });
+
+        WechatAPI.videoAdUtil.show();
     },
 
     giveReward(reward, isBuyOrLottery = true) {
         appContext.getUxManager().rewardItems(reward);
         let text = Item.getTextByItem(reward);
-        let text1 = isBuyOrLottery ? "购买" : "领取";
-        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, text1 + "成功\n获得:" + text);
+        let text1 = isBuyOrLottery ? "购买" : "抽取";
+        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, text1 + "成功\n获得: " + text);
     },
 });
