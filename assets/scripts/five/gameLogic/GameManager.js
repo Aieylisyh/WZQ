@@ -167,7 +167,7 @@ cc.Class({
 
         this.game.currentTurn = 0;
         this.startNextTurn(2);
-
+        WechatAPI.tryStartAutoRecord();
         return true;
     },
 

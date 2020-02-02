@@ -1164,33 +1164,6 @@ let WechatAPI = {
                         WechatAPI.shareUtil.shareVideo(res.videoPath);
                         WechatAPI.cache.gameRecording = false;
                     }
-
-                    // WechatAPI.gameRecorderManager.clipVideo({
-                    //     path: res.videoPath,
-                    //     success(r) {
-                    //         console.log("clipVideo");
-                    //         console.log(r);
-
-                    //         /*this.gameRecorderManager.clipVideo({
-                    //             path: res.videoPath,
-                    //             //clipRange: clipIndexList.reverse(), // 倒序拼接
-                    //             success(res) {
-                    //                 console.log(res.videoPath) // 生成 最后10秒 + 开始5秒 的视频
-                    //             },
-                    //             fail(e) {
-                    //                 console.error(e)
-                    //             }
-                    //         })*/
-                    //     },
-
-                    //     fail(f) {
-                    //         console.log(f);
-                    //     },
-
-                    //     complete(f) {
-                    //         console.log(f);
-                    //     }
-                    // })
                 })
             }
         }
@@ -1207,13 +1180,18 @@ let WechatAPI = {
             }
 
             this.gameRecorderManager.start({
-                duration: 240,
+                duration: 300,
             });
         }
     },
 
-    tryStartAutoRecord() {
+    tryStartAutoRecord(refresh = false) {
         //如果是头条 此时应该测试自动录屏 如果玩家没有手动录屏的话
+        //refresh 更新录频的时间，也就是丢掉之前的
+        if (WechatAPI.cache.autoRecording && refresh) {
+            this.recordGameEnd(true);
+        }
+
         this.recordGameStart();
         WechatAPI.cache.autoRecording = true;
     },
@@ -1226,7 +1204,7 @@ let WechatAPI = {
         if (silent) {
             WechatAPI.cache.gameRecording = false;
         }
-        
+
         if (this.isTT) {
             if (this.gameRecorderManager) {
                 this.gameRecorderManager.stop();

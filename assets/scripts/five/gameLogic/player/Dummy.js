@@ -379,7 +379,7 @@ let Dummy = cc.Class({
         }
 
         //如果是头条 此时应该测试自动录屏 如果玩家没有手动录屏的话
-        WechatAPI.tryStartAutoRecord();
+        WechatAPI.tryStartAutoRecord(true);
     },
 
     onCon: function () {
@@ -391,7 +391,7 @@ let Dummy = cc.Class({
         }
 
         //如果是头条 此时应该测试自动录屏 如果玩家没有手动录屏的话
-        WechatAPI.tryStartAutoRecord();
+        WechatAPI.tryStartAutoRecord(true);
     },
 
     onMiss() {
