@@ -1404,7 +1404,7 @@
     "node": {
       "__id__": 32
     },
-    "_enabled": true,
+    "_enabled": false,
     "speed": 0,
     "glowInterval": 2,
     "opacityMax": 255,
@@ -2092,7 +2092,7 @@
     "node": {
       "__id__": 52
     },
-    "_enabled": true,
+    "_enabled": false,
     "speed": 0,
     "glowInterval": 2,
     "opacityMax": 255,
@@ -2780,7 +2780,7 @@
     "node": {
       "__id__": 72
     },
-    "_enabled": true,
+    "_enabled": false,
     "speed": 0,
     "glowInterval": 2,
     "opacityMax": 255,
@@ -3468,7 +3468,7 @@
     "node": {
       "__id__": 92
     },
-    "_enabled": true,
+    "_enabled": false,
     "speed": 0,
     "glowInterval": 2,
     "opacityMax": 255,
@@ -4156,7 +4156,7 @@
     "node": {
       "__id__": 112
     },
-    "_enabled": true,
+    "_enabled": false,
     "speed": 0,
     "glowInterval": 2,
     "opacityMax": 255,
@@ -5394,7 +5394,7 @@
     "node": {
       "__id__": 147
     },
-    "_enabled": true,
+    "_enabled": false,
     "speed": 0,
     "glowInterval": 2,
     "opacityMax": 255,

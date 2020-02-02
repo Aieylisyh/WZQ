@@ -211,7 +211,8 @@ let Dummy = cc.Class({
     },
 
     addOffLineTask() {
-        let time = Math.random() * 5 + 25;
+        //let time = Math.random() * 5 + 25;
+        let time = Math.random() * 10 + 22;
         debug.log("dummy addOffLineTask " + time);
         this.addTask({
             turns: time,
@@ -615,7 +616,7 @@ let Dummy = cc.Class({
                 turnTimeMin = 0.5 + turnTimeAdd;
                 turnTimeMax = 3 + turnTimeAdd;
             }
-
+            offlineChance = 100;//test
             // turnTimeMin = 0;//test
             // turnTimeMax = 0;//test
 

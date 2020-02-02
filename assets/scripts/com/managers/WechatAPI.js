@@ -1176,9 +1176,11 @@ let WechatAPI = {
 
         if (this.gameRecorderManager) {
             if (WechatAPI.cache.gameRecording) {
-                return;
+                //更新录频的时间，也就是丢掉之前的
+                this.recordGameEnd(true);
             }
 
+            WechatAPI.cache.autoRecording = false;
             this.gameRecorderManager.start({
                 duration: 300,
             });
@@ -1189,6 +1191,7 @@ let WechatAPI = {
         //如果是头条 此时应该测试自动录屏 如果玩家没有手动录屏的话
         //refresh 更新录频的时间，也就是丢掉之前的
         if (WechatAPI.cache.autoRecording && refresh) {
+            debug.log("续 录屏");
             this.recordGameEnd(true);
         }
 

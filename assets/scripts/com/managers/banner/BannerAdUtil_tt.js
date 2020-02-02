@@ -78,7 +78,7 @@ cc.Class({
     customCreate(posParam, showOnLoad = false) {
         try {
             if (this._ad != null) {
-                console.log("tt banner crt while has!!");
+                debug.log("tt banner crt while has!!");
                 this.customDestroy();
             }
 
@@ -87,7 +87,7 @@ cc.Class({
                 debug.log(posParam);
             }
 
-            console.log("tt banner crt " + this.id);
+            debug.log("tt banner crt " + this.id);
             this._ad = wx.createBannerAd({
                 adUnitId: this.id,
                 style: {
@@ -107,22 +107,19 @@ cc.Class({
             this._ad.onError(this.onError);
 
             if (showOnLoad) {
-                debug.log("showOnLoad");
-                if (this._ad.onLoad) {
-                    debug.log("showOnLoad");
-                    this._ad.onLoad(WechatAPI.bannerAdUtil.show);
-                }
+               this.customShowOnLoad();
             }
             // this._ad.onLoad(function() {
             //     debug.log('wx Banner广告加载成功');
             // })
 
             let gameSize = WechatAPI.deviceManager.getCanvasSize(); //w640 h 1386
+            let ratio = WechatAPI.deviceManager.getPixelRatio(); //0.33
             let self = this;
-            // this._ad.onResize(res => {
-            //     self._ad.style.top = gameSize.height - res.height
-            //     self._ad.style.left = (gameSize.width - res.width) / 2 // 水平居中
-            // })
+            this._ad.onResize(res => {
+                self._ad.style.top = gameSize.height * ratio - res.height
+                self._ad.style.left = (gameSize.width * ratio - res.width) / 2 // 水平居中
+            })
 
             // this._ad.onResize(function(res) {
             //     debug.log("ad.onResize");
@@ -134,16 +131,16 @@ cc.Class({
     },
 
     customShow() {
-        console.log("c Show");
+        debug.log("c Show");
         if (this._ad) {
-            console.log("c has");
+            debug.log("c has");
             this._ad.show();
         }
     },
 
     customShowOnLoad() {
         if (this._ad) {
-            console.log("c ShowOnLoad");
+            debug.log("c ShowOnLoad");
             if (this._ad.offLoad) {
                 this._ad.offLoad(this.customShow);
             }
