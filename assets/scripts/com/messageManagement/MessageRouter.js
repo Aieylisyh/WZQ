@@ -70,32 +70,32 @@ cc.Class({
 
     //分配处理器来处理网络接收到的消息
     checkReceivedMsg: function (_fetchCountPerFrame = 1) {
-        for (let i = 0; i < _fetchCountPerFrame; i++) {
-            let obj = appContext.getNetworkManager().dequeueMessageReceived();
-            if (obj == null) {
-                continue;
-            }
+        // for (let i = 0; i < _fetchCountPerFrame; i++) {
+        //     let obj = appContext.getNetworkManager().dequeueMessageReceived();
+        //     if (obj == null) {
+        //         continue;
+        //     }
 
-            let msg = obj.packet
-            if (msg == null) {
-                continue;
-            }
+        //     let msg = obj.packet
+        //     if (msg == null) {
+        //         continue;
+        //     }
 
-            this.resetNoResponseTimer();
+        //     this.resetNoResponseTimer();
 
-            let filtered = false;
-            for (let j in this._filters) {
-                let f = this._filters[j];
-                if (f != null && f.filter(msg)) {
-                    filtered = true;
-                    break;
-                }
-            }
+        //     let filtered = false;
+        //     for (let j in this._filters) {
+        //         let f = this._filters[j];
+        //         if (f != null && f.filter(msg)) {
+        //             filtered = true;
+        //             break;
+        //         }
+        //     }
 
-            if (!filtered) {
-                this.dispatch(msg);
-            }
-        }
+        //     if (!filtered) {
+        //         this.dispatch(msg);
+        //     }
+        // }
     },
 
     dispatch: function (msg) {

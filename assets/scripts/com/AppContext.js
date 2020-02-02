@@ -121,6 +121,11 @@ cc.Class({
 
         //切换到首场景
         this.scheduleOnce(function () {
+            let lm = appContext.getLoginManager();
+            if (!lm.isInLoginProcess()) {
+                this.getAnalyticManager().addEvent("login");
+                this.getLoginManager().login();
+            }
             this.getRemoteAPI().loadFakePlayerInfo();
             this.windowManager.switchToMainWindow();
             this._uxManager.init();

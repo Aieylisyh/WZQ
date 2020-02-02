@@ -4,7 +4,7 @@ let LoginState = require("LoginState");
 cc.Class({
     properties: {
         lm: {
-            get: function() {
+            get: function () {
                 return appContext.getLoginManager();
             }
         },
@@ -12,7 +12,7 @@ cc.Class({
         pipIndex: 0,
     },
 
-    ctor: function() {
+    ctor: function () {
         debug.log("pip logic ok");
         let pip1 = debug.pipDownloadUrl; //1 pip with ver
         let pip2 = debug.purePipDownloadUrl; //2 pip no ver
@@ -21,16 +21,16 @@ cc.Class({
         this.downloadPipFinishTags = new Array(this.pipList.length);
     },
 
-    getPipUrl: function(index) {
+    getPipUrl: function (index) {
         return this.pipList[index] + '?mcachenum=' + Date.parse(new Date());
     },
 
-    startDownloadPip: function() {
+    startDownloadPip: function () {
         this.resetDownloadFinishTags();
         this.downloadPip(0);
     },
 
-    next: function(index) {
+    next: function (index) {
         if (index >= this.pipList.length - 1) {
             this.exit();
         } else {
@@ -38,7 +38,7 @@ cc.Class({
         }
     },
 
-    downloadPip: function(index) {
+    downloadPip: function (index) {
         if (!WechatAPI.isEnabled()) {
             this.exit();
             return;
@@ -63,7 +63,7 @@ cc.Class({
 
         let self = this;
         appContext.getFileManager().loadRemoteTxtFile(url,
-            function(content) {
+            function (content) {
                 self.setDownloadPipFinishTag(index, true);
                 if (content == null) {
                     debug.log("loadPip content == null");
@@ -82,7 +82,7 @@ cc.Class({
             });
     },
 
-    usePip: function(content) {
+    usePip: function (content) {
         debug.logObj("content:" + content);
         let json = JSON.parse(content);
         console.log(json);
@@ -122,7 +122,7 @@ cc.Class({
         this.exit();
     },
 
-    downloadPromo: function() {
+    downloadPromo: function () {
         //if (WechatAPI.systemInfo.platform !== 'ios') {
         //要测试ios是否支持 暂时对ios也采用这种方式
 
@@ -131,20 +131,39 @@ cc.Class({
         if (WechatAPI.isTT) {
             debug.promoInfo = {
                 title: "时下热门",
-                list: [{
+                list: [
+                    {
+                        name: "加了米海盗",
+                        localImg: "image/smallModule/promott/jlm",
+                        appid: "tt82ccf4711de6783c"
+                    },
+                    {
+                        name: "枪王战僵尸",
+                        localImg: "image/smallModule/promott/qwzjs",
+                        appid: "ttd419a2a44b33fcbe"
+                    },
+                    {
+                        name: "反恐枪神",
+                        localImg: "image/smallModule/promott/fkqs",
+                        appid: "tt525d24e0cd77896c"
+                    },
+                    {
+                        name: "梦想商业街",
+                        localImg: "image/smallModule/promott/mxsyj",
+                        appid: "ttbfc2c97f20e86aad"
+                    }, {
+                        name: "我的射门会转弯",
+                        localImg: "image/smallModule/promott/wdsm",
+                        appid: "tt78b80e05e792be9d"
+                    }, {
                         name: "玩转三明治",
                         localImg: "image/smallModule/promott/smz",
                         appid: "tt237055cdbc5ad129"
                     },
                     {
-                        name: "天天扭蛋",
-                        localImg: "image/smallModule/promott/ttnd",
-                        appid: "tt18ba6e078790f9a1"
-                    },
-                    {
                         name: "种子吃吃吃",
                         localImg: "image/smallModule/promott/zzccc",
-                        appid: "tt68a31e1ef78989bb"
+                        appid: "ttd275a4c84d5f18ee"
                     },
                     {
                         name: "超级守门员",
@@ -152,20 +171,85 @@ cc.Class({
                         appid: "tt39254f98a60fd13b"
                     },
                     {
-                        name: "五子棋大战",
-                        localImg: "image/smallModule/promott/wzqdz",
-                        appid: "tt9bd2ed6f04f82beb"
-                    },{
+                        name: "别掉进岩浆",
+                        localImg: "image/smallModule/promott/bdjyj",
+                        appid: "tt43e43559dcce8145"
+                    },
+                    {
                         name: "你好抖腿兔",
                         localImg: "image/smallModule/promott/nhdtt",
                         appid: "ttd37da5c04c571966"
-                    }
+                    },
                 ]
             };
 
             WechatAPI.setTTAppLaunchOptions();
-            
+
         } else if (WechatAPI.isWx) {
+            debug.promoInfo = {
+                title: "时下热门",
+                list: [{
+                    name: "臭弟弟别走",
+                    localImg: "image/smallModule/promo/cddbz",
+                    appid: "wxb0123872d07a84d0",
+                    navQuery: "?channel=wxd439a052b42ffd16&ald_media_id=28792&ald_link_key=3d2fa3e174945924&ald_position_id=0"
+                },
+                {
+                    name: "我的射门会拐弯",
+                    localImg: "image/smallModule/promo/wdsm",
+                    appid: "wx32d4d6af5d05a64b",
+                    navQuery: "?chid=18901&subchid=189zqt"
+                },
+                {
+                    name: "超级飞侠乐迪加速",
+                    localImg: "image/smallModule/promo/cjfx",
+                    appid: "wx0114bf81a726711d",
+                    navQuery: "?ald_media_id=21010&ald_link_key=1fd0881f9b556066&ald_position_id=0"
+                },
+                {
+                    name: "迷宫旋转",
+                    localImg: "image/smallModule/promo/mgxz",
+                    appid: "wxacc2ba058b5f80d6",
+                    navQuery: "?ald_media_id=18982&ald_link_key=9ffa92a9f38470fc&ald_position_id=0"
+                },
+                {
+                    name: "步步揪心",
+                    localImg: "image/smallModule/promo/bbjx",
+                    appid: "wxc17e027e6191feec",
+                    navQuery: "?ald_media_id=17182&ald_link_key=395e661a88211a30&ald_position_id=0"
+                },
+                {
+                    name: "百战坦克",
+                    localImg: "image/smallModule/promo/bztk",
+                    appid: "wxa99b9205c6ba687e",
+                    navQuery: "?ald_media_id=19865&ald_link_key=e94a9cb309ea1a66&ald_position_id=0"
+                },
+                {
+                    name: "猪猪侠之极速狂飙",
+                    localImg: "image/smallModule/promo/zzx",
+                    appid: "wx8735f9b390c59cfd",
+                    navQuery: "?ald_media_id=27969&ald_link_key=c5e54b687b2f9039&ald_position_id=0"
+                },
+                {
+                    name: "一起搭车",
+                    localImg: "image/smallModule/promo/yqdc",
+                    appid: "wx457e584926d33da6",
+                    navQuery: "?ald_media_id=14540&ald_link_key=deb2841171817d81&ald_position_id=0"
+                },
+                {
+                    name: "极速自行车高手",
+                    localImg: "image/smallModule/promo/jszxcgs",
+                    appid: "wx3bccea145a3d578d",
+                    navQuery: "?scene=18"
+                },
+                {
+                    name: "暴走恐龙行动",
+                    localImg: "image/smallModule/promo/bzkl",
+                    appid: "wxa15dbd8df5c6128f",
+                    navQuery: "?ald_media_id=28365&ald_link_key=ea3c338f24b537e0&ald_position_id=0"
+                }
+                ]
+            };
         }
 
         return;
@@ -178,7 +262,7 @@ cc.Class({
         // promoPath = debug.promoDataDownloadUrl + '?mcachenum=' + Date.parse(new Date());
         promoPath = debug.promoDataDownloadUrl + '?mcachenum=' + Date.parse(new Date());
         appContext.getFileManager().loadRemoteTxtFile(promoPath,
-            function(content) {
+            function (content) {
                 if (content == null) {
                     debug.log("promo null");
 
@@ -212,7 +296,7 @@ cc.Class({
         );
     },
 
-    downloadCfg: function() {
+    downloadCfg: function () {
         return;
 
         debug.log("download Cfg");
@@ -221,7 +305,7 @@ cc.Class({
         let self = this;
         // let mainConfig = debug.promoDataDownloadUrl + '?mcachenum=' + Date.parse(new Date());
         appContext.getFileManager().loadRemoteTxtFile(mainConfig,
-            function(content) {
+            function (content) {
                 if (content == null) {
                     debug.log("ConfigFiles null");
 
@@ -256,22 +340,22 @@ cc.Class({
         );
     },
 
-    exit: function() {
+    exit: function () {
         this.lm.switchToState(LoginState.WxWaitAuthorize);
     },
 
-    addWaitingTask: function(index) {
+    addWaitingTask: function (index) {
         debug.log("添加1个waitingTask, index = " + index);
 
         let self = this;
         appContext.getTaskManager().addWaitingTask(10,
-            function() {
+            function () {
                 debug.log("index =  " + index + " 下载pip 超时")
                 appContext.getDialogManager().hideWaitingCircle();
                 self.next(index);
             },
             this,
-            function() {
+            function () {
                 if (self.isDownloadPipOrConfigFinish(index)) {
                     return true
                 }
@@ -281,16 +365,16 @@ cc.Class({
             this);
     },
 
-    isDownloadPipOrConfigFinish: function(index) {
+    isDownloadPipOrConfigFinish: function (index) {
 
         return this.downloadPipFinishTags[index];
     },
 
-    setDownloadPipFinishTag: function(index, isFinish) {
+    setDownloadPipFinishTag: function (index, isFinish) {
         this.downloadPipFinishTags[index] = isFinish;
     },
 
-    resetDownloadFinishTags: function() {
+    resetDownloadFinishTags: function () {
 
         for (let i = 0; i < this.downloadPipFinishTags.length; i++) {
             this.downloadPipFinishTags[i] = false;

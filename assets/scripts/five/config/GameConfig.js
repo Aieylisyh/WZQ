@@ -120,6 +120,16 @@ cc.Class({
             version: this.clientVersion,
             useDevRemoteServerIp: this.useDevRemoteServerIp,
             useDevLocalServerIp: this.useDevLocalServerIp,
+
+            getPromoList: function() {
+                let str = JSON.stringify(debug.promoInfo);
+                let promoInfo = str ? JSON.parse(str) : null;
+                if (promoInfo == null || promoInfo.list == null || promoInfo.list.length < 1) {
+                    return;
+                }
+
+                return promoInfo.list;
+            }
         };
 
         debug.testPlatform = this.testPlatform;
