@@ -33,7 +33,7 @@ cc.Class({
                 debug.log("banner 广告mw初次");
                 WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload(true);
             }
-        }, 1);
+        }, 12);
     },
 
     update: function (dt) {

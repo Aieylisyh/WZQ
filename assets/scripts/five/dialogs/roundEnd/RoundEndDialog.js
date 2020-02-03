@@ -65,6 +65,8 @@ cc.Class({
         goldPart: cc.Node,
 
         goldLabel: cc.Label,
+
+        shareReward: cc.Node,
     },
 
     show: function (info) {
@@ -76,6 +78,7 @@ cc.Class({
         //window.re = this;
         debug.log(info);
         appContext.getSoundManager().playStartRound();
+        WechatAPI.shareUtil.setShareVideoCB();
         this.fadeInBackground();
         this.info = info;
         this.step = 1;
@@ -366,6 +369,12 @@ cc.Class({
 
         if (WechatAPI.enableShare) {
             this.btnShowOff.active = true;
+            if (this.getHasVideoToShare()) {
+                this.shareReward.active = true;
+            } else {
+                this.shareReward.active = false;
+            }
+
         } else {
             this.btnShowOff.active = false;
         }
@@ -376,11 +385,13 @@ cc.Class({
 
         this.scheduleOnce(function () {
             this.processStep();
-        }, 1);
+        }, 0);
     },
 
     showBannerAd: function () {
-
+        // if (WechatAPI.isTT) {
+        //     WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload(true);
+        // }
     },
 
     // 点击"返回首页"按钮
@@ -403,9 +414,7 @@ cc.Class({
         appContext.getDialogManager().showDialog(DialogTypes.Match);
     },
 
-    // 点击"炫耀"按钮
-    onClickBtnShowoff: function () {
-        appContext.getSoundManager().playBtn();
+    getHasVideoToShare() {
         let hasVideo = false;
         if (WechatAPI.isTT && !this.autoShareVideo && WechatAPI.getCanStopGameRecording()) {
             hasVideo = true;
@@ -417,10 +426,29 @@ cc.Class({
         } else {
             hasVideo = false;
         }
-        if (hasVideo) {
+
+        return hasVideo;
+    },
+
+    // 点击"炫耀"按钮
+    onClickBtnShowoff: function () {
+        appContext.getSoundManager().playBtn();
+        if (this.getHasVideoToShare()) {
             //has Video
+            let reward = [{
+                type: "Gold",
+                count: Math.floor(Math.random() * 31 + 20),
+            }];
+            WechatAPI.shareUtil.setShareVideoCB(reward);
+            debug.log(" 点击炫耀按钮");
+            debug.log(WechatAPI.cache.autoRecording);
+            debug.log(WechatAPI.cache.gameRecording);
             WechatAPI.recordGameEnd();
+            
+            console.log("录屏assignRecordListeners");
+            this.shareReward.active = false;
         } else {
+            WechatAPI.shareUtil.setShareVideoCB();
             WechatAPI.shareUtil.share();
         }
     },

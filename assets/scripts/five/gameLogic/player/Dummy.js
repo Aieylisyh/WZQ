@@ -378,9 +378,6 @@ let Dummy = cc.Class({
                 toWin: true,
             });
         }
-
-        //如果是头条 此时应该测试自动录屏 如果玩家没有手动录屏的话
-        WechatAPI.tryStartAutoRecord(true);
     },
 
     onCon: function () {
@@ -390,9 +387,6 @@ let Dummy = cc.Class({
                 toLoose: true,
             });
         }
-
-        //如果是头条 此时应该测试自动录屏 如果玩家没有手动录屏的话
-        WechatAPI.tryStartAutoRecord(true);
     },
 
     onMiss() {
@@ -507,9 +501,9 @@ let Dummy = cc.Class({
 
             switch (grade) {
                 case 1:
-                    missChance = 50;
+                    missChance = 60;
                     offlineChance = 0;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 5);
+                    rawSolutionTurns = 3 + Math.floor(Math.random() * 5);
                     admitLooseChance = 0;
                     grabFirstChance = 10;
                     fastChance = 90;
@@ -517,9 +511,9 @@ let Dummy = cc.Class({
                     break;
 
                 case 2:
-                    missChance = 35;
+                    missChance = 40;
                     offlineChance = 0;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 4);
+                    rawSolutionTurns = 2 + Math.floor(Math.random() * 5);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
                     fastChance = 75;
@@ -527,7 +521,7 @@ let Dummy = cc.Class({
                     break;
 
                 case 3:
-                    missChance = 25;
+                    missChance = 30;
                     offlineChance = 0.3;
                     rawSolutionTurns = 2 + Math.floor(Math.random() * 2.5);
                     admitLooseChance = 35;
@@ -537,7 +531,7 @@ let Dummy = cc.Class({
                     break;
 
                 case 4:
-                    missChance = 18;
+                    missChance = 20;
                     offlineChance = 0.5;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 3);
                     admitLooseChance = 20;

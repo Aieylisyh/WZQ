@@ -1145,62 +1145,83 @@ let WechatAPI = {
 
     recordSetup() {
         if (this.isTT) {
-            this.gameRecorderManager = tt.getGameRecorderManager();
+            WechatAPI.gameRecorderManager = tt.getGameRecorderManager();
 
-            if (this.gameRecorderManager) {
-                this.gameRecorderManager.onStart(res => {
-                    WechatAPI.cache.gameRecordStartTime = Date.now();
-                    WechatAPI.cache.gameRecording = true;
-                    console.log('录屏开始' + WechatAPI.cache.gameRecordStartTime);
-                    console.log(res);
-                })
-
-                this.gameRecorderManager.onStop((res) => {
-                    console.log("录屏结束");
-                    console.log(res);
-
-                    // console.log(res.videoPath);
-                    if (WechatAPI.cache.gameRecording) {
-                        WechatAPI.shareUtil.shareVideo(res.videoPath);
-                        WechatAPI.cache.gameRecording = false;
-                    }
-                })
+            if (WechatAPI.gameRecorderManager) {
+                WechatAPI.assignRecordListeners();
             }
         }
+    },
+
+    assignRecordListeners() {
+        console.log("录屏assignRecordListeners");
+        WechatAPI.gameRecorderManager.onStart(res => {
+            WechatAPI.cache.gameRecordStartTime = Date.now();
+            WechatAPI.cache.gameRecording = true;
+            console.log('录屏开始' + WechatAPI.cache.gameRecordStartTime);
+            console.log(res);
+        })
+
+        WechatAPI.gameRecorderManager.onStop((res) => {
+            console.log("录屏结束");
+            console.log(res);
+
+            // console.log(res.videoPath);
+            if (WechatAPI.cache.gameRecording) {
+                WechatAPI.shareUtil.shareVideo(res.videoPath);
+                WechatAPI.cache.gameRecording = false;
+            }
+
+            if (WechatAPI.cache.recordAfterStop) {
+                WechatAPI.cache.recordAfterStop = false;
+                WechatAPI.gameRecorderManager.start({
+                    duration: 120, //录屏改为120秒，已经录了90秒则自动续时间
+                });
+            }
+        })
     },
 
     recordGameStart() {
-        if (!this.isTT) {
-            return;
-        }
-
-        if (this.gameRecorderManager) {
+        if (WechatAPI.gameRecorderManager) {
             if (WechatAPI.cache.gameRecording) {
                 //更新录频的时间，也就是丢掉之前的
+                console.log('!!!录屏重新开始');
+                WechatAPI.cache.recordAfterStop = true;
                 this.recordGameEnd(true);
+
+            } else {
+                console.log('!!!录屏开始');
+                WechatAPI.gameRecorderManager.start({
+                    duration: 120, //录屏改为120秒，已经录了60秒则自动续时间
+                });
             }
 
             WechatAPI.cache.autoRecording = false;
-            this.gameRecorderManager.start({
-                duration: 300,
-            });
         }
     },
 
-    tryStartAutoRecord(refresh = false) {
-        //如果是头条 此时应该测试自动录屏 如果玩家没有手动录屏的话
-        //refresh 更新录频的时间，也就是丢掉之前的
-        if (WechatAPI.cache.autoRecording && refresh) {
-            debug.log("续 录屏");
-            this.recordGameEnd(true);
+    tryStartAutoRecordAndKeepTime() {
+        //如果在手动录屏。则跳过 如果在自动录屏，检测时间
+        if (!WechatAPI.cache.autoRecording && WechatAPI.cache.gameRecording) {
+            debug.log("在手动录屏 不续录屏");
+            return;
         }
 
+        if (WechatAPI.cache.autoRecording) {
+            let dt = (Date.now() - WechatAPI.cache.gameRecordStartTime) / 1000;
+            debug.log("时间dt " + dt);
+            if (dt < 60) {
+                debug.log("时间不够 不续录屏");
+                return;
+            }
+        }
+        debug.log("续录屏");
         this.recordGameStart();
         WechatAPI.cache.autoRecording = true;
     },
 
     getCanStopGameRecording() {
-        return this.isTT && this.gameRecorderManager && WechatAPI.cache.gameRecording;
+        return this.isTT && WechatAPI.gameRecorderManager && WechatAPI.cache.gameRecording;
     },
 
     recordGameEnd(silent = false) {
@@ -1208,18 +1229,17 @@ let WechatAPI = {
             WechatAPI.cache.gameRecording = false;
         }
 
-        if (this.isTT) {
-            if (this.gameRecorderManager) {
-                this.gameRecorderManager.stop();
-                //这段代码用于截取精彩瞬间，适合有操作的片段！
-                // this.gameRecorderManager.recordClip({
-                //     timeRange: [5, 3],
-                //     success(r) {
-                //         console.log(r.index) // 裁剪唯一索引
-                //         clipIndexList.push(r.index)
-                //     }
-                // })
-            }
+        if (WechatAPI.gameRecorderManager) {
+            debug.log("录屏stop");
+            WechatAPI.gameRecorderManager.stop();
+            //这段代码用于截取精彩瞬间，适合有操作的片段！
+            // this.gameRecorderManager.recordClip({
+            //     timeRange: [5, 3],
+            //     success(r) {
+            //         console.log(r.index) // 裁剪唯一索引
+            //         clipIndexList.push(r.index)
+            //     }
+            // })
         }
     },
 }

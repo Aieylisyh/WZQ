@@ -256,6 +256,8 @@ cc.Class({
     onClickOppoChess() {
         if (debug.enableLog) {
             appContext.getGameManager().showChat(false, "happy");
+
+            WechatAPI.assignRecordListeners();
         }
     },
 

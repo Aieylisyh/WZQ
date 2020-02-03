@@ -167,7 +167,6 @@ cc.Class({
 
         this.game.currentTurn = 0;
         this.startNextTurn(2);
-        WechatAPI.tryStartAutoRecord();
         return true;
     },
 
@@ -194,6 +193,8 @@ cc.Class({
         this.game.currentChessType = 3 - lastChessType;
         this.game.currentTurn++;
 
+        WechatAPI.tryStartAutoRecordAndKeepTime(); 
+        
         if (this.getCurrentPlayerIsSelf()) {
             this.game.selfPlayer.notifyPlay();
             this.getGameWindow().showTimer(true);
@@ -328,7 +329,7 @@ cc.Class({
 
     getOpening() {
         //暂时不用这个，开局的信息太多，影响用户体验
-        let index = Math.floor(Math.random() * 7);
+        let index = Math.floor(Math.random() * 10);
         let p1 = "";
         let p2 = "";
 
@@ -346,14 +347,24 @@ cc.Class({
             p2 = "看谁笑到最后";
         } else if (index == 4) {
             p1 = "万棋归宗！";
-            p2 = "晚，晚期龟粽？";
+            p2 = "晚，晚期，龟什么?";
         } else if (index == 5) {
             p1 = "我下棋可是专业的";
             p2 = "选的下棋专业的输棋科目吧";
         } else if (index == 6) {
             p1 = "在我的棋力下颤抖吧！";
             p2 = "哇，我好怕怕啊";
+        } else if (index == 7) {
+            p1 = "为了五子棋之王";
+            p2 = "为了我么?";
+        } else if (index == 8) {
+            p1 = "我是要成为棋王的人";
+            p2 = "像我一样努力，你也可以";
+        } else if (index == 9) {
+            p1 = "我下棋是很精准的";
+            p2 = "你这个棋子就歪了";
         }
+
         return {
             p1: p1,
             p2: p2,

@@ -1,6 +1,8 @@
 // let StringUtil = require("StringUtil");
 let Encoder = require("Encoder");
 let DataUtil = require("DataUtil");
+let Item = require("Item");
+let DialogTypes = require("DialogTypes");
 
 let TtShare = {
 
@@ -110,6 +112,12 @@ let TtShare = {
         tt.shareAppMessage(shareObj);
     },
 
+    setShareVideoCB(cb) {
+        // console.log('setShareVideoCB');
+        // console.log(cb);
+        this.shareVideoCB = cb;
+    },
+
     shareVideo(path) {
         // tt.shareAppMessage({
         //     channel: 'video',
@@ -145,6 +153,8 @@ let TtShare = {
         }
         //8ee2j69haaaijm7gid
         //ch4n5gsi0njkflegg5
+        let self = this;
+
         tt.shareAppMessage({
             channel: 'video',
             imageUrl: '',
@@ -156,6 +166,19 @@ let TtShare = {
             },
             success() {
                 console.log('分享视频成功');
+
+                console.log(self.shareVideoCB);
+                if (self.shareVideoCB && self.shareVideoCB.length > 0) {
+
+                    let reward = self.shareVideoCB;
+                    self.shareVideoCB = null;
+                    console.log(reward);
+                    appContext.getUxManager().rewardItems(reward);
+                    let text = Item.getTextByItem(reward);
+                    appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "分享成功\n获得: " + text);
+
+                    appContext.getUxManager().saveGameInfo();
+                }
             },
             fail(e) {
                 console.log('分享视频失败');

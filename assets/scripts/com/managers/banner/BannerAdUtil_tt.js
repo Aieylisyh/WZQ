@@ -5,7 +5,7 @@ cc.Class({
         id: "38lvc3bk3yx252gc0b",
     },
 
-    isEnabled: function() {
+    isEnabled: function () {
         if (debug.extraSettings.nobanner) {
             return false;
         }
@@ -34,47 +34,6 @@ cc.Class({
         this._ad && this._ad.hide();
     },
 
-    getBottomMiddle: function(offsetTop = 0) {
-        let ratio = WechatAPI.deviceManager.getPixelRatio(); //0.33
-
-        let expectedWidth = 192; //https://developer.toutiao.com/dev/minigame/ugjM3EjL4IzNx4COycTM
-        let expectedHeight = 108;
-        let gameSize = WechatAPI.deviceManager.getCanvasSize(); //w640 h 1386
-
-        //let leftMin = 0;
-        let leftMax = gameSize.width * ratio - expectedWidth;
-
-        //let topMin = 0;
-        let topMax = gameSize.height * ratio - expectedHeight;
-
-        return {
-            left: leftMax * 0.5,
-            top: topMax + offsetTop
-        };
-    },
-
-    getCenterOffset: function(x = 0, y = 0) {
-        let ratio = WechatAPI.deviceManager.getPixelRatio(); //0.33
-
-        let expectedWidth = 192; //https://developer.toutiao.com/dev/minigame/ugjM3EjL4IzNx4COycTM
-        let expectedHeight = 108;
-        let gameSize = WechatAPI.deviceManager.getCanvasSize(); //w640 h 1386
-
-        //let leftMin = 0;
-        let leftMax = gameSize.width * ratio - expectedWidth;
-
-        //let topMin = 0;
-        let topMax = gameSize.height * ratio - expectedHeight;
-
-        let offsetX = x * ratio;
-        let offsetY = y * ratio;
-
-        return {
-            left: leftMax * 0.5 + offsetX,
-            top: topMax * 0.5 + offsetY
-        };
-    },
-
     customCreate(posParam, showOnLoad = false) {
         try {
             if (this._ad != null) {
@@ -82,22 +41,25 @@ cc.Class({
                 this.customDestroy();
             }
 
-            if (posParam == null) {
-                posParam = this.getBottomMiddle();
-                debug.log(posParam);
-            }
+            const { windowWidth, windowHeight } = tt.getSystemInfoSync();
+            var targetBannerAdWidth = 200;
 
             debug.log("tt banner crt " + this.id);
+
+            let style = {
+                // width: targetBannerAdWidth,
+                // top: windowHeight - (targetBannerAdWidth / 16) * 9 // 根据系统约定尺寸计算出广告高度
+                width: 200,
+                top: 44,
+                left: 0,
+                //Banner广告一般的比例为16:9，最小宽度是128（设备像素），最大宽度是208（设备像素）。
+                //开发者可以在这之间自由指定广告宽度。广告组件会自动等比例缩放素材。
+            };
+            debug.log(style);
+
             this._ad = wx.createBannerAd({
                 adUnitId: this.id,
-                style: {
-                    left: posParam.left,
-                    top: posParam.top,
-                    width: 192,
-                    //Banner广告一般的比例为16:9，最小宽度是128（设备像素），最大宽度是208（设备像素）。
-                    //开发者可以在这之间自由指定广告宽度。广告组件会自动等比例缩放素材。
-                },
-                //adIntervals: 31, // 自动刷新频率不能小于30秒
+                style: style,
             })
             if (this._ad == null) {
                 console.log("tt banner crt fail");
@@ -107,31 +69,24 @@ cc.Class({
             this._ad.onError(this.onError);
 
             if (showOnLoad) {
-               this.customShowOnLoad();
+                this.customShowOnLoad();
             }
-            // this._ad.onLoad(function() {
-            //     debug.log('wx Banner广告加载成功');
-            // })
 
-            let gameSize = WechatAPI.deviceManager.getCanvasSize(); //w640 h 1386
-            let ratio = WechatAPI.deviceManager.getPixelRatio(); //0.33
             let self = this;
-            this._ad.onResize(res => {
-                self._ad.style.top = gameSize.height * ratio - res.height
-                self._ad.style.left = (gameSize.width * ratio - res.width) / 2 // 水平居中
+            this._ad.onResize(size => {
+                console.log("banner广告onResize!!!!");
+                console.log(size.width, size.height);
+                self._ad.style.top = 33;
+                self._ad.style.left = 1;
             })
 
-            // this._ad.onResize(function(res) {
-            //     debug.log("ad.onResize");
-            //     debug.log(res);
-            // });
         } catch (e) {
             debug.log(e);
         }
     },
 
     customShow() {
-        debug.log("c Show");
+        debug.log("注意这里应该是显示bannerad  c Show");
         if (this._ad) {
             debug.log("c has");
             this._ad.show();
