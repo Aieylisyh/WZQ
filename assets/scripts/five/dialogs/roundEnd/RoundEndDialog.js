@@ -309,7 +309,7 @@ cc.Class({
         this.isExpAddInfo = {
             from: this.info.fromScore,
             to: this.info.toScore,
-            time: 3,
+            time: 2.5,
             timer: 0,
             crtGrade: this.gradeAndFillInfoFrom.grade,
         };
@@ -317,7 +317,7 @@ cc.Class({
         this.scheduleOnce(function () {
             this.expLowLabel.string = this.getExpLowLabel();
             this.processStep();
-        }, 2);
+        }, 1);
     },
 
     getExpLowLabel() {
@@ -390,7 +390,7 @@ cc.Class({
 
     showBannerAd: function () {
         // if (WechatAPI.isTT) {
-        //     WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload(true);
+        //     WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
         // }
     },
 
@@ -444,9 +444,14 @@ cc.Class({
             debug.log(WechatAPI.cache.autoRecording);
             debug.log(WechatAPI.cache.gameRecording);
             WechatAPI.recordGameEnd();
-            
+
             console.log("录屏assignRecordListeners");
             this.shareReward.active = false;
+            appContext.scheduleOnce(function () {
+                console.log("assignRecordListeners开始");
+                WechatAPI.assignRecordListeners();
+            }, 3);
+
         } else {
             WechatAPI.shareUtil.setShareVideoCB();
             WechatAPI.shareUtil.share();

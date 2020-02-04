@@ -33,9 +33,17 @@ cc.Class({
         _selfPlayerActionX: -750,
 
         _opponentPlayerActionX: 750,
+
+        matchPhrase: cc.Node,
+
+        matchHardModePhrase: cc.Node,
     },
 
-    show: function () {
+    show: function (isHardMode) {
+        this.isHardMode = isHardMode;
+        this.matchPhrase.active = !isHardMode;
+        this.matchHardModePhrase.active = isHardMode;
+
         this.bgOpacity = 210;
         this.reset();
 

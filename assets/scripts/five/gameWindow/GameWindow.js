@@ -37,7 +37,7 @@ cc.Class({
 
         recordBtn: cc.Node,
         recordingBtn: cc.Node,
-        recordingTimeLabel: cc.Label,
+        //recordingTimeLabel: cc.Label,
 
         tip: cc.Node,
     },
@@ -51,18 +51,14 @@ cc.Class({
 
     start() {
         if (WechatAPI.isTT) {
-            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload(true);
+            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
 
             if (WechatAPI.PoorTTBtn) {
                 WechatAPI.PoorTTBtn.hide();
             }
 
-            if (WechatAPI.gameRecorderManager) {
-                this.onResetRecording();
-            } else {
-                this.recordBtn.active = false;
-                this.recordingBtn.active = false;
-            }
+            this.recordBtn.active = false;
+            this.recordingBtn.active = false;
         }
     },
 
@@ -73,7 +69,6 @@ cc.Class({
 
         this.gameRecordtime = 0;
         this.gameRecordtimeInt = 0;
-        this.recordingTimeLabel.string = "0";
         this.recording = true;
 
         WechatAPI.cache.autoRecording = false;
@@ -81,12 +76,12 @@ cc.Class({
 
     update(dt) {
         if (this.recording) {
-            this.gameRecordtime += dt;
+            this.gameRecordtime += dt * 0.5;
             let tempInt = Math.floor(this.gameRecordtime);
             if (tempInt != this.gameRecordtimeInt) {
                 if (WechatAPI.getCanStopGameRecording()) {
                     this.gameRecordtimeInt = tempInt;
-                    this.recordingTimeLabel.string = tempInt;
+                    //this.recordingTimeLabel.string = tempInt;
                 } else {
                     this.onResetRecording();
                     this.recording = false;
@@ -105,6 +100,7 @@ cc.Class({
     onResetRecording() {
         this.recordBtn.active = true;
         this.recordingBtn.active = false;
+        //this.recordingTimeLabel.string = "";
     },
 
     reset: function () {
@@ -175,7 +171,12 @@ cc.Class({
         // this.scheduleOnce(function () {
         //     this.chessSPRight.node.runAction(cc.scaleTo(1, 1).easing(cc.easeElasticOut()));
         // }, 1);
-
+        if (WechatAPI.gameRecorderManager) {
+            this.onResetRecording();
+        } else {
+            this.recordBtn.active = false;
+            this.recordingBtn.active = false;
+        }
     },
 
     closeChatBoard() {
@@ -256,8 +257,6 @@ cc.Class({
     onClickOppoChess() {
         if (debug.enableLog) {
             appContext.getGameManager().showChat(false, "happy");
-
-            WechatAPI.assignRecordListeners();
         }
     },
 

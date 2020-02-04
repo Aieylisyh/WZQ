@@ -353,7 +353,7 @@ let WechatAPI = {
             style: {//-320
                 //left: 10 * ratio,
                 left: gameSize.width * ratio - 85 * ratio,
-                top: gameSize.height * 0.5 * ratio - 285 * ratio,
+                top: gameSize.height * 0.5 * ratio - 290 * ratio,
                 width: 75 * ratio,
                 height: 75 * ratio,
 
@@ -1174,11 +1174,18 @@ let WechatAPI = {
 
             if (WechatAPI.cache.recordAfterStop) {
                 WechatAPI.cache.recordAfterStop = false;
-                WechatAPI.gameRecorderManager.start({
-                    duration: 120, //录屏改为120秒，已经录了90秒则自动续时间
-                });
+                WechatAPI.startRecorderWithDelay();
             }
         })
+    },
+
+    startRecorderWithDelay() {
+        appContext.scheduleOnce(function () {
+            console.log("录屏test 再开始");
+            WechatAPI.gameRecorderManager.start({
+                duration: 120, //录屏改为120秒，已经录了90秒则自动续时间
+            });
+        }, 1);
     },
 
     recordGameStart() {
@@ -1221,7 +1228,7 @@ let WechatAPI = {
     },
 
     getCanStopGameRecording() {
-        return this.isTT && WechatAPI.gameRecorderManager && WechatAPI.cache.gameRecording;
+        return WechatAPI.gameRecorderManager && WechatAPI.cache.gameRecording;
     },
 
     recordGameEnd(silent = false) {

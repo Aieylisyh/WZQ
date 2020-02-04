@@ -586,7 +586,6 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 0;
                     admitLooseChance = 1;
                     grabFirstChance = 75;
-                    per.playStyle = 0;//强制没有风格
                     fastChance = 50;
                     turnTimeAdd = 0.6;
                     break;
@@ -597,7 +596,6 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 0;
                     admitLooseChance = 0;
                     grabFirstChance = 80;
-                    per.playStyle = 0;//强制没有风格
                     fastChance = 55;
                     turnTimeAdd = 1;
                     break;

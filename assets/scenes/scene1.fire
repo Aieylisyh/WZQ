@@ -198,7 +198,7 @@
       "array": [
         0,
         0,
-        420.01640835908967,
+        420.0223208354528,
         0,
         0,
         0,
@@ -1194,7 +1194,8 @@
     "_enabled": true,
     "uploadInterval": 300,
     "_lastUploadTime": 0,
-    "onEventUrl": "https://statistic.ttigd.cn/data-analysis/statistic/eventpacket",
+    "enableALD": false,
+    "aldTag": "",
     "_id": "56IZhU2vdFI53lEaLQCN26"
   }
 ]

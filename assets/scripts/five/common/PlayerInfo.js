@@ -126,6 +126,13 @@ cc.Class({
         }
 
         if (this.gradePB != null) {
+            let v = gradeAndFillInfo.fillAmount / gradeInfo.exp;
+            if (!v) {
+                v = 0;
+            } else if (v > 1) {
+                v = 1;
+            }
+
             this.gradePB.value = gradeAndFillInfo.fillAmount / gradeInfo.exp;
         }
 

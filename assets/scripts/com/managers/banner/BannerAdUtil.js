@@ -3,11 +3,11 @@ cc.Class({
         _ad: null,
     },
 
-    isEnabled: function() {
+    isEnabled: function () {
         return false;
     },
 
-    init: function() {
+    init: function () {
         debug.log('banner 初始化');
         if (this.isEnabled()) {
             this.create();
@@ -18,8 +18,8 @@ cc.Class({
         return false;
     },
 
-    show: function(posParam) {
-        debug.log("!show banner");
+    show: function (posParam) {
+        //debug.log("!show banner");
         let self = WechatAPI.bannerAdUtil;
         if (!self.isEnabled()) {
             return;
@@ -46,59 +46,62 @@ cc.Class({
         }
     },
 
-    create: function(posParam, show) {
+    create: function () {
         if (!this.isEnabled()) {
             return;
         }
 
-        if (show && WechatAPI.isYX) {
+        if (WechatAPI.isYX) {
             debug.log("block banner ad create by yxsdk");
             WechatAPI.YXSDK.showBanner();
             return;
         }
 
         if (this.has()) {
-            debug.log("已有banner广告");
+            debug.log("已有banner广告不再create");
+            return;
+            // this.destroy();
         }
-        this.destroy();
 
-        this.customCreate(posParam, show);
+
+        if (!this.has()) {
+            //debug.log("现在没有banner广告了");
+            this.customCreate();
+        } else {
+            //debug.log("还是有banner广告");
+        }
         // if (this._ad == null) {
         //     debug.warn("!banner ad null");
         //     return;
         // }
     },
 
-    has: function() {
+    has: function () {
         return this._ad != null;
     },
 
-    hide: function() {
+    hide: function () {
         if (this.has()) {
-            this.customHide();
+            this.customHide(); i
         }
     },
 
-    reload: function(show = false, posParam) {
+    reload: function () {
         if (!this.isEnabled()) {
             return;
         }
 
-        if (show && WechatAPI.isYX) {
+        if (WechatAPI.isYX) {
             debug.log("block banner ad reload by yxsdk");
             WechatAPI.YXSDK.showBanner();
             return;
         }
 
         this.destroy();
-
-        let self = this;
-        if (!self.has()) {
-            self.create(posParam, show);
-        }
+        this.create();
     },
 
-    destroy: function() {
+    destroy: function () {
         if (this.has()) {
             this.customDestroy();
         }
@@ -106,9 +109,9 @@ cc.Class({
         this._ad = null;
     },
 
-    customDestroy() {},
-    customHide() {},
-    customCreate(posParam, show) {},
-    customShow() {},
-    customShowOnLoad() {},
+    customDestroy() { },
+    customHide() { },
+    customCreate(posParam, show) { },
+    customShow() { },
+    customShowOnLoad() { },
 });

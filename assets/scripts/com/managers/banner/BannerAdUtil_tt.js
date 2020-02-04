@@ -34,8 +34,9 @@ cc.Class({
         this._ad && this._ad.hide();
     },
 
-    customCreate(posParam, showOnLoad = false) {
+    customCreate() {
         try {
+            debug.log("banner 广告customCreate");
             if (this._ad != null) {
                 debug.log("tt banner crt while has!!");
                 this.customDestroy();
@@ -48,10 +49,9 @@ cc.Class({
 
             let style = {
                 // width: targetBannerAdWidth,
-                // top: windowHeight - (targetBannerAdWidth / 16) * 9 // 根据系统约定尺寸计算出广告高度
+                top: windowHeight - (targetBannerAdWidth / 16) * 9, // 根据系统约定尺寸计算出广告高度
                 width: 200,
-                top: 44,
-                left: 0,
+                left: windowWidth * 0.5 - 100,
                 //Banner广告一般的比例为16:9，最小宽度是128（设备像素），最大宽度是208（设备像素）。
                 //开发者可以在这之间自由指定广告宽度。广告组件会自动等比例缩放素材。
             };
@@ -68,18 +68,19 @@ cc.Class({
 
             this._ad.onError(this.onError);
 
-            if (showOnLoad) {
-                this.customShowOnLoad();
-            }
+            // if (showOnLoad) {
+            //     this.customShowOnLoad();
+            // }
 
             let self = this;
-            this._ad.onResize(size => {
+            self._ad.onResize(size => {
                 console.log("banner广告onResize!!!!");
                 console.log(size.width, size.height);
-                self._ad.style.top = 33;
-                self._ad.style.left = 1;
+                self._ad.style.top = windowHeight - size.height;
+                self._ad.style.left = (windowWidth - size.width) / 2;
             })
 
+            this._ad.show();
         } catch (e) {
             debug.log(e);
         }
