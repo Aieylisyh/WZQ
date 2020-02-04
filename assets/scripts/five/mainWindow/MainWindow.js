@@ -86,7 +86,7 @@ cc.Class({
             if (delta >= 600000) {
                 this.btnMatchModeTimer.string = "";
             } else {
-                this.btnMatchModeTimer.string = DataUtil.getCountDownHMSStringByMS(delta);
+                this.btnMatchModeTimer.string = DataUtil.getCountDownHMSStringByMS(600000 - delta);
             }
         } else {
             this.btnMatchModeTimer.string = "";
