@@ -119,7 +119,7 @@ cc.Class({
 
     // 已经匹配到对手
     onMatchedOpponent: function () {
-        let info = DummyPicker.matchOpponent();
+        let info = DummyPicker.matchOpponent(this.isHardMode);
         debug.log("已经匹配到对手");
         debug.log(info);
         this.cancelBtn.active = false;
@@ -164,7 +164,9 @@ cc.Class({
     requireOpponenetInfo: function () {
         this.opponent = null;
         let time = 0.5 + Math.random() * 4;
-
+        if (this.isHardMode) {
+            time = 2.5 + Math.random() * 5;
+        }
         this.scheduleOnce(function () {
             this.onMatchedOpponent();
         }, time);

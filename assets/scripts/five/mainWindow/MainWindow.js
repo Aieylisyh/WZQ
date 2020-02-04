@@ -82,7 +82,7 @@ cc.Class({
         // 随机匹配左移动画
         this.btnMatchMode.active = true;
         let btnMatchModeY = this.btnMatchMode.y;
-        let btnMatchModeAction = cc.moveTo(0.5, -60, btnMatchModeY).easing(cc.easeCubicActionOut());
+        let btnMatchModeAction = cc.moveTo(0.5, -55, btnMatchModeY).easing(cc.easeCubicActionOut());
         let finishCallback = cc.callFunc(function () {
             this.onBuildAnimDone();
         }, this);
@@ -93,7 +93,7 @@ cc.Class({
         if (canEnterHardMode) {
             this.btnHardMode.active = true;
             let btnHardModeY = this.btnHardMode.y;
-            let btnHardModeAction = cc.moveTo(0.5, 60, btnHardModeY).easing(cc.easeCubicActionOut());
+            let btnHardModeAction = cc.moveTo(0.5, 50, btnHardModeY).easing(cc.easeCubicActionOut());
             let btnHardModeSequence = cc.sequence(cc.delayTime(0.1), btnHardModeAction);
             this.btnHardMode.runAction(btnHardModeSequence);
         }
@@ -285,7 +285,7 @@ cc.Class({
             this.housePhrase = "您的居所 【陋室】\n达到段位三，以升级到【简雅居】";
         }
 
-        this.house.runAction(cc.fadeTo(2, 255));
+        this.house.node.runAction(cc.fadeTo(2, 255));
     },
 
     setRedDots() {

@@ -3,15 +3,18 @@ let Grade = require("Grade");
 
 cc.Class({
     statics: {
-        matchOpponent: function () {
+        matchOpponent: function (isHardMode) {
             //搜索对手时调用，什么参数都不用传
             //会自动检测是否有网，自动分配合理的对手
             let user = appContext.getUxManager().getUserInfo();
-            let gradeAndFillInfo = Grade.getGradeAndFillInfoByScore(user.basic.currentScore);
+            let grade = Grade.getGradeAndFillInfoByScore(user.basic.currentScore).grade;
+            if (isHardMode) {
+                grade = 10;
+            }
             //let gradeInfo = Grade.getGradeInfo(gradeAndFillInfo.grade);
             // debug.log("matchOpponent");
             // debug.log(user);
-            let dummyPlayer = this.pickDummy(gradeAndFillInfo.grade);
+            let dummyPlayer = this.pickDummy(grade);
             let success = true;
             if (!dummyPlayer) {
                 success = false;
@@ -78,17 +81,17 @@ cc.Class({
 
             let oppoGrade = grade;
             let rnd = Math.random();
-            if (rnd > 0.95) {
+            if (rnd > 0.96) {
                 oppoGrade += 3;
-            } else if (rnd > 0.9) {
+            } else if (rnd > 0.92) {
                 oppoGrade -= 3;
-            } else if (rnd > 0.85) {
+            } else if (rnd > 0.87) {
                 oppoGrade += 2;
-            } else if (rnd > 0.8) {
+            } else if (rnd > 0.82) {
                 oppoGrade -= 2;
-            } else if (rnd > 0.6) {
+            } else if (rnd > 0.66) {
                 oppoGrade += 1;
-            } else if (rnd > 0.4) {
+            } else if (rnd > 0.5) {
                 oppoGrade -= 1;
             }
 
