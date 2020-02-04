@@ -473,8 +473,8 @@ cc.Class({
     checkinProcess() {
         let c = this.getAndRefineCheckinDayCounts();
         this.gameInfo.checkinLastDay = this.uxData.dayInfo.day;
-      
-        if( this.gameInfo.checkinTodayTimes==0){
+
+        if (this.gameInfo.checkinTodayTimes == 0) {
             this.gameInfo.checkinValidDayCount = c + 1;
         }
 
@@ -529,11 +529,7 @@ cc.Class({
                 info.usedBonusScore = true;
             }
         } else {
-            if (this.gameInfo.keepGradeCardCount >= 1) {
-                this.useKeepGradeCard();
-                info.usedKeepGradeCard = true;
-                info.gradeScoreAdd = 0;
-            }
+            //use keepGradeCardLater
         }
 
         let userInfo = this.getUserInfo();

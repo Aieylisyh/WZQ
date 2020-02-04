@@ -14,10 +14,6 @@ cc.Class({
 
         gradeScoreLabel: cc.Label,
 
-        btnContinue: cc.Node,
-
-        btnBack: cc.Node,
-
         btnShowOff: cc.Node,
 
         btnKeepGrade: cc.Node,
@@ -332,11 +328,11 @@ cc.Class({
         if (!this.info.win) {
             let rnd = Math.random();
             if (rnd > 0.66) {
-                return "无论输赢都可获得金币。当然，赢了更多";
+                return "无论输赢，都可以获得金币";
             } else if (rnd > 0.33) {
-                return "点击角色信息，可以任意更换头像和昵称";
+                return "输给段位较高的对手，损失的积分也较少";
             } else {
-                return "每局的积分计算，和双方的段位都有关系";
+                return "击败段位较高的对手，可以获得更多积分";
             }
         }
 
@@ -367,15 +363,22 @@ cc.Class({
         this.btnKeepGrade.active = false;
         this.buttons.active = true;
 
-        if (WechatAPI.enableShare) {
-            this.btnShowOff.active = true;
-            if (this.getHasVideoToShare()) {
-                this.shareReward.active = true;
+        if (this.info.win) {
+            this.btnKeepGrade.active = false;
+
+            if (WechatAPI.enableShare) {
+                this.btnShowOff.active = true;
+                if (this.getHasVideoToShare()) {
+                    this.shareReward.active = true;
+                } else {
+                    this.shareReward.active = false;
+                }
             } else {
-                this.shareReward.active = false;
+                this.btnShowOff.active = false;
             }
 
         } else {
+            this.btnKeepGrade.active = true;
             this.btnShowOff.active = false;
         }
 
@@ -461,7 +464,93 @@ cc.Class({
     // 点击"段位保护"按钮
     onClickBtnProtectGrade: function () {
         appContext.getSoundManager().playBtn();
-        this.hide();
+        let info = {};
+        let self = this;
+        let count = appContext.getUxManager().gameInfo.keepGradeCardCount;
+        if (count >= 1) {
+            info.content = "当前有保段卡" + count + "张\n是否使用1张\n回复所有失去的积分？";
+            info.btn1 = {
+                clickFunction: function () {
+                    appContext.getUxManager().useKeepGradeCard();
+                    self.resetScore();
+                },
+            };
+            info.btn2 = {
+            };
+
+        } else {
+            info.content = "当前没有保段卡\n看一个视频\n可以回复所有失去的积分";
+            info.btn1 = {
+                clickFunction: function () {
+                    self.showVideo();
+                },
+            };
+            info.btn2 = {
+            };
+        }
+
+        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+    },
+
+    showVideo() {
+        let self = this;
+        WechatAPI.videoAdUtil.updateCb({
+            failCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_keepgrade_fail");
+                appContext.getAnalyticManager().sendTT('videoAd_keepgrade', {
+                    res: 1,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "保段未成功");
+            },
+            finishCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_keepgrade_ok");
+                appContext.getAnalyticManager().sendTT('videoAd_keepgrade', {
+                    res: 0,
+                });
+                this.resetScore();
+            },
+            ceaseCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_keepgrade_cease");
+                appContext.getAnalyticManager().sendTT('videoAd_keepgrade', {
+                    res: 2,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后保段");
+            },
+            caller: self,
+        });
+
+        WechatAPI.videoAdUtil.show();
+    },
+
+    resetScore() {
+        let score = Math.abs(this.info.gradeScoreAdd)
+        appContext.getDialogManager().showDialog(DialogTypes.Toast, "段位保护成功！\n回复积分" + score);
+
+        let userInfo = appContext.getUxManager().getUserInfo();
+        userInfo.basic.currentScore += score;
+        appContext.getUxManager().saveUserInfo(userInfo);
+
+        //big grade icon. animate whatever it changes or not
+        let originalScale = this.selfPlayerInfo.gradeIcon.node.scale;
+        let seq = cc.sequence(
+            cc.scaleTo(0.3, 0),
+            cc.callFunc(function () {
+                debug.log(this.gradeInfoFrom.imgPath);
+                this.selfPlayerInfo.setGradeIcon(this.gradeInfoFrom.imgPath);
+            }, this),
+            cc.scaleTo(0.5, originalScale)
+        );
+        this.selfPlayerInfo.gradeIcon.node.runAction(seq);
+
+        let gradeFrom = this.gradeAndFillInfoFrom.grade;
+        let total = this.gradeAndFillInfoFrom.fillTop - this.gradeAndFillInfoFrom.fillBottom;
+        this.setPBProgress(this.gradeAndFillInfoFrom.fillAmount, total);
+
+        if (gradeFrom >= 10) {
+            this.setPBIcon(gradeFrom);
+        } else {
+            this.setPBIcon(gradeFrom, gradeFrom + 1);
+        }
     },
 
     onClickChest: function (chest) {

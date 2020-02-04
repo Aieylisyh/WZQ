@@ -10,16 +10,7 @@ cc.Class({
     },
 
     show: function (info) {
-        // info.content
-        // info.btn1.name
-        // info.btn1.clickFunction
-        // info.btn1.clickFunctionCaller
-        // info.btn1.isRed//默认为红色
-        // info.btn2//默认为null
-        // info.btn2.name
-        // info.btn2.clickFunction
-        // info.btn2.clickFunctionCaller
-        // info.btn2.isRed//默认为红色
+
         if (typeof info == "string") {
             info = { content: info };
         }
@@ -75,7 +66,7 @@ cc.Class({
             }
         }
 
-        //this.resizeFrame();
+        this.resizeFrame();
         this.fadeInBackground();
         this.fastShowAnim();
     },

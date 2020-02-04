@@ -35,7 +35,7 @@ let Grade = {
         },
         {
             grade: 7,
-            name: "入神七段",
+            name: "如臻七段",
             exp: 1250,
         },
         {

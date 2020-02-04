@@ -133,10 +133,22 @@ cc.Class({
 
     // 点击"随机匹配"
     onClickBtnHardModeMatch: function () {
+        //TODO 看广告 ，可以看广告立即匹配
+        appContext.getSoundManager().playBtn();
+        appContext.getDialogManager().showDialog(DialogTypes.Match, true);
+
+    },
+
+    onClickBtnHardModeMatchQuestion: function () {
         //TODO
         //看广告，说明5倍积分
         appContext.getSoundManager().playBtn();
-        appContext.getDialogManager().showDialog(DialogTypes.Match, true);
+        let info = {
+            content: "在【巅峰对决】模式下\n您将不受当前段位的影响\n优先匹配段位较高的对手\n有助于快速升级\n\n每10分钟可匹配一次",
+        };
+
+        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+
     },
 
     // 点击"敬请期待"
@@ -273,16 +285,16 @@ cc.Class({
             this.housePhrase = "您的居所 【棋圣阁】\n已达最高等级";
         } else if (grade > 6) {
             this.house.spriteFrame = this.house4;
-            this.housePhrase = "您的居所 【一心坊】\n达到段位九，以升级到【棋圣阁】";
+            this.housePhrase = "您的居所 【一心坊】\n达到【超神九段】\n可以升级到【棋圣阁】";
         } else if (grade > 4) {
             this.house.spriteFrame = this.house3;
-            this.housePhrase = "您的居所 【聚贤庄】\n达到段位七，以升级到【一心坊】";
+            this.housePhrase = "您的居所 【聚贤楼】\n达到【如臻七段】\n可以升级到【一心坊】";
         } else if (grade > 2) {
             this.house.spriteFrame = this.house2;
-            this.housePhrase = "您的居所 【简雅居】\n达到段位五，以升级到【聚贤庄】";
+            this.housePhrase = "您的居所 【简雅居】\n达到【大成五段】\n可以升级到【聚贤楼】";
         } else {
             this.house.spriteFrame = this.house1;
-            this.housePhrase = "您的居所 【陋室】\n达到段位三，以升级到【简雅居】";
+            this.housePhrase = "您的居所 【陋室】\n达到【小成三段】\n可以升级到【简雅居】";
         }
 
         this.house.node.runAction(cc.fadeTo(2, 255));

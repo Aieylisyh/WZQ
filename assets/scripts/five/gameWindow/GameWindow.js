@@ -159,8 +159,7 @@ cc.Class({
     },
 
     onStartGame(firstIsSelfPlayer) {
-        //show surrender
-        this.btnSurrender.active = true;
+
         this.chessSPLeft.node.scale = 0;
         this.chessSPRight.node.scale = 0;
         this.chessSPLeft.spriteFrame = firstIsSelfPlayer ? this.chessSFBlack : this.chessSFWhite;
@@ -271,5 +270,7 @@ cc.Class({
 
     onPlayerCommitChess() {
         this.tip.active = false;
+        //show surrender
+        this.btnSurrender.active = true;
     },
 });
