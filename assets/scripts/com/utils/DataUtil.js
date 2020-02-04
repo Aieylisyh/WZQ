@@ -540,6 +540,18 @@ let DataUtil = {
 
         return money / 100;
     },
+
+    getCountDownHMSStringByMS: function(t) {
+        let second = Math.floor(t / 1000);
+        let minute = Math.floor(second / 60);
+        let hour = Math.floor(minute / 60);
+        let rsMinute = minute - hour * 60;
+        let rsSecond = second - rsMinute * 60 - hour * 3600;
+        let strS = rsSecond < 10 ? ("0" + rsSecond) : rsSecond;
+        let strM = rsMinute < 10 ? ("0" + rsMinute) : rsMinute;
+        let strH = hour < 10 ? ("0" + hour) : hour;
+        return strH + ":" + strM + ":" + strS;
+    },
 }
 
 module.exports = DataUtil;

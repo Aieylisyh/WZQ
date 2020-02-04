@@ -1,5 +1,6 @@
 let DialogTypes = require("DialogTypes");
 let Grade = require("Grade");
+let DataUtil = require('DataUtil');
 
 cc.Class({
     extends: cc.Component,
@@ -34,7 +35,10 @@ cc.Class({
         house5: cc.SpriteFrame,
 
         redDot_shop: cc.Node,
+
         redDot_checkin: cc.Node,
+
+        btnMatchModeTimer: cc.Label,
     },
 
     start: function () {
@@ -55,6 +59,8 @@ cc.Class({
                 WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
             }
         }, 3);
+
+        this.tickTime = 1;
     },
 
     update: function (dt) {
@@ -62,6 +68,28 @@ cc.Class({
         if (this.swingTime != null) {
             this.playerInfoBoard.node.x = Math.floor(Math.sin(this.swingTime * 1.5) * 220) * 0.1;
             this.swingTime += dt;
+        }
+
+        if (this.tickTimer == null) {
+            return;
+        }
+
+        this.tickTimer -= dt;
+        if (this.tickTimer > 0) {
+            return;
+        }
+
+        let timestamp = appContext.getUxManager().gameInfo.lastHardModeTimestamp;
+
+        if (timestamp) {
+            let delta = Date.now() - timestamp;
+            if (delta >= 600000) {
+                this.btnMatchModeTimer.string = "";
+            } else {
+                this.btnMatchModeTimer.string = DataUtil.getCountDownHMSStringByMS(delta);
+            }
+        } else {
+            this.btnMatchModeTimer.string = "";
         }
     },
 
@@ -79,24 +107,41 @@ cc.Class({
             return;
         }
 
+        let btnMatchModeX = -50;
+
+        let userInfo = appContext.getUxManager().getUserInfo();
+        let grade = Grade.getGradeAndFillInfoByScore(userInfo.basic.currentScore).grade;
+        let canEnterHardMode = true;//TODO
+        if (grade < 2 || grade > 9) {
+            canEnterHardMode = false;
+        }
+
+        if (canEnterHardMode) {
+            this.btnHardMode.active = true;
+            let btnHardModeY = this.btnHardMode.y;
+            let btnHardModeAction = cc.moveTo(0.5, 60, btnHardModeY).easing(cc.easeCubicActionOut());
+            let btnHardModeSequence = cc.sequence(cc.delayTime(0.1), btnHardModeAction);
+            this.btnHardMode.runAction(btnHardModeSequence);
+
+            this.btnMatchModeTimer.string = "";
+            this.tickTimer = 0;
+        } else {
+            btnMatchModeX = 0;
+            this.btnHardMode.active = false;
+            this.btnHardMode.scale = 0.9;
+            this.btnMatchMode.y = this.btnMatchMode.y - 10;
+        }
+
         // 随机匹配左移动画
         this.btnMatchMode.active = true;
         let btnMatchModeY = this.btnMatchMode.y;
-        let btnMatchModeAction = cc.moveTo(0.5, -55, btnMatchModeY).easing(cc.easeCubicActionOut());
+        let btnMatchModeAction = cc.moveTo(0.5, btnMatchModeX, btnMatchModeY).easing(cc.easeCubicActionOut());
         let finishCallback = cc.callFunc(function () {
             this.onBuildAnimDone();
         }, this);
         let btnMatchModeSequence = cc.sequence(cc.delayTime(0.1), btnMatchModeAction, finishCallback);
         this.btnMatchMode.runAction(btnMatchModeSequence);
 
-        let canEnterHardMode = true;//TODO
-        if (canEnterHardMode) {
-            this.btnHardMode.active = true;
-            let btnHardModeY = this.btnHardMode.y;
-            let btnHardModeAction = cc.moveTo(0.5, 50, btnHardModeY).easing(cc.easeCubicActionOut());
-            let btnHardModeSequence = cc.sequence(cc.delayTime(0.1), btnHardModeAction);
-            this.btnHardMode.runAction(btnHardModeSequence);
-        }
     },
 
     onBuildAnimDone: function () {
@@ -135,8 +180,64 @@ cc.Class({
     onClickBtnHardModeMatch: function () {
         //TODO 看广告 ，可以看广告立即匹配
         appContext.getSoundManager().playBtn();
-        appContext.getDialogManager().showDialog(DialogTypes.Match, true);
+        let timestamp = appContext.getUxManager().gameInfo.lastHardModeTimestamp;
 
+        if (timestamp) {
+            let delta = Date.now() - timestamp;
+            if (delta < 600000) {
+                let self = this;
+
+                let info = {
+                    content: "看一个视频，立即进行【巅峰对决】的匹配？",
+                };
+                info.btn1 = {
+                    clickFunction: function () {
+                        self.showVideo();
+                    },
+                };
+                info.btn2 = {
+                };
+                appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+                return;
+            }
+        }
+
+        this.startHardModeMatch();
+    },
+
+    startHardModeMatch() {
+        appContext.getUxManager().gameInfo.lastHardModeTimestamp = Date.now();
+        appContext.getDialogManager().showDialog(DialogTypes.Match, true);
+    },
+
+    showVideo() {
+        let self = this;
+        WechatAPI.videoAdUtil.updateCb({
+            failCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_hardmode_fail");
+                appContext.getAnalyticManager().sendTT('videoAd_hardmode', {
+                    res: 1,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "暂时不能进入，请稍后重试");
+            },
+            finishCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_hardmode_ok");
+                appContext.getAnalyticManager().sendTT('videoAd_hardmode', {
+                    res: 0,
+                });
+                this.startHardModeMatch();
+            },
+            ceaseCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_hardmode_cease");
+                appContext.getAnalyticManager().sendTT('videoAd_hardmode', {
+                    res: 2,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以立即匹配");
+            },
+            caller: self,
+        });
+
+        WechatAPI.videoAdUtil.show();
     },
 
     onClickBtnHardModeMatchQuestion: function () {
