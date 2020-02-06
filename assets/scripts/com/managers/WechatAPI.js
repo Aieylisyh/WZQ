@@ -1167,6 +1167,11 @@ let WechatAPI = {
             console.log(res);
 
             // console.log(res.videoPath);
+            if (WechatAPI.cache.gameRecordHideShare) {
+                WechatAPI.cache.gameRecordHideShare = false;
+                WechatAPI.cache.gameRecording = false;
+            }
+            
             if (WechatAPI.cache.gameRecording) {
                 WechatAPI.shareUtil.shareVideo(res.videoPath);
                 WechatAPI.cache.gameRecording = false;

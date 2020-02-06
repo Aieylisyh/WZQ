@@ -193,8 +193,8 @@ cc.Class({
         this.game.currentChessType = 3 - lastChessType;
         this.game.currentTurn++;
 
-        WechatAPI.tryStartAutoRecordAndKeepTime(); 
-        
+        WechatAPI.tryStartAutoRecordAndKeepTime();
+
         if (this.getCurrentPlayerIsSelf()) {
             this.game.selfPlayer.notifyPlay();
             this.getGameWindow().showTimer(true);
@@ -390,7 +390,7 @@ cc.Class({
 
     getThink() {
         //10秒出  20秒出
-        let index = Math.floor(Math.random() * 4);
+        let index = Math.floor(Math.random() * 7);
         let p1 = "";
 
         if (index == 0) {
@@ -401,6 +401,10 @@ cc.Class({
             p1 = "我想想...";
         } else if (index == 3) {
             p1 = "该怎么下...";
+        } else if (index == 4) {
+            p1 = "...";
+        } else {
+
         }
         return p1;
     },
@@ -415,14 +419,14 @@ cc.Class({
         } else if (index == 1) {
             p1 = "该你了";
         } else {
-            //p1 = "";
+
         }
         return p1;
     },
 
     playChat(type) {
         let isSelf = this.getCurrentPlayerIsSelf();
-        if (Math.random() > 0.9) {
+        if (Math.random() > 0.93) {
             let phrase = this.getOpening();
             this.getGameWindow().playChat(isSelf, phrase.p1);
             this.scheduleOnce(function () {

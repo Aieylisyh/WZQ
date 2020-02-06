@@ -197,6 +197,8 @@ cc.Class({
             this.userInfoButton.destroy();
         }
         debug.log("onLoginFinish");
+        appContext.getUxManager().onLoginFinish();
+        
         if (appContext.getUxManager().isFirstGame) {
             //进入第一关
             appContext.getAppController().toPlaying();
@@ -205,6 +207,5 @@ cc.Class({
         }
 
         appContext.getAppController().startListenWxOnShowParam(); //允许AppController自刷新启动参数
-        appContext.getUxManager().onLoginFinish();
     },
 });

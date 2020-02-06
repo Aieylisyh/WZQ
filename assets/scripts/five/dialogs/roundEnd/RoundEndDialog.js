@@ -1,6 +1,7 @@
 let PlayerInfo = require("PlayerInfo");
 let DialogTypes = require("DialogTypes");
 let Grade = require("Grade");
+let Item = require("Item");
 
 cc.Class({
     extends: require("BaseDialog"),
@@ -62,8 +63,11 @@ cc.Class({
 
         goldLabel: cc.Label,
 
-        shareReward: cc.Node,
+        shareRewardTxt: cc.Label,
+
+        keepGradeRewardTxt: cc.Label,
     },
+
 
     show: function (info) {
         if (info == null) {
@@ -173,7 +177,7 @@ cc.Class({
                 break;
 
             case 9:
-                this.showBannerAd();
+                this.hideRecordAutoShare();
                 break;
 
         }
@@ -363,23 +367,34 @@ cc.Class({
         this.btnKeepGrade.active = false;
         this.buttons.active = true;
 
-        if (this.info.win) {
-            this.btnKeepGrade.active = false;
+        if (WechatAPI.enableShare) {
+            this.btnShowOff.active = true;
+            if (this.getHasVideoToShare()) {
+                this.shareRewardTxt.node.active = true;
+                this.keepGradeRewardTxt.string = "分享录屏送20~50金币";
 
-            if (WechatAPI.enableShare) {
-                this.btnShowOff.active = true;
-                if (this.getHasVideoToShare()) {
-                    this.shareReward.active = true;
-                } else {
-                    this.shareReward.active = false;
-                }
             } else {
-                this.btnShowOff.active = false;
+                this.shareRewardTxt.node.active = true;
+                this.keepGradeRewardTxt.string = "分享成功送10~40金币";
             }
-
         } else {
-            this.btnKeepGrade.active = true;
             this.btnShowOff.active = false;
+        }
+
+        this.btnKeepGrade.active = false;
+        if (!this.info.win) {
+            let toRestore = Math.abs(this.info.gradeScoreAdd);
+            if (!this.info.win) {
+                this.btnKeepGrade.active = true;
+                this.keepGradeRewardTxt.node.active = true;
+                this.keepGradeRewardTxt.string = "恢复已损失的积分" + toRestore;
+            }
+        }
+
+        if (this.btnShowOff.active && !this.btnKeepGrade.active) {
+            this.btnShowOff.x = 0;
+        } else if (!this.btnShowOff.active && this.btnKeepGrade.active) {
+            this.btnKeepGrade.x = 0;
         }
 
         this.buttons.y = -520;
@@ -391,10 +406,15 @@ cc.Class({
         }, 0);
     },
 
-    showBannerAd: function () {
+    hideRecordAutoShare: function () {
         // if (WechatAPI.isTT) {
         //     WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
         // }
+        // if (WechatAPI.gameRecorderManager) {
+        //     WechatAPI.cache.autoRecording = false;
+        //     WechatAPI.cache.gameRecording = true;
+        // }
+        WechatAPI.cache.gameRecordHideShare=true;
     },
 
     // 点击"返回首页"按钮
@@ -436,28 +456,44 @@ cc.Class({
     // 点击"炫耀"按钮
     onClickBtnShowoff: function () {
         appContext.getSoundManager().playBtn();
+        let reward = [{
+            type: "Gold",
+        }];
+
         if (this.getHasVideoToShare()) {
             //has Video
-            let reward = [{
-                type: "Gold",
-                count: Math.floor(Math.random() * 31 + 20),
-            }];
+            reward.count = Math.floor(Math.random() * 31 + 20);
             WechatAPI.shareUtil.setShareVideoCB(reward);
-            debug.log(" 点击炫耀按钮");
-            debug.log(WechatAPI.cache.autoRecording);
-            debug.log(WechatAPI.cache.gameRecording);
+
+            WechatAPI.cache.gameRecordHideShare = false;//应该防止弹出录屏影响审核，这里可以先WechatAPI.cache.gameRecording = false。但是又会影响代码逻辑
             WechatAPI.recordGameEnd();
 
             console.log("录屏assignRecordListeners");
-            this.shareReward.active = false;
+            this.shareRewardTxt.node.active = false;
             appContext.scheduleOnce(function () {
                 console.log("assignRecordListeners开始");
                 WechatAPI.assignRecordListeners();
             }, 3);
 
         } else {
+            reward.count = Math.floor(Math.random() * 31 + 10);
+
             WechatAPI.shareUtil.setShareVideoCB();
-            WechatAPI.shareUtil.share();
+            WechatAPI.shareUtil.share({
+                cb: {
+                    sucCb: function () {
+                        if (reward) {
+                            console.log(reward);
+                            appContext.getUxManager().rewardItems(reward);
+                            let text = Item.getTextByItem(reward);
+                            appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "分享成功\n获得: " + text);
+
+                            appContext.getUxManager().saveGameInfo();
+                        }
+                    },
+                    caller: null,
+                }
+            });
         }
     },
 
@@ -473,6 +509,7 @@ cc.Class({
                 clickFunction: function () {
                     appContext.getUxManager().useKeepGradeCard();
                     self.resetScore();
+                    self.hideKeepGradeButton();
                 },
             };
             info.btn2 = {
@@ -483,6 +520,7 @@ cc.Class({
             info.btn1 = {
                 clickFunction: function () {
                     self.showVideo();
+                    self.hideKeepGradeButton();
                 },
             };
             info.btn2 = {
@@ -490,6 +528,14 @@ cc.Class({
         }
 
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+    },
+
+    hideKeepGradeButton() {
+        this.btnKeepGrade.active = false;
+
+        if (this.btnShowOff.active) {
+            this.btnShowOff.x = 0;
+        }
     },
 
     showVideo() {
@@ -586,7 +632,6 @@ cc.Class({
     },
 
     createChests: function () {
-
         //TODO
         /*  info.chestInfo = {
               chest0: {

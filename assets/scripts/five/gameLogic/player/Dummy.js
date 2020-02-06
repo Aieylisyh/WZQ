@@ -98,7 +98,7 @@ let Dummy = cc.Class({
         let finished = false;
 
         if (task.turns > 0) {
-            debug.log("dummy processTask " + task.turns);
+            //debug.log("dummy processTask " + task.turns);
             task.turns -= 1;
         } else {
             finished = true;
@@ -204,7 +204,7 @@ let Dummy = cc.Class({
         }
 
         this.addTask({
-            turns: Math.random() * 4.8 + 0.2,
+            turns: Math.random() * 4.5 + 0.2,
             type: 3,
             param: grab,
         });
@@ -221,7 +221,7 @@ let Dummy = cc.Class({
     },
 
     addSurrenderTask() {
-        let time = Math.random() * 10 + 1;
+        let time = Math.random() * 10 ;
         this.addTask({
             turns: time,
             type: 4,
@@ -503,7 +503,7 @@ let Dummy = cc.Class({
                 case 1:
                     missChance = 60;
                     offlineChance = 0;
-                    rawSolutionTurns = 3 + Math.floor(Math.random() * 5);
+                    rawSolutionTurns = 3 + Math.floor(Math.random() * 6);
                     admitLooseChance = 0;
                     grabFirstChance = 10;
                     fastChance = 90;
@@ -513,7 +513,7 @@ let Dummy = cc.Class({
                 case 2:
                     missChance = 40;
                     offlineChance = 0;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 5);
+                    rawSolutionTurns = 3 + Math.floor(Math.random() * 4);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
                     fastChance = 75;
@@ -523,7 +523,7 @@ let Dummy = cc.Class({
                 case 3:
                     missChance = 30;
                     offlineChance = 0.3;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 2.5);
+                    rawSolutionTurns = 2 + Math.floor(Math.random() * 3);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
                     fastChance = 70;
@@ -553,7 +553,7 @@ let Dummy = cc.Class({
                 case 6:
                     missChance = 8;
                     offlineChance = 0.3;
-                    rawSolutionTurns = Math.floor(Math.random() * 2.4);
+                    rawSolutionTurns = Math.floor(Math.random() * 2.5);
                     admitLooseChance = 12;
                     grabFirstChance = 40;
                     fastChance = 70;
@@ -602,16 +602,17 @@ let Dummy = cc.Class({
             }
 
             if (Math.random() * 100 > fastChance) {
-                turnTimeMin = 0.5 + turnTimeAdd;
-                turnTimeMax = 13 + turnTimeAdd;
+                turnTimeMin = 0.4 + turnTimeAdd;
+                turnTimeMax = 12 + turnTimeAdd;
             } else {
-                turnTimeMin = 0.5 + turnTimeAdd;
-                turnTimeMax = 3 + turnTimeAdd;
+                turnTimeMin = 0.4 + turnTimeAdd;
+                turnTimeMax = 2.8 + turnTimeAdd;
             }
             //offlineChance = 100;//test
             // turnTimeMin = 0;//test
             // turnTimeMax = 0;//test
 
+            //TODO
             let evaluatingParam = null; //设置下棋风格
             //平均，原有参数为   [[0, 1], [2, 3], [4, 12], [10, 64], [256, 256]],
             if (param.playStyle == 1) {
@@ -634,15 +635,6 @@ let Dummy = cc.Class({
 
                 turnTimeMin: turnTimeMin, //回合最小时间 f
                 turnTimeMax: turnTimeMax, //回合最大时间 f
-
-                interactionEmojiChance: 70,//% 互动使用表情几率
-                interactionChance: 20,//% 互动率
-                interactionIntervalMin: 7,//% 互动最小间隔
-                interactionIntervalMax: 12,//% 互动最大间隔
-                interactionReplyChance: 70,//% 回复互动率
-                greetingChance: 20,//% 见面问候率 再次见面为其5倍
-                expressBeforeLooseChance: 70,//% 劣势/失误表达率
-                expressBeforeWinChance: 70,//% 优势表达率
             };
         },
     },

@@ -161,6 +161,11 @@ cc.Class({
     onLoginFinish: function () {
         this.init();
         WechatAPI.setTTAppLaunchOptions();
+
+        let mw = appContext.getWindowManager().getCurrentWindowNode().getComponent("MainWindow");
+        if (mw) {
+            mw.onLoginFinish();
+        }
     },
 
     setDayInfo: function () {
