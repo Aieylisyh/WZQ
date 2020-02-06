@@ -7,12 +7,17 @@ cc.Class({
         btn1Sprite: cc.Sprite,
 
         btn2Sprite: cc.Sprite,
+
+        closeBtn: cc.Node,
     },
 
     show: function (info) {
 
         if (typeof info == "string") {
-            info = { content: info };
+            info = {
+                content: info,
+                hideCloseBtn: true
+            };
         }
 
         if (info == null || info.content == null) {
@@ -54,7 +59,9 @@ cc.Class({
             }
         }
 
-        if (info.btnClose != null) {
+        if (info.hideCloseBtn) {
+            this.closeBtn.active = false;
+        } else if (info.btnClose != null) {
             if (info.btnClose.clickFunction != null) {
                 this.clickFunctionClose = info.btnClose.clickFunction;
             }

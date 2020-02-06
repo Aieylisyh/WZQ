@@ -51,7 +51,7 @@ cc.Class({
 
     start() {
         if (WechatAPI.isTT) {
-            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
+            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.hide();
 
             if (WechatAPI.PoorTTBtn) {
                 WechatAPI.PoorTTBtn.hide();
@@ -126,7 +126,6 @@ cc.Class({
         let info = {
             content: "您真的要认输吗",
             btn1: {
-                name: "认 输",
                 clickFunction: function () {
                     if (appContext.getGameManager().game && appContext.getGameManager().game.selfPlayer) {
                         appContext.getGameManager().game.selfPlayer.surrender();
@@ -134,12 +133,11 @@ cc.Class({
                         appContext.getAppController().clearGameData();
                     }
                 },
-                isRed: true,
             },
             btn2: {
                 name: "取 消",
-                isRed: false,
             },
+            hideCloseBtn: true,
         };
 
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);

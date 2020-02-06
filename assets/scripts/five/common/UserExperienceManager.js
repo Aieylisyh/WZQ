@@ -159,13 +159,21 @@ cc.Class({
     },
 
     onLoginFinish: function () {
+        debug.log("登陆完成");
+        this.loginFinished = true;
         this.init();
         WechatAPI.setTTAppLaunchOptions();
 
-        let mw = appContext.getWindowManager().getCurrentWindowNode().getComponent("MainWindow");
-        if (mw) {
-            mw.onLoginFinish();
+        let cwn = appContext.getWindowManager().getCurrentWindowNode();
+        if (cwn) {
+            debug.log("cwn");
+            let mw = cwn.getComponent("MainWindow");
+            if (mw) {
+                debug.log("onLoginFinish");
+                mw.onLoginFinish();
+            }
         }
+
     },
 
     setDayInfo: function () {
@@ -463,13 +471,14 @@ cc.Class({
                 if (this.gameInfo.checkinValidDayCount >= 6) {
                     this.gameInfo.checkinValidDayCount = 0;
                     this.gameInfo.checkinTodayTimes = 0;
-                    this.saveGameInfo();
+                } else {
+                    this.gameInfo.checkinTodayTimes = 0;
                 }
             } else {
                 this.gameInfo.checkinValidDayCount = 0;
                 this.gameInfo.checkinTodayTimes = 0;
-                this.saveGameInfo();
             }
+            this.saveGameInfo();
         }
 
         return this.gameInfo.checkinValidDayCount;
@@ -534,7 +543,9 @@ cc.Class({
                 info.usedBonusScore = true;
             }
         } else {
-            //use keepGradeCardLater
+            if (info.isDrawGame) {
+                info.gradeScoreAdd = 0;
+            }
         }
 
         let userInfo = this.getUserInfo();

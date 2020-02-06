@@ -190,8 +190,13 @@ cc.Class({
     },
 
     startNextTurn: function (lastChessType) {
+
         this.game.currentChessType = 3 - lastChessType;
         this.game.currentTurn++;
+        if (this.game.currentTurn > 360) {
+            this.drawGame();
+            return;
+        }
 
         WechatAPI.tryStartAutoRecordAndKeepTime();
 
@@ -215,7 +220,24 @@ cc.Class({
         this.scheduleOnce(function () {
             this.playerWin(winnerType, isLooserOffline, isSurrender);
         }, 3);
+    },
 
+    drawGame() {
+        let info = {};
+        info.selfPlayer = this.game.selfPlayer;
+        info.opponentPlayer = this.game.opponentPlayer;
+        info.win = false;
+
+        info.isLooserOffline = false;
+        info.isSurrender = false;
+        info.isDrawGame = false;
+        info.totalHands = Math.floor((this.game.currentTurn + 1) / 2);
+        info = appContext.getUxManager().registerGameEnd(info);
+        appContext.getDialogManager().showDialog(DialogTypes.RoundEnd, info);
+
+        this.chessboardManager.setLocked(true);
+        this.getGameWindow().reset();
+        this.clearPlayers();
     },
 
     playerWin: function (winnerType, isLooserOffline = false, isSurrender = false) {

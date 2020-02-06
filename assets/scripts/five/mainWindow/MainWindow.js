@@ -43,20 +43,17 @@ cc.Class({
 
     start: function () {
         this.node.on("CloseAllDialogs", this.onCloseAllDialogs, this);
-
         this.autoShowDialogs();
-        this.playerInfoBoard.notifyClick();
         appContext.getSoundManager().startBackgroundMusic();
 
         this.setupLoginFinish = false;
         this.checkLoginFinish();
-
-        this.tickTime = 1;
     },
 
     checkLoginFinish() {
         //如果pip完成，会调用OnLoginFinish 才能显示广告和小红点
-        if (appContext.getUxManager().uxData != null) {
+        if (appContext.getUxManager().loginFinished) {
+            //debug.log("mw自主初始化checkLoginFinish");
             this.onLoginFinish();
         }
     },
@@ -65,15 +62,16 @@ cc.Class({
         if (this.setupLoginFinish) {
             return;
         }
-
+        //debug.log("mw初始化checkLoginFinish");
         this.setupLoginFinish = true;
 
         let userInfo = appContext.getUxManager().getUserInfo();
         this.playerInfoBoard.setup(userInfo);
+        this.playerInfoBoard.notifyClick();
         this.setHouse(userInfo);
 
         this.setRedDots();
-
+        this.tickTime = 1;
         if (this.node && WechatAPI.isWx || WechatAPI.isTT) {
             WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
         }
@@ -213,6 +211,7 @@ cc.Class({
                 };
                 info.btn2 = {
                 };
+                info.hideCloseBtn = true;
                 appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
                 return;
             }
@@ -261,9 +260,9 @@ cc.Class({
         //看广告，说明5倍积分
         appContext.getSoundManager().playBtn();
         let info = {
-            content: "在【巅峰对决】模式\n您可以不受自身段位的影响\n优先匹配段位最高的对手\n获胜积分较多，有助于快速升级\n\n每10分钟可匹配一次",
+            content: "在【巅峰对决】模式\n您可以不受自身段位的影响\n优先匹配到段位最高的对手\n获胜得到的积分较多\n失败损失的积分较少\n\n每10分钟可匹配一次",
         };
-
+        info.hideCloseBtn = true;
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
 
     },
@@ -402,26 +401,24 @@ cc.Class({
             this.housePhrase = "您的居所 【棋圣阁】\n\n已达最高等级";
         } else if (grade > 6) {
             this.house.spriteFrame = this.house4;
-            this.housePhrase = "您的居所 【一心坊】\n\n达到【超神九段】\n可以升级到【棋圣阁】";
+            this.housePhrase = "您的居所 【一心坊】\n\n达到【超神九段】\n可升级到【棋圣阁】";
         } else if (grade > 4) {
             this.house.spriteFrame = this.house3;
-            this.housePhrase = "您的居所 【聚贤楼】\n\n达到【如臻七段】\n可以升级到【一心坊】";
+            this.housePhrase = "您的居所 【聚贤楼】\n\n达到【如臻七段】\n可升级到【一心坊】";
         } else if (grade > 2) {
             this.house.spriteFrame = this.house2;
-            this.housePhrase = "您的居所 【简雅居】\n\n达到【大成五段】\n可以升级到【聚贤楼】";
+            this.housePhrase = "您的居所 【简雅居】\n\n达到【大成五段】\n可升级到【聚贤楼】";
         } else {
             this.house.spriteFrame = this.house1;
-            this.housePhrase = "您的居所 【陋室】\n\n达到【小成三段】\n可以升级到【简雅居】";
+            this.housePhrase = "您的居所 【陋室】\n\n达到【小成三段】\n可升级到【简雅居】";
         }
 
         this.house.node.runAction(cc.fadeTo(2, 255));
     },
 
     setRedDots() {
-        debug.log("红点");
         let res = appContext.getUxManager().todayCheckedin();
         if (res) {
-            debug.log("红点1");
             let canDoubleCheckin = appContext.getUxManager().gameInfo.checkinTodayTimes == 1;
             if (canDoubleCheckin) {
                 //看广告可领第二次
@@ -431,23 +428,17 @@ cc.Class({
                 //已签到
                 this.redDot_checkin.active = false;
             }
-            debug.log("红点2");
+
         } else {
             //今天可领签到奖励
-            debug.log("红点3");
             this.redDot_checkin.active = true;
         }
-        debug.log("红点4");
+
         if (!appContext.getUxManager().canUseRandomCard() && !appContext.getUxManager().canUseRandomGold()) {
-            debug.log("红点5");
             this.redDot_shop.active = false;
         } else {
-            debug.log("红点6");
             this.redDot_shop.active = true;
         }
-        debug.log("红点7");
-        debug.log("this.redDot_checkin.active " + this.redDot_checkin.active);
-        debug.log("this.redDot_shop.active " + this.redDot_shop.active);
     },
 
     onClickHouse() {

@@ -221,7 +221,7 @@ let Dummy = cc.Class({
     },
 
     addSurrenderTask() {
-        let time = Math.random() * 10 ;
+        let time = Math.random() * 10;
         this.addTask({
             turns: time,
             type: 4,
@@ -499,6 +499,8 @@ let Dummy = cc.Class({
             let fastChance = 0.5;
             let turnTimeAdd = 0;
 
+            let playStyle = 0;
+
             switch (grade) {
                 case 1:
                     missChance = 60;
@@ -508,62 +510,68 @@ let Dummy = cc.Class({
                     grabFirstChance = 10;
                     fastChance = 90;
                     turnTimeAdd = 0;
+                    playStyle = 2;
                     break;
 
                 case 2:
-                    missChance = 40;
+                    missChance = 45;
                     offlineChance = 0;
-                    rawSolutionTurns = 3 + Math.floor(Math.random() * 4);
+                    rawSolutionTurns = 3 + Math.floor(Math.random() * 5);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
                     fastChance = 75;
                     turnTimeAdd = 0;
+                    playStyle = 1;
                     break;
 
                 case 3:
                     missChance = 30;
                     offlineChance = 0.3;
-                    rawSolutionTurns = 2 + Math.floor(Math.random() * 3);
+                    rawSolutionTurns = 3 + Math.floor(Math.random() * 3);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
                     fastChance = 70;
                     turnTimeAdd = 0;
+                    playStyle = 2;
                     break;
 
                 case 4:
                     missChance = 20;
                     offlineChance = 0.5;
-                    rawSolutionTurns = 1 + Math.floor(Math.random() * 3);
+                    rawSolutionTurns = 2 + Math.floor(Math.random() * 3);
                     admitLooseChance = 20;
                     grabFirstChance = 30;
-                    fastChance = 65;
+                    fastChance = 70;
                     turnTimeAdd = 0;
+                    playStyle = 1;
                     break;
 
                 case 5:
                     missChance = 10;
                     offlineChance = 0.5;
-                    rawSolutionTurns = 1 + Math.floor(Math.random() * 2);
+                    rawSolutionTurns = 1 + Math.floor(Math.random() * 3);
                     admitLooseChance = 15;
                     grabFirstChance = 35;
                     fastChance = 70;
                     turnTimeAdd = 0;
+                    playStyle = 2;
                     break;
 
                 case 6:
                     missChance = 8;
                     offlineChance = 0.3;
-                    rawSolutionTurns = Math.floor(Math.random() * 2.5);
+                    rawSolutionTurns = Math.floor(Math.random() * 3);
                     admitLooseChance = 12;
                     grabFirstChance = 40;
                     fastChance = 70;
                     turnTimeAdd = 0;
+                    playStyle = 1;
                     break;
 
                 case 7:
                     missChance = 6;
                     offlineChance = 0.1;
-                    rawSolutionTurns = Math.floor(Math.random() * 1.6);
+                    rawSolutionTurns = Math.floor(Math.random() * 2);
                     admitLooseChance = 10;
                     grabFirstChance = 50;
                     fastChance = 70;
@@ -576,7 +584,7 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 0;
                     admitLooseChance = 5;
                     grabFirstChance = 55;
-                    fastChance = 60;
+                    fastChance = 70;
                     turnTimeAdd = 0;
                     break;
 
@@ -586,7 +594,7 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 0;
                     admitLooseChance = 1;
                     grabFirstChance = 75;
-                    fastChance = 50;
+                    fastChance = 60;
                     turnTimeAdd = 0.6;
                     break;
 
@@ -596,7 +604,7 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 0;
                     admitLooseChance = 0;
                     grabFirstChance = 80;
-                    fastChance = 55;
+                    fastChance = 60;
                     turnTimeAdd = 1;
                     break;
             }
@@ -615,9 +623,9 @@ let Dummy = cc.Class({
             //TODO
             let evaluatingParam = null; //设置下棋风格
             //平均，原有参数为   [[0, 1], [2, 3], [4, 12], [10, 64], [256, 256]],
-            if (param.playStyle == 1) {
+            if (playStyle == 1) {
                 evaluatingParam = [[0, 2], [2, 8], [4, 60], [10, 64], [256, 256]];  //黑棋进攻，白棋防御
-            } else if (param.playStyle == 2) {
+            } else if (playStyle == 2) {
                 evaluatingParam = [[0, 1], [4, 5], [10, 12], [10, 64], [256, 256]];     //黑棋防御，白棋进攻
             }
 

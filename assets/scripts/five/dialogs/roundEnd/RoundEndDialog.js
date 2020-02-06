@@ -77,6 +77,7 @@ cc.Class({
 
         //window.re = this;
         debug.log(info);
+        this.hasShareReward = true;
         appContext.getSoundManager().playStartRound();
         WechatAPI.shareUtil.setShareVideoCB();
         this.fadeInBackground();
@@ -219,27 +220,33 @@ cc.Class({
     },
 
     showWinner: function () {
-        this.looserTag.x = this.info.win ? this.looserTagXRight : this.looserTagXLeft;
-        this.winnerTag.x = this.info.win ? this.winnerTagXLeft : this.winnerTagXRight;
-        this.looserTag.active = true;
-        this.winnerTag.active = true;
-
-        this.gradeScoreLabel.string = this.info.win ? "小胜一场" : "小败一场";
-
-        this.winnerTag.scale = 0.1;
-        let action1 = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
-        this.winnerTag.runAction(action1);
-
-        this.looserTag.scale = 0.1;
-        let action2 = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
-        this.looserTag.runAction(action2);
-
-        if (this.info.isLooserOffline) {
-            this.looserTagLabel.string = "超时或离线";
-        } else if (this.info.isSurrender) {
-            this.looserTagLabel.string = "主动认输";
+        if (info.isDrawGame) {
+            this.looserTag.active = false;
+            this.winnerTag.active = false;
+            this.gradeScoreLabel.string = "平局";
+            this.looserTagLabel.string = "平局";
         } else {
-            this.looserTagLabel.string = "输 了";
+            this.looserTag.x = this.info.win ? this.looserTagXRight : this.looserTagXLeft;
+            this.winnerTag.x = this.info.win ? this.winnerTagXLeft : this.winnerTagXRight;
+            this.looserTag.active = true;
+            this.winnerTag.active = true;
+
+            this.gradeScoreLabel.string = this.info.win ? "小胜一场" : "小败一场";
+            if (this.info.isLooserOffline) {
+                this.looserTagLabel.string = "超时或离线";
+            } else if (this.info.isSurrender) {
+                this.looserTagLabel.string = "主动认输";
+            } else {
+                this.looserTagLabel.string = "输 了";
+            }
+
+            this.winnerTag.scale = 0.1;
+            let action1 = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
+            this.winnerTag.runAction(action1);
+
+            this.looserTag.scale = 0.1;
+            let action2 = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
+            this.looserTag.runAction(action2);
         }
 
         this.scheduleOnce(function () {
@@ -384,10 +391,10 @@ cc.Class({
         this.btnKeepGrade.active = false;
         if (!this.info.win) {
             let toRestore = Math.abs(this.info.gradeScoreAdd);
-            if (!this.info.win) {
+            if (!this.info.win && toRestore > 0) {
                 this.btnKeepGrade.active = true;
                 this.keepGradeRewardTxt.node.active = true;
-                this.keepGradeRewardTxt.string = "恢复已损失的积分" + toRestore;
+                this.keepGradeRewardTxt.string = "恢复已损失积分" + toRestore;
             }
         }
 
@@ -414,7 +421,7 @@ cc.Class({
         //     WechatAPI.cache.autoRecording = false;
         //     WechatAPI.cache.gameRecording = true;
         // }
-        WechatAPI.cache.gameRecordHideShare=true;
+        WechatAPI.cache.gameRecordHideShare = true;
     },
 
     // 点击"返回首页"按钮
@@ -462,21 +469,23 @@ cc.Class({
 
         if (this.getHasVideoToShare()) {
             //has Video
-            reward.count = Math.floor(Math.random() * 31 + 20);
+            reward[0].count = Math.floor(Math.random() * 31 + 20);
             WechatAPI.shareUtil.setShareVideoCB(reward);
 
             WechatAPI.cache.gameRecordHideShare = false;//应该防止弹出录屏影响审核，这里可以先WechatAPI.cache.gameRecording = false。但是又会影响代码逻辑
             WechatAPI.recordGameEnd();
 
-            console.log("录屏assignRecordListeners");
-            this.shareRewardTxt.node.active = false;
+            if (this.hasShareReward) {
+                this.keepGradeRewardTxt.string = "分享成功送10~40金币";
+            } else {
+                this.shareRewardTxt.node.active = false;
+            }
             appContext.scheduleOnce(function () {
-                console.log("assignRecordListeners开始");
                 WechatAPI.assignRecordListeners();
             }, 3);
 
         } else {
-            reward.count = Math.floor(Math.random() * 31 + 10);
+            reward[0].count = Math.floor(Math.random() * 31 + 10);
 
             WechatAPI.shareUtil.setShareVideoCB();
             WechatAPI.shareUtil.share({
@@ -484,14 +493,19 @@ cc.Class({
                     sucCb: function () {
                         if (reward) {
                             console.log(reward);
-                            appContext.getUxManager().rewardItems(reward);
-                            let text = Item.getTextByItem(reward);
-                            appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "分享成功\n获得: " + text);
+                            console.log(this);
+                            if (this.node && this.hasShareReward) {
+                                this.hasShareReward = false;
 
-                            appContext.getUxManager().saveGameInfo();
+                                appContext.getUxManager().rewardItems(reward);
+                                let text = Item.getTextByItem(reward);
+                                appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "分享成功\n获得: " + text);
+
+                                appContext.getUxManager().saveGameInfo();
+                            }
                         }
                     },
-                    caller: null,
+                    caller: this,
                 }
             });
         }
@@ -514,7 +528,7 @@ cc.Class({
             };
             info.btn2 = {
             };
-
+            info.hideCloseBtn = true;
         } else {
             info.content = "当前没有保段卡\n看一个视频\n可以回复所有失去的积分";
             info.btn1 = {
@@ -525,6 +539,7 @@ cc.Class({
             };
             info.btn2 = {
             };
+            info.hideCloseBtn = true;
         }
 
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
@@ -575,6 +590,11 @@ cc.Class({
         let userInfo = appContext.getUxManager().getUserInfo();
         userInfo.basic.currentScore += score;
         appContext.getUxManager().saveUserInfo(userInfo);
+
+        this.expArtNumPref.string = this.info.win ? "积分+" : "积分-";
+        this.expArtNum.string = 0;
+        this.expAddPart.runAction(cc.sequence(shakeAction1, shakeAction2));
+
 
         //big grade icon. animate whatever it changes or not
         let originalScale = this.selfPlayerInfo.gradeIcon.node.scale;
