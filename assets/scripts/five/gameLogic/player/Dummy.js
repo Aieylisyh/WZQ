@@ -617,16 +617,16 @@ let Dummy = cc.Class({
                 turnTimeMax = 2.8 + turnTimeAdd;
             }
             //offlineChance = 100;//test
-            turnTimeMin = 0;//test
-            turnTimeMax = 0;//test
+            // turnTimeMin = 0;//test
+            // turnTimeMax = 0;//test
 
-            missChance = 0;
-            offlineChance = 0;
-            rawSolutionTurns = 0;
-            admitLooseChance = 0;
-            grabFirstChance = 0;
-            fastChance = 100;
-            turnTimeAdd = 0;
+            // missChance = 0;
+            // offlineChance = 0;
+            // rawSolutionTurns = 0;
+            // admitLooseChance = 0;
+            // grabFirstChance = 0;
+            // fastChance = 100;
+            // turnTimeAdd = 0;
 
             //TODO
             let evaluatingParam = null; //设置下棋风格

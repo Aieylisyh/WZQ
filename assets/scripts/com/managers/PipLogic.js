@@ -84,7 +84,7 @@ cc.Class({
     },
 
     usePip: function (content) {
-        debug.logObj("content:" + content);
+        console.logObj("content:" + content);
         let json = JSON.parse(content);
         console.log(json);
         if (json == null) {

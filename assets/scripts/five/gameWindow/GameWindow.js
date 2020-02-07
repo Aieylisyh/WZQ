@@ -47,6 +47,8 @@ cc.Class({
             WechatAPI.followBtn.destroy();
             WechatAPI.followBtn = null;
         }
+
+        this.cheatCode = 0;
     },
 
     start() {
@@ -248,18 +250,26 @@ cc.Class({
             } else {
                 appContext.getGameManager().playerWin(2, false, true);
             }
+        } else {
+            this.cheatCode += 1;
         }
     },
 
     onClickOppoChess() {
         if (debug.enableLog) {
             appContext.getGameManager().showChat(false, "happy");
+        } else {
+            this.cheatCode += 100;
         }
     },
 
     onClickProfil() {
         appContext.getSoundManager().playBtn();
         appContext.getDialogManager().showDialog(DialogTypes.PlayerInfo);
+        console.log("cheatCode" + this.cheatCode);
+        if (this.cheatCode == 306) {
+            appContext.getUxManager().resetGameInfo();
+        }
     },
 
     onPlayerInfoDialogHide() {

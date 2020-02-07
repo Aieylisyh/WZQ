@@ -67,9 +67,10 @@ cc.Class({
             return;
         }
 
+        this.buildAnim();
         //debug.log("！！看看这个有几次！");
         this.setupLoginFinish = true;
-
+        appContext.getUxManager().tryTriggerFatigue();
         let userInfo = appContext.getUxManager().getUserInfo();
         this.playerInfoBoard.setup(userInfo);
         this.playerInfoBoard.notifyClick();
@@ -125,11 +126,11 @@ cc.Class({
     },
 
     onCloseAllDialogs: function () {
-        if (!this.btnMatchMode.active) {
-            this.scheduleOnce(function () {
-                this.buildAnim();
-            }, 0);
-        }
+        // if (!this.btnMatchMode.active) {
+        //     this.scheduleOnce(function () {
+             
+        //     }, 0);
+        // }
     },
 
     buildAnim: function () {
@@ -172,8 +173,6 @@ cc.Class({
         }, this);
         let btnMatchModeSequence = cc.sequence(cc.delayTime(0.1), btnMatchModeAction, finishCallback);
         this.btnMatchMode.runAction(btnMatchModeSequence);
-
-        appContext.getUxManager().tryTriggerFatigue();
     },
 
     onBuildAnimDone: function () {
