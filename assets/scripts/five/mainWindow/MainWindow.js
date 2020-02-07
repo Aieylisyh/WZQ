@@ -39,6 +39,8 @@ cc.Class({
         redDot_checkin: cc.Node,
 
         btnMatchModeTimer: cc.Label,
+
+        btnNormalModeTimer: cc.Label,
     },
 
     start: function () {
@@ -47,13 +49,15 @@ cc.Class({
         appContext.getSoundManager().startBackgroundMusic();
 
         this.setupLoginFinish = false;
+        //debug.log("mw自主初始化 来自mw");
         this.checkLoginFinish();
     },
 
     checkLoginFinish() {
         //如果pip完成，会调用OnLoginFinish 才能显示广告和小红点
+        //debug.log("mw自主初始化 checkLoginFinish");
         if (appContext.getUxManager().loginFinished) {
-            //debug.log("mw自主初始化checkLoginFinish");
+            //debug.log("ok");
             this.onLoginFinish();
         }
     },
@@ -62,7 +66,8 @@ cc.Class({
         if (this.setupLoginFinish) {
             return;
         }
-        //debug.log("mw初始化checkLoginFinish");
+
+        //debug.log("！！看看这个有几次！");
         this.setupLoginFinish = true;
 
         let userInfo = appContext.getUxManager().getUserInfo();
@@ -72,8 +77,9 @@ cc.Class({
 
         this.setRedDots();
         this.tickTime = 1;
+
         if (this.node && WechatAPI.isWx || WechatAPI.isTT) {
-            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
+            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.show();
         }
     },
 
@@ -93,17 +99,28 @@ cc.Class({
             return;
         }
 
-        let timestamp = appContext.getUxManager().gameInfo.lastHardModeTimestamp;
+        this.tickTimer += 1;
 
-        if (timestamp) {
-            let delta = Date.now() - timestamp;
-            if (delta >= 600000) {
+        let timestampHM = appContext.getUxManager().gameInfo.lastHardModeTimestamp;
+
+        if (timestampHM) {
+            let delta = Date.now() - timestampHM;
+            if (delta >= 900000) {
                 this.btnMatchModeTimer.string = "";
             } else {
-                this.btnMatchModeTimer.string = DataUtil.getCountDownHMSStringByMS(600000 - delta);
+                this.btnMatchModeTimer.string = DataUtil.getCountDownHMSStringByMS(900000 - delta);
             }
-        } else {
-            this.btnMatchModeTimer.string = "";
+        }
+
+        let timestampNM = appContext.getUxManager().gameInfo.fatigueTimestamp;
+
+        if (timestampNM) {
+            let delta2 = Date.now() - timestampNM;
+            if (delta2 >= 60000) {
+                this.btnNormalModeTimer.string = "";
+            } else {
+                this.btnNormalModeTimer.string = DataUtil.getCountDownHMSStringByMS(60000 - delta2);
+            }
         }
     },
 
@@ -126,14 +143,14 @@ cc.Class({
         let userInfo = appContext.getUxManager().getUserInfo();
         let grade = Grade.getGradeAndFillInfoByScore(userInfo.basic.currentScore).grade;
         let canEnterHardMode = true;//TODO
-        if (grade < 2 || grade > 9) {
+        if (grade < 2) {
             canEnterHardMode = false;
         }
 
         if (canEnterHardMode) {
             this.btnHardMode.active = true;
             let btnHardModeY = this.btnHardMode.y;
-            let btnHardModeAction = cc.moveTo(0.5, 60, btnHardModeY).easing(cc.easeCubicActionOut());
+            let btnHardModeAction = cc.moveTo(0.5, 70, btnHardModeY).easing(cc.easeCubicActionOut());
             let btnHardModeSequence = cc.sequence(cc.delayTime(0.1), btnHardModeAction);
             this.btnHardMode.runAction(btnHardModeSequence);
 
@@ -156,6 +173,7 @@ cc.Class({
         let btnMatchModeSequence = cc.sequence(cc.delayTime(0.1), btnMatchModeAction, finishCallback);
         this.btnMatchMode.runAction(btnMatchModeSequence);
 
+        appContext.getUxManager().tryTriggerFatigue();
     },
 
     onBuildAnimDone: function () {
@@ -187,22 +205,15 @@ cc.Class({
     // 点击"随机匹配"
     onClickBtnMatch: function () {
         appContext.getSoundManager().playBtn();
-        appContext.getDialogManager().showDialog(DialogTypes.Match);
-    },
+        let timestampNM = appContext.getUxManager().gameInfo.fatigueTimestamp;
 
-    // 点击"随机匹配"
-    onClickBtnHardModeMatch: function () {
-        //TODO 看广告 ，可以看广告立即匹配
-        appContext.getSoundManager().playBtn();
-        let timestamp = appContext.getUxManager().gameInfo.lastHardModeTimestamp;
-
-        if (timestamp) {
-            let delta = Date.now() - timestamp;
-            if (delta < 600000) {
+        if (timestampNM) {
+            let delta2 = Date.now() - timestampNM;
+            if (delta2 < 60000) {
                 let self = this;
 
                 let info = {
-                    content: "看一个视频，立即进行【巅峰对决】的匹配？",
+                    content: "连续下棋极易走火入魔\n此境界乃心识过于执著之幻觉\n请稍息片刻后再战\n\n也可看一个视频，立即匹配并获得20金币",
                 };
                 info.btn1 = {
                     clickFunction: function () {
@@ -217,15 +228,81 @@ cc.Class({
             }
         }
 
+        appContext.getDialogManager().showDialog(DialogTypes.Match);
+    },
+
+    showVideo() {
+        let self = this;
+        WechatAPI.videoAdUtil.updateCb({
+            failCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_normalmode_fail");
+                appContext.getAnalyticManager().sendTT('videoAd_normalmode', {
+                    res: 1,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "请稍后重试");
+            },
+            finishCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_normalmode_ok");
+                appContext.getAnalyticManager().sendTT('videoAd_normalmode', {
+                    res: 0,
+                });
+
+                appContext.getSoundManager().playUseGold();
+
+                let reward = [{ type: "Gold", count: 20 }];
+                appContext.getUxManager().rewardItems(reward);
+               
+                appContext.getDialogManager().showDialog(DialogTypes.Match);
+                appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "获得20金币并开始匹配！");
+            },
+            ceaseCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_normalmode_cease");
+                appContext.getAnalyticManager().sendTT('videoAd_normalmode', {
+                    res: 2,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以立即匹配并获得20金币");
+            },
+            caller: self,
+        });
+
+        WechatAPI.videoAdUtil.show();
+    },
+
+    // 点击"随机匹配"
+    onClickBtnHardModeMatch: function () {
+        //TODO 看广告 ，可以看广告立即匹配
+        appContext.getSoundManager().playBtn();
+        let timestamp = appContext.getUxManager().gameInfo.lastHardModeTimestamp;
+
+        if (timestamp) {
+            let delta = Date.now() - timestamp;
+            if (delta < 900000) {
+                let self = this;
+
+                let info = {
+                    content: "看一个视频，立即进行【巅峰对决】的匹配？",
+                };
+                info.btn1 = {
+                    clickFunction: function () {
+                        self.showVideoHardMode();
+                    },
+                };
+                info.btn2 = {
+                };
+                info.hideCloseBtn = true;
+                appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+                return;
+            }
+        }
+
         this.startHardModeMatch();
     },
 
     startHardModeMatch() {
-        appContext.getUxManager().gameInfo.lastHardModeTimestamp = Date.now();
         appContext.getDialogManager().showDialog(DialogTypes.Match, true);
     },
 
-    showVideo() {
+    showVideoHardMode() {
         let self = this;
         WechatAPI.videoAdUtil.updateCb({
             failCb: function () {
@@ -233,7 +310,7 @@ cc.Class({
                 appContext.getAnalyticManager().sendTT('videoAd_hardmode', {
                     res: 1,
                 });
-                appContext.getDialogManager().showDialog(DialogTypes.Toast, "暂时不能进入，请稍后重试");
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "请稍后重试");
             },
             finishCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_hardmode_ok");
@@ -260,18 +337,11 @@ cc.Class({
         //看广告，说明5倍积分
         appContext.getSoundManager().playBtn();
         let info = {
-            content: "在【巅峰对决】模式\n您可以不受自身段位的影响\n优先匹配到段位最高的对手\n获胜得到的积分较多\n失败损失的积分较少\n\n每10分钟可匹配一次",
+            content: "在【巅峰对决】模式\n您可以不受自身段位的影响\n优先匹配到段位最高的对手\n获胜得到的积分较多\n失败损失的积分较少\n\n每15分钟可匹配一次",
         };
         info.hideCloseBtn = true;
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
 
-    },
-
-    // 点击"敬请期待"
-    onClickBtnTodo: function () {
-        // debug.log("敬请期待");
-        appContext.getSoundManager().playBtn();
-        appContext.getDialogManager().showDialog(DialogTypes.Toast, "棋局变化万千，棋手连续下棋，极易走火入魔，不知此诸境界，乃自己心识所变现之幻象，日益执著，而导致精神失常，此即所谓的“入魔”");
     },
 
     // 点击"排行"
@@ -319,6 +389,9 @@ cc.Class({
         }
 
         //console.log(WechatAPI.followBtn);
+        console.log("关注按钮");
+        console.log(typeof tt.checkFollowState);
+        console.log(typeof tt.createFollowButton);
         if (WechatAPI.followBtn == null && typeof tt.checkFollowState == "function" && typeof tt.createFollowButton == "function") {
             tt.checkFollowState({
                 success(res) {
@@ -327,7 +400,7 @@ cc.Class({
                     let ratio = WechatAPI.deviceManager.getPixelRatio(); //0.33
                     let gameSize = WechatAPI.deviceManager.getCanvasSize(); //w640 h 1386
 
-                    if (!res.result) {
+                    if (res != null && !res.result) {
                         const btn = tt.createFollowButton({
                             type: "image",
                             image: "customRes/follow.png",
@@ -398,19 +471,19 @@ cc.Class({
         this.house.opacity = 0;
         if (grade > 8) {
             this.house.spriteFrame = this.house5;
-            this.housePhrase = "您的居所 【棋圣阁】\n\n已达最高等级";
+            this.housePhrase = "您的居所 【棋圣阁】\n对局获得金币+40%\n\n已达最高等级";
         } else if (grade > 6) {
             this.house.spriteFrame = this.house4;
-            this.housePhrase = "您的居所 【一心坊】\n\n达到【超神九段】\n可升级到【棋圣阁】";
+            this.housePhrase = "您的居所 【一心坊】\n对局获得金币+30%\n\n达到【超神九段】\n可升级到【棋圣阁】";
         } else if (grade > 4) {
             this.house.spriteFrame = this.house3;
-            this.housePhrase = "您的居所 【聚贤楼】\n\n达到【如臻七段】\n可升级到【一心坊】";
+            this.housePhrase = "您的居所 【聚贤楼】\+对局获得金币20%\n\n达到【如臻七段】\n可升级到【一心坊】";
         } else if (grade > 2) {
             this.house.spriteFrame = this.house2;
-            this.housePhrase = "您的居所 【简雅居】\n\n达到【大成五段】\n可升级到【聚贤楼】";
+            this.housePhrase = "您的居所 【简雅居】\n对局获得金币+10%\n\n达到【大成五段】\n可升级到【聚贤楼】";
         } else {
             this.house.spriteFrame = this.house1;
-            this.housePhrase = "您的居所 【陋室】\n\n达到【小成三段】\n可升级到【简雅居】";
+            this.housePhrase = "您的居所 【陋室】\n对局获得金币+0%\n\n达到【小成三段】\n可升级到【简雅居】";
         }
 
         this.house.node.runAction(cc.fadeTo(2, 255));
@@ -442,6 +515,6 @@ cc.Class({
     },
 
     onClickHouse() {
-        appContext.getDialogManager().showDialog(DialogTypes.Toast, this.housePhrase);
+        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, this.housePhrase);
     },
 });

@@ -198,14 +198,6 @@ cc.Class({
         }
         debug.log("onLoginFinish");
         appContext.getUxManager().onLoginFinish();
-        
-        if (appContext.getUxManager().isFirstGame) {
-            //进入第一关
-            appContext.getAppController().toPlaying();
-        } else {
-            appContext.getAppController().backToMain();
-        }
-
         appContext.getAppController().startListenWxOnShowParam(); //允许AppController自刷新启动参数
     },
 });

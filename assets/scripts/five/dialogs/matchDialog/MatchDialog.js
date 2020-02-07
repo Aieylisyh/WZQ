@@ -125,6 +125,9 @@ cc.Class({
         this.cancelBtn.active = false;
 
         if (info.success) {
+            if (this.isHardMode) {
+                appContext.getUxManager().gameInfo.lastHardModeTimestamp = Date.now();
+            }
             appContext.getSoundManager().playStartRound();
 
             this.hasMatchedOpponent = true;
@@ -163,13 +166,36 @@ cc.Class({
 
     requireOpponenetInfo: function () {
         this.opponent = null;
-        let time = 0.5 + Math.random() * 4;
-        if (this.isHardMode) {
-            time = 2.5 + Math.random() * 5;
-        }
+
         this.scheduleOnce(function () {
             this.onMatchedOpponent();
-        }, time);
+        }, this.getMatchTime());
+    },
+
+    getMatchTime() {
+        let time = 0.6 + Math.random() * 3;
+        if (this.isHardMode) {
+            time = 2 + Math.random() * 4;
+        }
+
+        let d = new Date();
+        let h = d.getHours();
+        if (h < 7 && h > 0) {
+            //1~6 very slow
+            time = time * 2.5 + 4;
+        } else if (h < 11) {
+            //6~11  slow
+            time = time * 1.5 + 2;
+        } else if (h < 14) {
+            //11~14  middle
+            time = time * 1.2 + 0.5;
+        } else if (h < 18) {
+            //15~18 quick
+            time = time * 1.2 + 1.5;
+        } else {
+            //very quick
+        }
+        return time;
     },
 
     // 开始下棋
@@ -184,6 +210,7 @@ cc.Class({
             },
             timestamp: Date.now(),
         });
+
         let action1 = cc.fadeTo(0.6, 0);
         let action2 = cc.callFunc(function () {
             this.hide();

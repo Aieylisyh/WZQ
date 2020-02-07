@@ -9,9 +9,9 @@ cc.Class({
 
     init: function () {
         debug.log('banner 初始化');
-        if (this.isEnabled()) {
-            this.create();
-        }
+        // if (this.isEnabled()) {
+        //     this.create();
+        // }
     },
 
     isRemoveAdPurchased() {

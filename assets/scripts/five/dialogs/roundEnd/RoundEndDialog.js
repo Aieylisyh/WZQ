@@ -216,15 +216,17 @@ cc.Class({
 
         this.scheduleOnce(function () {
             this.processStep();
-        }, 1);
+        }, 0.6);
     },
 
     showWinner: function () {
-        if (info.isDrawGame) {
+        debug.log("平分秋色showWinner");
+        debug.log(this.info);
+        if (this.info.isDrawGame) {
             this.looserTag.active = false;
             this.winnerTag.active = false;
-            this.gradeScoreLabel.string = "平局";
-            this.looserTagLabel.string = "平局";
+            this.gradeScoreLabel.string = "平分秋色";
+            this.looserTagLabel.string = "平分秋色";
         } else {
             this.looserTag.x = this.info.win ? this.looserTagXRight : this.looserTagXLeft;
             this.winnerTag.x = this.info.win ? this.winnerTagXLeft : this.winnerTagXRight;
@@ -329,21 +331,21 @@ cc.Class({
 
     getExpLowLabel() {
         if (this.info.usedBonusScore) {
-            return "每日首场胜利，获得100额外积分！";
-        } else if (this.info.usedKeepGradeCard) {
-            return "已使用1张保段卡,不扣积分！";
+            return "每日首场胜利，获得120额外积分！";
         }
 
         let total = this.gradeAndFillInfoTo.fillTop - this.gradeAndFillInfoTo.fillBottom;
         let rest = total - this.gradeAndFillInfoTo.fillAmount;
-        if (!this.info.win) {
+        if (rest < 1 || !this.info.win) {
             let rnd = Math.random();
-            if (rnd > 0.66) {
+            if (rnd > 0.75) {
                 return "无论输赢，都可以获得金币";
-            } else if (rnd > 0.33) {
+            } else if (rnd > 0.5) {
                 return "输给段位较高的对手，损失的积分也较少";
-            } else {
+            } else if (rnd > 0.25) {
                 return "击败段位较高的对手，可以获得更多积分";
+            } else {
+                return "每日首场胜利，可以获得120额外积分";
             }
         }
 
@@ -518,7 +520,7 @@ cc.Class({
         let self = this;
         let count = appContext.getUxManager().gameInfo.keepGradeCardCount;
         if (count >= 1) {
-            info.content = "当前有保段卡" + count + "张\n是否使用1张\n回复所有失去的积分？";
+            info.content = "当前有保段卡" + count + "张\n是否使用1张回复失去的积分？";
             info.btn1 = {
                 clickFunction: function () {
                     appContext.getUxManager().useKeepGradeCard();
@@ -526,19 +528,17 @@ cc.Class({
                     self.hideKeepGradeButton();
                 },
             };
-            info.btn2 = {
-            };
+            info.btn2 = {};
             info.hideCloseBtn = true;
         } else {
-            info.content = "当前没有保段卡\n看一个视频\n可以回复所有失去的积分";
+            info.content = "当前没有保段卡\n看一个视频可以回复失去的积分";
             info.btn1 = {
                 clickFunction: function () {
                     self.showVideo();
                     self.hideKeepGradeButton();
                 },
             };
-            info.btn2 = {
-            };
+            info.btn2 = {};
             info.hideCloseBtn = true;
         }
 
@@ -591,8 +591,10 @@ cc.Class({
         userInfo.basic.currentScore += score;
         appContext.getUxManager().saveUserInfo(userInfo);
 
-        this.expArtNumPref.string = this.info.win ? "积分+" : "积分-";
-        this.expArtNum.string = 0;
+        this.expArtNumPref.string = "积分已恢复";
+        this.expArtNum.string = "";
+        let shakeAction1 = cc.scaleTo(0.5, 0.5).easing(cc.easeBackOut());
+        let shakeAction2 = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
         this.expAddPart.runAction(cc.sequence(shakeAction1, shakeAction2));
 
 
@@ -617,6 +619,8 @@ cc.Class({
         } else {
             this.setPBIcon(gradeFrom, gradeFrom + 1);
         }
+
+        this.expLowLabel.string = "段位保护成功，积分已恢复";
     },
 
     onClickChest: function (chest) {

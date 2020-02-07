@@ -509,7 +509,7 @@ let Dummy = cc.Class({
                     admitLooseChance = 0;
                     grabFirstChance = 10;
                     fastChance = 90;
-                    turnTimeAdd = 0;
+                    turnTimeAdd = -0.1;
                     playStyle = 2;
                     break;
 
@@ -520,7 +520,7 @@ let Dummy = cc.Class({
                     admitLooseChance = 35;
                     grabFirstChance = 10;
                     fastChance = 75;
-                    turnTimeAdd = 0;
+                    turnTimeAdd = -0.1;
                     playStyle = 1;
                     break;
 
@@ -610,15 +610,15 @@ let Dummy = cc.Class({
             }
 
             if (Math.random() * 100 > fastChance) {
-                turnTimeMin = 0.4 + turnTimeAdd;
+                turnTimeMin = 0.5 + turnTimeAdd;
                 turnTimeMax = 12 + turnTimeAdd;
             } else {
                 turnTimeMin = 0.4 + turnTimeAdd;
                 turnTimeMax = 2.8 + turnTimeAdd;
             }
             //offlineChance = 100;//test
-            // turnTimeMin = 0;//test
-            // turnTimeMax = 0;//test
+            turnTimeMin = 0;//test
+            turnTimeMax = 0;//test
 
             //TODO
             let evaluatingParam = null; //设置下棋风格

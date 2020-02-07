@@ -10,7 +10,12 @@ cc.Class({
             let grade = Grade.getGradeAndFillInfoByScore(user.basic.currentScore).grade;
             if (isHardMode) {
                 grade = 10;
+            } else {
+                if (grade > 8) {
+                    grade = 8;
+                }
             }
+
             //let gradeInfo = Grade.getGradeInfo(gradeAndFillInfo.grade);
             // debug.log("matchOpponent");
             // debug.log(user);
@@ -54,13 +59,18 @@ cc.Class({
             }
             debug.log("挑选到dummy:");
             debug.log(dummy);
-            appContext.getUxManager().pushUserToPool(dummy.id);
+            appContext.getUxManager().pushUserToPool(dummy.id, dummy.basic.currentScore);
             return dummy;
         },
 
         pickExsitUser(grade, tpUserPool) {
             let id = tpUserPool[Math.floor(tpUserPool.length * Math.random())];
             //mix bUser and user
+            if (appContext.getUxManager().userScoreDic && appContext.getUxManager().userScoreDic[id]) {
+                let score = appContext.getUxManager().userScoreDic[id];
+                grade = Grade.getGradeAndFillInfoByScore(score).grade;
+                debug.log("使用之前的假人，score " + score);
+            }
             return this.refineDummy(id, grade);
         },
 

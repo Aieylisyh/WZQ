@@ -1171,7 +1171,7 @@ let WechatAPI = {
                 WechatAPI.cache.gameRecordHideShare = false;
                 WechatAPI.cache.gameRecording = false;
             }
-            
+
             if (WechatAPI.cache.gameRecording) {
                 WechatAPI.shareUtil.shareVideo(res.videoPath);
                 WechatAPI.cache.gameRecording = false;
@@ -1188,7 +1188,7 @@ let WechatAPI = {
         appContext.scheduleOnce(function () {
             console.log("录屏test 再开始");
             WechatAPI.gameRecorderManager.start({
-                duration: 120, //录屏改为120秒，已经录了90秒则自动续时间
+                duration: 150, //录屏改为120秒，已经录了90秒则自动续时间
             });
         }, 1);
     },
@@ -1204,7 +1204,7 @@ let WechatAPI = {
             } else {
                 console.log('!!!录屏开始');
                 WechatAPI.gameRecorderManager.start({
-                    duration: 120, //录屏改为120秒，已经录了60秒则自动续时间
+                    duration: 150, //录屏改为150秒，已经录了60秒则自动续时间
                 });
             }
 

@@ -71,6 +71,7 @@ cc.Class({
 
     ctor: function () {
         this.cache = {};
+        this.loginFinished = false;
     },
 
     onUpdate(dt) {
@@ -160,9 +161,9 @@ cc.Class({
 
     onLoginFinish: function () {
         debug.log("登陆完成");
-        this.loginFinished = true;
         this.init();
         WechatAPI.setTTAppLaunchOptions();
+        this.loginFinished = true;
 
         let cwn = appContext.getWindowManager().getCurrentWindowNode();
         if (cwn) {
@@ -310,8 +311,8 @@ cc.Class({
         return userInfo;
     },
 
-    pushUserToPool(dummyId) {
-        debug.log("放入用户池" + dummyId);
+    pushUserToPool(dummyId, score) {
+        debug.log("放入用户池" + dummyId + " score " + score);
         let has = false;
         for (let i in this.userPool) {
             if (this.userPool[i] == dummyId) {
@@ -326,6 +327,7 @@ cc.Class({
         }
 
         this.userPool.push(dummyId);
+        this.userScoreDic[dummyId] = score;
     },
 
     getUserPool() {
@@ -344,6 +346,7 @@ cc.Class({
         this.init();
         this.getUserInfo();
         this.userPool = [];
+        this.userScoreDic = {};
         this.initGameInfo();
 
         this.toSaveUserInfo = false;
@@ -539,7 +542,7 @@ cc.Class({
         info.gradeScoreAdd = Grade.getScoreByGradeDelta(grade1, grade2, info.win);
         if (info.win) {
             if (this.tryUseBonusScore()) {
-                info.gradeScoreAdd += 100;
+                info.gradeScoreAdd += 120;
                 info.usedBonusScore = true;
             }
         } else {
@@ -556,6 +559,7 @@ cc.Class({
 
         if (userInfo.basic.currentScore < 0) {
             userInfo.basic.currentScore = 0;
+            info.gradeScoreAdd = - info.fromScore;
         }
         info.toScore = userInfo.basic.currentScore;
 
@@ -576,12 +580,14 @@ cc.Class({
         info.gold = this.getGoldByGameEnd(info.win, grade1);
         this.rewardItems([{ type: "Gold", count: info.gold }]);
 
+        this.addFatigue();
         this.saveUserInfo(userInfo);
+
         return info;
     },
 
     getGoldByGameEnd(win, grade) {
-        let res = 10 + grade + Math.random() * 15;
+        let res = 10 + grade + Math.random() * 12;
 
         if (win) {
             res += 10;
@@ -593,6 +599,39 @@ cc.Class({
             res = 1;
         }
 
+        if (grade > 8) {
+            res *= 1.4;
+        } else if (grade > 6) {
+            res *= 1.3;
+        } else if (grade > 4) {
+            res *= 1.2;
+        } else if (grade > 2) {
+            res *= 1.1;
+        } else {
+
+        }
+
         return Math.floor(res);
+    },
+
+    addFatigue() {
+        if (this.gameInfo.fatigueCount == null) {
+            this.gameInfo.fatigueCount = 0;
+        }
+        this.gameInfo.fatigueCount += 1;
+        this.saveGameInfo();
+    },
+
+    startFatigue() {
+        this.gameInfo.fatigueCount = 0;
+        this.gameInfo.fatigueTimestamp = Date.now();
+    },
+
+    tryTriggerFatigue() {
+        //尝试一次是否触发疲劳机制  如果触发则清空计数 累计局数越多，触发几率越大 这个function应该在mainwindow调用
+        let f = this.gameInfo.fatigueCount + Math.random() * 7;
+        if (f > 10) {
+            this.startFatigue();
+        }
     },
 });
