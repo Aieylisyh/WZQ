@@ -1154,17 +1154,18 @@ let WechatAPI = {
     },
 
     assignRecordListeners() {
-        console.log("录屏assignRecordListeners");
+        //console.log("录屏assignRecordListeners");
         WechatAPI.gameRecorderManager.onStart(res => {
             WechatAPI.cache.gameRecordStartTime = Date.now();
             WechatAPI.cache.gameRecording = true;
+            WechatAPI.cache.blockTryStartAutoRecord = false;
             console.log('录屏开始' + WechatAPI.cache.gameRecordStartTime);
-            console.log(res);
+            //console.log(res);
         })
 
         WechatAPI.gameRecorderManager.onStop((res) => {
             console.log("录屏结束");
-            console.log(res);
+            //console.log(res);
 
             // console.log(res.videoPath);
             if (WechatAPI.cache.gameRecordHideShare) {
@@ -1185,6 +1186,8 @@ let WechatAPI = {
     },
 
     startRecorderWithDelay() {
+        WechatAPI.cache.blockTryStartAutoRecord = true;
+
         appContext.scheduleOnce(function () {
             console.log("录屏test 再开始");
             WechatAPI.gameRecorderManager.start({
@@ -1213,6 +1216,10 @@ let WechatAPI = {
     },
 
     tryStartAutoRecordAndKeepTime() {
+        if (WechatAPI.cache.blockTryStartAutoRecord) {
+            debug.log("在苟且 不续录屏");
+            return;
+        }
         //如果在手动录屏。则跳过 如果在自动录屏，检测时间
         if (!WechatAPI.cache.autoRecording && WechatAPI.cache.gameRecording) {
             debug.log("在手动录屏 不续录屏");
@@ -1221,9 +1228,9 @@ let WechatAPI = {
 
         if (WechatAPI.cache.autoRecording) {
             let dt = (Date.now() - WechatAPI.cache.gameRecordStartTime) / 1000;
-            debug.log("时间dt " + dt);
+            //debug.log("时间dt " + dt);
             if (dt < 60) {
-                debug.log("时间不够 不续录屏");
+                //debug.log("时间不够 不续录屏");
                 return;
             }
         }

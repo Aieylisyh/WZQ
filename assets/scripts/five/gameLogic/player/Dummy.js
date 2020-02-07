@@ -143,7 +143,7 @@ let Dummy = cc.Class({
             return;
         }
 
-        debug.log("dummy playChess");
+       // debug.log("dummy playChess");
         let myTurn = Math.floor((game.currentTurn + 1) / 2);
 
         if (myTurn > 8 && Math.random() < this.status.offlineChance / 100) {
@@ -619,6 +619,14 @@ let Dummy = cc.Class({
             //offlineChance = 100;//test
             turnTimeMin = 0;//test
             turnTimeMax = 0;//test
+
+            missChance = 0;
+            offlineChance = 0;
+            rawSolutionTurns = 0;
+            admitLooseChance = 0;
+            grabFirstChance = 0;
+            fastChance = 100;
+            turnTimeAdd = 0;
 
             //TODO
             let evaluatingParam = null; //设置下棋风格

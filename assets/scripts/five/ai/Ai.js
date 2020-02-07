@@ -10,7 +10,7 @@ var SIZE = 15;
 let Ai = cc.Class({
     statics: {
         checkWin: function (type) {
-            debug.log("checkWin " + type);
+            //debug.log("checkWin " + type);
             // 经过测试，只有以下情况的合法
             //  reverseboard, reverseColor, reverseContinue
             // debug.log(this.getZebraSolution(param.list, type, true, true, true, true));//black win
@@ -18,7 +18,7 @@ let Ai = cc.Class({
 
             let param = this.getAnalyseParam(false);
             if (param == null) {
-                debug.log("checkWin param==null");
+                //debug.log("checkWin param==null");
                 return;
             }
 
@@ -30,7 +30,7 @@ let Ai = cc.Class({
         },
 
         getSolution: function (param) {
-            debug.log("getSolution");
+            //debug.log("getSolution");
             if (param == null) {
                 debug.log("getSolution param==null");
                 param = this.getAnalyseParam();
@@ -50,9 +50,9 @@ let Ai = cc.Class({
                             debug.log("是rawSolution");
                             return this.getRawSolution(param);
                         }
-                        
+
                         if (Math.random() < 0.5) {
-                            res.isMiss=true;
+                            res.isMiss = true;
                             return this.randomlyMovePointBy1(res, param);
                         }
 
@@ -66,7 +66,7 @@ let Ai = cc.Class({
                             return res;
                         }
 
-                        res.isMiss=true;
+                        res.isMiss = true;
                         res = this.randomlyMovePointBy1(res, param);
                     }
                 }

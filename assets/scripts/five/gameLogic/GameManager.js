@@ -175,8 +175,9 @@ cc.Class({
         this.game.chessMap = chessMap;
 
         let winRes = Ai.checkWin(lastChessType);
-        debug.log("winRes");
-        debug.log(winRes);
+        // debug.log("winRes");
+        // debug.log(winRes);
+
         if (winRes && winRes.win) {
             this.delayedPlayerWin(lastChessType);
         } else {
@@ -190,10 +191,10 @@ cc.Class({
     },
 
     startNextTurn: function (lastChessType) {
-
         this.game.currentChessType = 3 - lastChessType;
         this.game.currentTurn++;
-        if (this.game.currentTurn > 360) {
+        debug.log("回合" + this.game.currentTurn);
+        if (this.game.currentTurn > 225) {
             this.drawGame();
             return;
         }
@@ -230,7 +231,7 @@ cc.Class({
 
         info.isLooserOffline = false;
         info.isSurrender = false;
-        info.isDrawGame = false;
+        info.isDrawGame = true;
         info.totalHands = Math.floor((this.game.currentTurn + 1) / 2);
         info = appContext.getUxManager().registerGameEnd(info);
         appContext.getDialogManager().showDialog(DialogTypes.RoundEnd, info);

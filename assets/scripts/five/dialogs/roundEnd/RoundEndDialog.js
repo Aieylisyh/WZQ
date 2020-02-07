@@ -220,8 +220,6 @@ cc.Class({
     },
 
     showWinner: function () {
-        debug.log("平分秋色showWinner");
-        debug.log(this.info);
         if (this.info.isDrawGame) {
             this.looserTag.active = false;
             this.winnerTag.active = false;

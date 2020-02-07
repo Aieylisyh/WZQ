@@ -629,7 +629,7 @@ cc.Class({
 
     tryTriggerFatigue() {
         //尝试一次是否触发疲劳机制  如果触发则清空计数 累计局数越多，触发几率越大 这个function应该在mainwindow调用
-        let f = this.gameInfo.fatigueCount + Math.random() * 7;
+        let f = this.gameInfo.fatigueCount + Math.random() * 7.1;
         if (f > 10) {
             this.startFatigue();
         }
