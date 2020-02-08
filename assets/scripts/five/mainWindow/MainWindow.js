@@ -41,6 +41,10 @@ cc.Class({
         btnMatchModeTimer: cc.Label,
 
         btnNormalModeTimer: cc.Label,
+
+        iconLogo: cc.Node,
+
+        bottomBtns: cc.Node,
     },
 
     start: function () {
@@ -67,18 +71,35 @@ cc.Class({
             return;
         }
 
-        this.buildAnim();
-        //debug.log("！！看看这个有几次！");
         this.setupLoginFinish = true;
+
+        if (WechatAPI.cache.iconShowed) {
+            this.buildWindow();
+        } else {
+            WechatAPI.cache.iconShowed = true;
+
+            this.iconLogo.runAction(cc.sequence(
+                cc.fadeTo(0.5, 255),
+                cc.delayTime(0.5),
+                cc.fadeTo(1, 0),
+                cc.callFunc(function () {
+                    this.buildWindow();
+                }, this),
+            ));
+        }
+    },
+
+    buildWindow() {
+        this.bottomBtns.active = true;
+        this.iconLogo.active = false
+        this.buildAnim();
         appContext.getUxManager().tryTriggerFatigue();
         let userInfo = appContext.getUxManager().getUserInfo();
         this.playerInfoBoard.setup(userInfo);
         this.playerInfoBoard.notifyClick();
         this.setHouse(userInfo);
-
         this.setRedDots();
         this.tickTime = 1;
-
         if (this.node && WechatAPI.isWx || WechatAPI.isTT) {
             WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.show();
         }
@@ -128,7 +149,7 @@ cc.Class({
     onCloseAllDialogs: function () {
         // if (!this.btnMatchMode.active) {
         //     this.scheduleOnce(function () {
-             
+
         //     }, 0);
         // }
     },
@@ -250,7 +271,7 @@ cc.Class({
 
                 let reward = [{ type: "Gold", count: 20 }];
                 appContext.getUxManager().rewardItems(reward);
-               
+
                 appContext.getDialogManager().showDialog(DialogTypes.Match);
                 appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "获得20金币并开始匹配！");
             },

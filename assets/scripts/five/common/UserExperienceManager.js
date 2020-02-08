@@ -98,6 +98,7 @@ cc.Class({
 
     init: function () {
         this.cache = this.cache || {};
+        this.userScoreDic = {};
         //this.saveByMinorChangeCounter = this.saveByMinorChangeCount;
         debug.log("UserExperienceManager 进入游戏");
         this.uxData = WechatAPI.getStorageSync(StorageKey.uxData, true);

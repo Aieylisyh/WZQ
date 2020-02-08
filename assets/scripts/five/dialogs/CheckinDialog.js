@@ -9,6 +9,8 @@ cc.Class({
         checkinItems: [require("CheckinItem")],
 
         text: cc.Label,
+
+        adIcon: cc.Node,
     },
 
     show: function () {
@@ -24,12 +26,17 @@ cc.Class({
             item.setFan(i < c);
         }
 
+        this.adIcon.active = false;
+
         let res = appContext.getUxManager().todayCheckedin();
         if (res) {
             let canDoubleCheckin = appContext.getUxManager().gameInfo.checkinTodayTimes == 1;
             if (canDoubleCheckin) {
                 //看广告可领第二次
                 this.text.string = "看个广告，可再领取一次签到奖励！";
+                if (debug.extraSettings.global) {
+                    this.adIcon.active = true;
+                }
             } else {
                 this.text.string = "已签到，明日可再次签到";
             }

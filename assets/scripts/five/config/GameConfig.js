@@ -18,9 +18,9 @@ cc.Class({
 
         pipDownloadPath: '/pip/pip.',
 
-        devFileDownloadRoot: 'https://devfile.ttigd.cn',
+        devFileDownloadRoot: '',
 
-        releaseFileDownloadRoot: 'https://wxfile.ttigd.cn',
+        releaseFileDownloadRoot: '',
 
         testPlatform: "",
 
@@ -54,7 +54,6 @@ cc.Class({
             platformToutiao: this.platformToutiao,
 
             extraSettings: {
-
                 global: true,
             },
 

@@ -82,7 +82,7 @@ cc.Class({
 
     hide: function () {
         if (this.has()) {
-            this.customHide(); i
+            this.customHide();
         }
     },
 

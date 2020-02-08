@@ -198,7 +198,7 @@
       "array": [
         0,
         0,
-        427.8165494695127,
+        420.0223208354528,
         0,
         0,
         0,
@@ -332,7 +332,7 @@
     "attachVersionToFileDownloadRoot": false,
     "useDevLocalServerIp": false,
     "useDevRemoteServerIp": false,
-    "clientVersion": "1.0.0",
+    "clientVersion": "1.0.3",
     "pipDownloadPath": "/config.",
     "devFileDownloadRoot": "https://resource-1256190400.cos.ap-chengdu.myqcloud.com",
     "releaseFileDownloadRoot": "https://resource-1256190400.cos.ap-chengdu.myqcloud.com",
@@ -343,10 +343,10 @@
     "platformApp": false,
     "platformToutiao": true,
     "remoteFileUrlSuffix_wx": "",
-    "remoteFileUrlSuffix_vivo": "/vivo",
-    "remoteFileUrlSuffix_oppo": "/oppo",
-    "remoteFileUrlSuffix_app": "/app",
-    "remoteFileUrlSuffix_tt": "/tt",
+    "remoteFileUrlSuffix_vivo": "",
+    "remoteFileUrlSuffix_oppo": "",
+    "remoteFileUrlSuffix_app": "",
+    "remoteFileUrlSuffix_tt": "/wzq",
     "_id": "97YWdg4AtMhZdSR279R4hQ"
   },
   {

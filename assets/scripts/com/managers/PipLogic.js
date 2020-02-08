@@ -84,7 +84,7 @@ cc.Class({
     },
 
     usePip: function (content) {
-        console.logObj("content:" + content);
+        console.log(content);
         let json = JSON.parse(content);
         console.log(json);
         if (json == null) {
@@ -98,15 +98,6 @@ cc.Class({
             }
         }
 
-        if (debug.extraSettings.global) {
-            debug.extraSettings.lr = 0;
-            debug.extraSettings.fgSr = 0;
-        }
-
-        if (!WechatAPI.isWx) {
-            debug.extraSettings.fgSr = 0;
-        }
-
         let statisticUrl = json.statisticUrl;
         if (StringUtil.isNotEmpty(statisticUrl)) {
             appContext.getAnalyticManager().onEventUrl = statisticUrl;
@@ -117,7 +108,7 @@ cc.Class({
 
     downloadMisc() {
         try {
-            this.downloadPromo();
+            //this.downloadPromo();
             this.downloadCfg();
         } catch (e) {
             debug.warn("downloadPromo Cfg exception");
@@ -176,13 +167,11 @@ cc.Class({
     },
 
     downloadCfg: function () {
-        return;
-
-        debug.log("download Cfg");
+        console.log("download Cfg");
         let lm = this.lm;
 
         let self = this;
-        // let mainConfig = debug.promoDataDownloadUrl + '?mcachenum=' + Date.parse(new Date());
+        let mainConfig = debug.promoDataDownloadUrl + '?mcachenum=' + Date.parse(new Date());
         appContext.getFileManager().loadRemoteTxtFile(mainConfig,
             function (content) {
                 if (content == null) {
@@ -193,7 +182,7 @@ cc.Class({
                 }
 
                 try {
-                    debug.log("downloadCfg ok");
+                    debug.log("配置下载ok");
 
                     let json = JSON.parse(content);
                     console.log(json);
@@ -202,9 +191,6 @@ cc.Class({
                         //self.exit();
                         return;
                     }
-
-                    debug.logObj(json);
-
                     debug.configExtension = extension;
                     debug.setConfigByRemoteConfig(json);
 
