@@ -220,7 +220,7 @@ cc.Class({
         this.chessboardManager.playWinEffect();
         this.scheduleOnce(function () {
             this.playerWin(winnerType, isLooserOffline, isSurrender);
-        }, 3);
+        }, 4);
     },
 
     drawGame() {

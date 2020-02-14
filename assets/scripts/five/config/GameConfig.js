@@ -1,3 +1,5 @@
+let prefix = "images/smallModule/promott/";
+
 cc.Class({
     extends: cc.Component,
 
@@ -125,48 +127,48 @@ cc.Class({
                 list: [
                     {
                         name: "我的射门会转弯",
-                        localImg: "image/smallModule/promott/wdsm",
+                        localImg: prefix+"wdsm",
                         appid: "tt78b80e05e792be9d"
                     },
                     {
                         name: "弓箭手王者",
-                        localImg: "image/smallModule/promott/gjswz",
+                        localImg: prefix+"gjswz",
                         appid: "tt6c451af8f36f596b"
                     },
                     {
                         name: "蚂蚁部落大作战",
-                        localImg: "image/smallModule/promott/mybl",
+                        localImg: prefix+"mybl",
                         appid: "tt2a405cfdb56a26a1"
                     },
                     {
                         name: "牛仔对决",
-                        localImg: "image/smallModule/promott/nzdj",
+                        localImg: prefix+"nzdj",
                         appid: "tt515627ebce7c7b79"
                     },
                     {
                         name: "坦克兵团",
-                        localImg: "image/smallModule/promott/tkbt",
+                        localImg: prefix+"tkbt",
                         appid: "tt8415f2a81b3fb5f2"
                     },
                     {
                         name: "消灭曹操",
-                        localImg: "image/smallModule/promott/xmcc",
+                        localImg: prefix+"xmcc",
                         appid: "tt6d481bf5f2624129"
                     },
                     {
                         name: "玩转三明治",
-                        localImg: "image/smallModule/promott/smz",
+                        localImg: prefix+"smz",
                         appid: "tt237055cdbc5ad129"
                     },
 
                     {
                         name: "超级守门员",
-                        localImg: "image/smallModule/promott/cjsmy",
+                        localImg: prefix+"cjsmy",
                         appid: "tt39254f98a60fd13b"
                     },
                     {
                         name: "别掉进岩浆",
-                        localImg: "image/smallModule/promott/bdjyj",
+                        localImg: prefix+"bdjyj",
                         appid: "tt43e43559dcce8145"
                     },
 

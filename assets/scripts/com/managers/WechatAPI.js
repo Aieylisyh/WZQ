@@ -1,8 +1,10 @@
 //let DataKey = require("DataKey");
-let StringUtil = require("StringUtil");
+//let StringUtil = require("StringUtil");
 let DialogTypes = require("DialogTypes");
 // let StorageKey = require("StorageKey");
 // let DataUtil = require("DataUtil");
+let recordTime = 180;
+let recordRestartTime = 90;
 
 let WechatAPI = {
 
@@ -1199,7 +1201,7 @@ let WechatAPI = {
         appContext.scheduleOnce(function () {
             console.log("录屏startRecorderWithDelay再开始");
             WechatAPI.gameRecorderManager.start({
-                duration: 240, //录屏改为120秒，已经录了90秒则自动续时间
+                duration: recordTime, //录屏改为120秒，已经录了90秒则自动续时间
             });
         }, 1);
     },
@@ -1215,7 +1217,7 @@ let WechatAPI = {
             } else {
                 console.log('!!!录屏开始');
                 WechatAPI.gameRecorderManager.start({
-                    duration: 240, //录屏改为150秒，已经录了60秒则自动续时间
+                    duration: recordTime, //录屏改为150秒，已经录了60秒则自动续时间
                 });
             }
 
@@ -1237,7 +1239,7 @@ let WechatAPI = {
         if (WechatAPI.cache.autoRecording) {
             let dt = (Date.now() - WechatAPI.cache.gameRecordStartTime) / 1000;
             //debug.log("时间dt " + dt);
-            if (dt < 60) {
+            if (dt < recordRestartTime) {
                 //debug.log("时间不够 不续录屏");
                 return;
             }

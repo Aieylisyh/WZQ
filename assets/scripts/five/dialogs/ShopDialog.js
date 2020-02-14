@@ -32,6 +32,34 @@ cc.Class({
         this.randomGoldNumLabel.string = appContext.getUxManager().getAndRefineRandomGoldUsedCount();
     },
 
+    showNotEnoughGold() {
+        let canLure = false;
+        if (appContext.getUxManager().canUseRandomGold()) {
+            let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+            if (canWatchAd) {
+                canLure = true;
+            }
+        }
+
+        if (canLure) {
+            let info = {
+                content: "金币不足\n尚有未使用的免费金币次数\n看完广告后可以获得大量金币",
+                btn1: {
+                    name: "好 的",
+                    clickFunction: function () {
+                        this.startwatchAdReward();
+                    },
+                    clickFunctionCaller: this,
+                },
+            };
+
+            appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+            return;
+        }
+
+        appContext.getDialogManager().showDialog(DialogTypes.Toast, "金币不足");
+    },
+    
     onClickBtnGrabFirstCard: function () {
         if (appContext.getUxManager().useGold(Item.GrabFirstCard.price)) {
             appContext.getSoundManager().playUseGold();
@@ -39,7 +67,7 @@ cc.Class({
             this.refresh();
         } else {
             appContext.getSoundManager().playBtn();
-            appContext.getDialogManager().showDialog(DialogTypes.Toast, "金币不足");
+            this.showNotEnoughGold();
         }
     },
 
@@ -50,7 +78,7 @@ cc.Class({
             this.refresh();
         } else {
             appContext.getSoundManager().playBtn();
-            appContext.getDialogManager().showDialog(DialogTypes.Toast, "金币不足");
+            this.showNotEnoughGold();
         }
     },
 
@@ -81,13 +109,7 @@ cc.Class({
         if (appContext.getUxManager().canUseRandomGold()) {
             let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
             if (canWatchAd) {
-                this.watchAdReward(function () {
-                    appContext.getSoundManager().playUseGold();
-                    let count = Math.floor(Math.random() * 41 + 80);
-                    this.giveReward([{ type: "Gold", count: count }], false);
-                    appContext.getUxManager().useRandomGold();
-                    this.refresh();
-                }, this);
+                this.startwatchAdReward();
             } else {
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "抽取失败，请稍后重试");
             }
@@ -96,6 +118,16 @@ cc.Class({
             appContext.getSoundManager().playBtn();
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "今日次数已达上限");
         }
+    },
+
+    startwatchAdReward() {
+        this.watchAdReward(function () {
+            appContext.getSoundManager().playUseGold();
+            let count = Math.floor(Math.random() * 41 + 80);
+            this.giveReward([{ type: "Gold", count: count }], false);
+            appContext.getUxManager().useRandomGold();
+            this.refresh();
+        }, this);
     },
 
     watchAdReward(funcSuc, caller) {

@@ -1,10 +1,9 @@
 let StorageKey = require("StorageKey");
-let VitaSystem = require("VitaSystem");
+// let VitaSystem = require("VitaSystem");
 // let DialogTypes = require("DialogTypes");
 let Grade = require('Grade');
 // let Item = require('Item');
 
-let shareVitaCountPerDay = 3;
 
 cc.Class({
     properties: {
@@ -248,30 +247,6 @@ cc.Class({
         return false;
     },
 
-    canShare_vita_restTime: function () {
-        let day = Math.floor((Date.now() + 3600000 * 8) / 86400000);
-        if (this.uxData.share_vita_daystamp && this.uxData.share_vita_daystamp >= day && this.uxData.share_vita_rest != null) {
-            return this.uxData.share_vita_rest;
-        }
-
-        return shareVitaCountPerDay;
-    },
-
-    setShared_vita: function () {
-        let day = Math.floor((Date.now() + 3600000 * 8) / 86400000);
-        if (this.uxData.share_vita_daystamp == null || this.uxData.share_vita_daystamp < day) {
-            this.uxData.share_vita_rest = shareVitaCountPerDay;
-            this.uxData.share_vita_daystamp = day;
-        }
-
-        if (this.uxData.share_vita_rest == null) {
-            this.uxData.share_vita_rest = shareVitaCountPerDay;
-        }
-
-        this.uxData.share_vita_rest -= 1;
-        this.toSaveUxData = true;
-    },
-
     saveUserInfo: function (userInfo) {
         debug.log("!!saveUserInfo");
         debug.log(userInfo);
@@ -364,7 +339,7 @@ cc.Class({
         if (info == null || info == "" || typeof info != "object") {
             this.gameInfo = {};
             this.gameInfo.gold = 0;
-            this.gameInfo.grabFirstCardCount = 3;
+            this.gameInfo.grabFirstCardCount = 2;
             this.gameInfo.keepGradeCardCount = 0;
             this.gameInfo.bonusScoreDay = 0;
             this.gameInfo.randomGoldDay = 0;
@@ -459,7 +434,7 @@ cc.Class({
 
     canUseRandomGold() {
         let count = this.getAndRefineRandomGoldUsedCount();
-        return count < 3;
+        return count < 4;
     },
 
     useRandomGold() {

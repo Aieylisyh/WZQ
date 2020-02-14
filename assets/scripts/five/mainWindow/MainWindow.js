@@ -24,6 +24,10 @@ cc.Class({
 
         house: cc.Sprite,
 
+        houseGlowComp: require("Glow"),
+
+        housePuddingComp: require("Pudding"),
+
         house1: cc.SpriteFrame,
 
         house2: cc.SpriteFrame,
@@ -164,7 +168,14 @@ cc.Class({
 
         //let userInfo = appContext.getUxManager().playedTimes
         // let grade = Grade.getGradeAndFillInfoByScore(userInfo.basic.currentScore).grade;
-        let canEnterHardMode = appContext.getUxManager().playedTimes > 2;
+        let canEnterHardMode = appContext.getUxManager().playedTimes > 1;
+        if (!canEnterHardMode) {
+            let userInfo = appContext.getUxManager().playedTimes
+            let grade = Grade.getGradeAndFillInfoByScore(userInfo.basic.currentScore).grade;
+            if (grade >= 2) {
+                canEnterHardMode = true;
+            }
+        }
 
         if (canEnterHardMode) {
             this.btnHardMode.active = true;
@@ -406,9 +417,9 @@ cc.Class({
         }
 
         //console.log(WechatAPI.followBtn);
-        console.log("关注按钮");
-        console.log(typeof tt.checkFollowState);
-        console.log(typeof tt.createFollowButton);
+        // console.log("关注按钮");
+        // console.log(typeof tt.checkFollowState);
+        // console.log(typeof tt.createFollowButton);
         if (WechatAPI.followBtn == null && typeof tt.checkFollowState == "function" && typeof tt.createFollowButton == "function") {
             tt.checkFollowState({
                 success(res) {
@@ -424,9 +435,9 @@ cc.Class({
                             style: {
                                 left: 10 * ratio,
                                 //   left: gameSize.width * ratio - 80 * ratio,
-                                top: gameSize.height * 0.5 * ratio - 290 * ratio,
-                                width: 75 * ratio,
-                                height: 75 * ratio,
+                                top: gameSize.height * 0.5 * ratio - 295 * ratio,
+                                width: 70 * ratio,
+                                height: 70 * ratio,
                                 lineHeight: 40,
                                 backgroundColor: "#00000000",
                                 borderWidth: 0,
@@ -467,7 +478,8 @@ cc.Class({
             }
 
             if (WechatAPI.hasTTNewMoreGame && WechatAPI.systemInfo.platform != 'ios') {//ios不支持互跳
-                this.btnPromo.active = false;
+                //this.btnPromo.active = false;
+
                 let hotObj = cc.instantiate(this.promoPrefab);
                 hotObj.parent = this.node;
                 hotObj.x = 265;
@@ -499,6 +511,8 @@ cc.Class({
         }
 
         this.house.node.runAction(cc.fadeTo(2, 255));
+        this.houseGlowComp.enable = !appContext.getUxManager().gameInfo.hasClickedHouse;
+        this.housePuddingComp.enable = !appContext.getUxManager().gameInfo.hasClickedHouse;
     },
 
     setRedDots() {
@@ -527,6 +541,10 @@ cc.Class({
     },
 
     onClickHouse() {
+        this.houseGlowComp.enable = false;
+        this.housePuddingComp.enable = false;
+        appContext.getUxManager().gameInfo.hasClickedHouse = true;
+        appContext.getUxManager().saveGameInfo();
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, this.housePhrase);
     },
 });
