@@ -162,12 +162,9 @@ cc.Class({
 
         let btnMatchModeX = -50;
 
-        let userInfo = appContext.getUxManager().getUserInfo();
-        let grade = Grade.getGradeAndFillInfoByScore(userInfo.basic.currentScore).grade;
-        let canEnterHardMode = true;//TODO
-        if (grade < 2) {
-            canEnterHardMode = false;
-        }
+        //let userInfo = appContext.getUxManager().playedTimes
+        // let grade = Grade.getGradeAndFillInfoByScore(userInfo.basic.currentScore).grade;
+        let canEnterHardMode = appContext.getUxManager().playedTimes > 2;
 
         if (canEnterHardMode) {
             this.btnHardMode.active = true;
@@ -462,20 +459,15 @@ cc.Class({
         if (WechatAPI.isTT) {
             this.createFollowBtn();
 
-            if (WechatAPI.systemInfo.platform != 'ios') {
-                if (WechatAPI.isTTPoor) {
-                    if (WechatAPI.PoorTTBtn) {
-                        debug.log("展示 PoorTTBtn");
-                        WechatAPI.PoorTTBtn.show();
-                    }
-                    return;
+            //let promoInfo = debug.getPromoList();
+            if (WechatAPI.hasTTRawMoreGame) {
+                if (WechatAPI.PoorTTBtn) {
+                    WechatAPI.PoorTTBtn.show();
                 }
+            }
 
-                if (this.btnPromo) {
-                    this.btnPromo.active = true;
-                }
-
-                debug.log("创建 hotObj");
+            if (WechatAPI.hasTTNewMoreGame && WechatAPI.systemInfo.platform != 'ios') {//ios不支持互跳
+                this.btnPromo.active = false;
                 let hotObj = cc.instantiate(this.promoPrefab);
                 hotObj.parent = this.node;
                 hotObj.x = 265;

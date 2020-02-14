@@ -66,6 +66,8 @@ cc.Class({
         shareRewardTxt: cc.Label,
 
         keepGradeRewardTxt: cc.Label,
+
+        keepGradeRewardAdIcon: cc.Node,
     },
 
 
@@ -83,6 +85,9 @@ cc.Class({
         this.fadeInBackground();
         this.info = info;
         this.step = 1;
+
+        WechatAPI.cache.gameRecordHideShare = true;
+        //WechatAPI.recordGameEnd(true);
 
         this.processStep();
     },
@@ -175,10 +180,6 @@ cc.Class({
 
             case 8:
                 this.showButtons();
-                break;
-
-            case 9:
-                this.hideRecordAutoShare();
                 break;
 
         }
@@ -376,14 +377,17 @@ cc.Class({
 
         if (WechatAPI.enableShare) {
             this.btnShowOff.active = true;
-            if (this.getHasVideoToShare()) {
+            if (this.hasShareReward) {
                 this.shareRewardTxt.node.active = true;
-                this.keepGradeRewardTxt.string = "分享录屏送20~50金币";
-
+                if (this.getHasVideoToShare()) {
+                    this.shareRewardTxt.string = "分享录屏送20~50金币";
+                } else {
+                    this.shareRewardTxt.string = "分享成功送10~40金币";
+                }
             } else {
-                this.shareRewardTxt.node.active = true;
-                this.keepGradeRewardTxt.string = "分享成功送10~40金币";
+                this.shareRewardTxt.node.active = false;
             }
+
         } else {
             this.btnShowOff.active = false;
         }
@@ -395,6 +399,9 @@ cc.Class({
                 this.btnKeepGrade.active = true;
                 this.keepGradeRewardTxt.node.active = true;
                 this.keepGradeRewardTxt.string = "恢复已损失积分" + toRestore;
+
+
+                this.keepGradeRewardAdIcon.active = appContext.getUxManager().gameInfo.keepGradeCardCount < 1;
             }
         }
 
@@ -413,16 +420,6 @@ cc.Class({
         }, 0);
     },
 
-    hideRecordAutoShare: function () {
-        // if (WechatAPI.isTT) {
-        //     WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
-        // }
-        // if (WechatAPI.gameRecorderManager) {
-        //     WechatAPI.cache.autoRecording = false;
-        //     WechatAPI.cache.gameRecording = true;
-        // }
-        WechatAPI.cache.gameRecordHideShare = true;
-    },
 
     // 点击"返回首页"按钮
     onClickBtnBack: function () {
@@ -469,17 +466,17 @@ cc.Class({
 
         if (this.getHasVideoToShare()) {
             //has Video
-            reward[0].count = Math.floor(Math.random() * 31 + 20);
-            WechatAPI.shareUtil.setShareVideoCB(reward);
-
-            WechatAPI.cache.gameRecordHideShare = false;//应该防止弹出录屏影响审核，这里可以先WechatAPI.cache.gameRecording = false。但是又会影响代码逻辑
-            WechatAPI.recordGameEnd();
 
             if (this.hasShareReward) {
-                this.keepGradeRewardTxt.string = "分享成功送10~40金币";
+                reward[0].count = Math.floor(Math.random() * 31 + 20);
+                WechatAPI.shareUtil.setShareVideoCB(reward);
             } else {
-                this.shareRewardTxt.node.active = false;
+                WechatAPI.shareUtil.setShareVideoCB();
             }
+            WechatAPI.cache.gameRecordHideShare = false;
+            WechatAPI.recordGameEnd();
+            this.shareRewardTxt.node.active = false;//这个隐藏了就好 反正用户取消了录屏，这个视频就没了 不可能再次调起
+            this.hasShareReward = false;
             appContext.scheduleOnce(function () {
                 WechatAPI.assignRecordListeners();
             }, 3);
@@ -500,7 +497,7 @@ cc.Class({
                                 appContext.getUxManager().rewardItems(reward);
                                 let text = Item.getTextByItem(reward);
                                 appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "分享成功\n获得: " + text);
-
+                                this.keepGradeRewardTxt.string = "已分享成功!";
                                 appContext.getUxManager().saveGameInfo();
                             }
                         }
@@ -514,10 +511,12 @@ cc.Class({
     // 点击"段位保护"按钮
     onClickBtnProtectGrade: function () {
         appContext.getSoundManager().playBtn();
-        let info = {};
+
         let self = this;
         let count = appContext.getUxManager().gameInfo.keepGradeCardCount;
+
         if (count >= 1) {
+            let info = {};
             info.content = "当前有保段卡" + count + "张\n是否使用1张回复失去的积分？";
             info.btn1 = {
                 clickFunction: function () {
@@ -528,19 +527,12 @@ cc.Class({
             };
             info.btn2 = {};
             info.hideCloseBtn = true;
-        } else {
-            info.content = "当前没有保段卡\n看一个视频可以回复失去的积分";
-            info.btn1 = {
-                clickFunction: function () {
-                    self.showVideo();
-                    self.hideKeepGradeButton();
-                },
-            };
-            info.btn2 = {};
-            info.hideCloseBtn = true;
-        }
+            appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
 
-        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+        } else {
+            this.showVideo();
+            this.hideKeepGradeButton();
+        }
     },
 
     hideKeepGradeButton() {

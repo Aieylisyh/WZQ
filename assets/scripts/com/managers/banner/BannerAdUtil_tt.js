@@ -2,7 +2,7 @@ cc.Class({
     extends: require("BannerAdUtil"),
 
     properties: {
-        id: "38lvc3bk3yx252gc0b",
+        id: "a9mgnfithj9hlc1j06",
     },
 
     isEnabled: function () {

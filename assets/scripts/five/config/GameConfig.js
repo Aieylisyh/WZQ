@@ -124,53 +124,52 @@ cc.Class({
                 title: "时下热门",
                 list: [
                     {
-                        name: "加了米海盗",
-                        localImg: "images/smallModule/promott/jlm",
-                        appid: "tt82ccf4711de6783c"
-                    },
-                    {
-                        name: "枪王战僵尸",
-                        localImg: "images/smallModule/promott/qwzjs",
-                        appid: "ttd419a2a44b33fcbe"
-                    },
-                    {
-                        name: "反恐枪神",
-                        localImg: "images/smallModule/promott/fkqs",
-                        appid: "tt525d24e0cd77896c"
-                    },
-                    {
-                        name: "梦想商业街",
-                        localImg: "images/smallModule/promott/mxsyj",
-                        appid: "ttbfc2c97f20e86aad"
-                    }, {
                         name: "我的射门会转弯",
-                        localImg: "images/smallModule/promott/wdsm",
+                        localImg: "image/smallModule/promott/wdsm",
                         appid: "tt78b80e05e792be9d"
-                    }, {
+                    },
+                    {
+                        name: "弓箭手王者",
+                        localImg: "image/smallModule/promott/gjswz",
+                        appid: "tt6c451af8f36f596b"
+                    },
+                    {
+                        name: "蚂蚁部落大作战",
+                        localImg: "image/smallModule/promott/mybl",
+                        appid: "tt2a405cfdb56a26a1"
+                    },
+                    {
+                        name: "牛仔对决",
+                        localImg: "image/smallModule/promott/nzdj",
+                        appid: "tt515627ebce7c7b79"
+                    },
+                    {
+                        name: "坦克兵团",
+                        localImg: "image/smallModule/promott/tkbt",
+                        appid: "tt8415f2a81b3fb5f2"
+                    },
+                    {
+                        name: "消灭曹操",
+                        localImg: "image/smallModule/promott/xmcc",
+                        appid: "tt6d481bf5f2624129"
+                    },
+                    {
                         name: "玩转三明治",
-                        localImg: "images/smallModule/promott/smz",
+                        localImg: "image/smallModule/promott/smz",
                         appid: "tt237055cdbc5ad129"
                     },
-                    {
-                        name: "种子吃吃吃",
-                        localImg: "images/smallModule/promott/zzccc",
-                        appid: "ttd275a4c84d5f18ee"
-                    },
+
                     {
                         name: "超级守门员",
-                        localImg: "images/smallModule/promott/cjsmy",
+                        localImg: "image/smallModule/promott/cjsmy",
                         appid: "tt39254f98a60fd13b"
                     },
                     {
                         name: "别掉进岩浆",
-                        localImg: "images/smallModule/promott/bdjyj",
+                        localImg: "image/smallModule/promott/bdjyj",
                         appid: "tt43e43559dcce8145"
                     },
-                    {
-                        name: "你好抖腿兔",
-                        localImg: "images/smallModule/promott/nhdtt",
-                        appid: "ttd37da5c04c571966"
-                    },
+
                 ]
             },
 
