@@ -127,6 +127,7 @@ cc.Class({
         if (info.success) {
             if (this.isHardMode) {
                 appContext.getUxManager().gameInfo.lastHardModeTimestamp = Date.now();
+                appContext.getUxManager().saveGameInfo();
             }
             appContext.getSoundManager().playStartRound();
 

@@ -40,6 +40,8 @@ cc.Class({
         checkinDialogPath: "",
 
         shopDialogPrefabPath: "",
+
+        shareVideoDialogPrefabPath: "",
     },
 
     onDialogHide: function (type) {
@@ -288,6 +290,10 @@ cc.Class({
 
             case DialogTypes.GrabFirst:
                 prefabPath = this.grabFirstPrefabPath;
+                break;
+
+            case DialogTypes.ShareVideo:
+                prefabPath = this.shareVideoDialogPrefabPath;
                 break;
 
             default:

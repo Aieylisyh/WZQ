@@ -76,7 +76,7 @@ cc.Class({
     onUpdate(dt) {
         if (this.toSaveGameInfo) {
             this.toSaveGameInfo = false;
-            this.gameInfo.vitaSystem = this.vitaSystem.getSaveData();
+            //this.gameInfo.vitaSystem = this.vitaSystem.getSaveData();
             WechatAPI.setStorageSync(StorageKey.GameInfo, JSON.stringify(this.gameInfo));
 
             appContext.getDialogManager().updateDataBasedDialogs();
@@ -333,9 +333,6 @@ cc.Class({
     initGameInfo: function () {
         let info = WechatAPI.getStorageSync(StorageKey.GameInfo, true);
 
-        this.vitaSystem = VitaSystem;
-        let now = Date.now();
-
         if (info == null || info == "" || typeof info != "object") {
             this.gameInfo = {};
             this.gameInfo.gold = 0;
@@ -349,15 +346,12 @@ cc.Class({
             this.gameInfo.checkinLastDay = 0;
             this.gameInfo.checkinValidDayCount = 0;
             this.gameInfo.checkinTodayTimes = 0;
-            this.vitaSystem.init();
         } else {
             debug.log("load existing game info");
             //debug.log(info);
             this.gameInfo = info;
-            this.vitaSystem.load(this.gameInfo.vitaSystem);
         }
 
-        this.gameInfo.vitaSystem = this.vitaSystem.getSaveData();
     },
 
     useGrabFirstCard() {
@@ -482,6 +476,15 @@ cc.Class({
 
     lastDayCheckedin() {
         return this.gameInfo.checkinLastDay == this.uxData.dayInfo.day - 1;
+    },
+
+    isTodaySuperShareVideoShown() {
+        return this.gameInfo.superShareVideoDay == this.uxData.dayInfo.day;
+    },
+
+    setTodaySuperShareVideo() {
+        this.gameInfo.superShareVideoDay = this.uxData.dayInfo.day;
+        this.saveGameInfo();
     },
 
     rewardItems(list, showDialog = true) {

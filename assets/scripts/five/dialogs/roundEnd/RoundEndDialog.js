@@ -17,6 +17,8 @@ cc.Class({
 
         btnShowOff: cc.Node,
 
+        btnFullfill: cc.Node,
+
         btnKeepGrade: cc.Node,
 
         looserTag: cc.Node,
@@ -372,27 +374,24 @@ cc.Class({
     },
 
     showButtons: function () {
-        this.btnKeepGrade.active = false;
         this.buttons.active = true;
 
-        if (WechatAPI.enableShare) {
-            this.btnShowOff.active = true;
-            if (this.hasShareReward) {
-                this.shareRewardTxt.node.active = true;
-                if (this.getHasVideoToShare()) {
-                    this.shareRewardTxt.string = "分享录屏送20~50金币";
-                } else {
-                    this.shareRewardTxt.string = "分享成功送10~40金币";
-                }
-            } else {
-                this.shareRewardTxt.node.active = false;
-            }
+        this.setFullfillGradeBtns();
+        this.setShareBtns();
+        this.setKeepGradeBtns();
 
-        } else {
-            this.btnShowOff.active = false;
-        }
+        this.buttons.y = -520;
+        let action = cc.moveTo(0.5, 0, -40).easing(cc.easeCubicActionOut());
+        this.buttons.runAction(action);
 
+        this.scheduleOnce(function () {
+            this.processStep();
+        }, 0);
+    },
+
+    setKeepGradeBtns() {
         this.btnKeepGrade.active = false;
+
         if (!this.info.win) {
             let toRestore = Math.abs(this.info.gradeScoreAdd);
             if (!this.info.win && toRestore > 0) {
@@ -410,16 +409,106 @@ cc.Class({
         } else if (!this.btnShowOff.active && this.btnKeepGrade.active) {
             this.btnKeepGrade.x = 0;
         }
-
-        this.buttons.y = -520;
-        let action = cc.moveTo(0.5, 0, -40).easing(cc.easeCubicActionOut());
-        this.buttons.runAction(action);
-
-        this.scheduleOnce(function () {
-            this.processStep();
-        }, 0);
     },
 
+    setFullfillGradeBtns() {
+        this.btnFullfill.active = false;
+
+        let isNearly = false;
+        let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+        if (canWatchAd && isNearly) {
+            this.btnFullfill.active = true;
+        }
+    },
+
+    setShareBtns() {
+        this.btnShowOff.active = false;
+        if (this.btnFullfill.active) {
+            return;
+        }
+
+        if (WechatAPI.enableShare) {
+            this.btnShowOff.active = true;
+
+            if (this.info.win) {
+                if (!appContext.getUxManager().isTodaySuperShareVideoShown()) {
+                    if (!WechatAPI.cache.lifetimeWinCount) {
+                        WechatAPI.cache.lifetimeWinCount = 1;
+                    } else {
+                        WechatAPI.cache.lifetimeWinCount++;
+                    }
+
+                    if (this.getHasVideoToShare() && WechatAPI.cache.lifetimeWinCount + Math.random() * 2.5 > 4) {
+                        appContext.getUxManager().setTodaySuperShareVideo()
+
+                        this.shareRewardTxt.node.active = false;
+                        this.hasShareReward = false;
+                        appContext.getDialogManager().showDialog(DialogTypes.ShareVideo);
+                        return;
+                    }
+                }
+            };
+
+
+            if (this.hasShareReward) {
+                this.shareRewardTxt.node.active = true;
+                if (this.getHasVideoToShare()) {
+                    this.shareRewardTxt.string = "分享录屏送20~50金币";
+                } else {
+                    this.shareRewardTxt.string = "分享成功送10~40金币";
+                }
+            } else {
+                this.shareRewardTxt.node.active = false;
+            }
+
+        }
+    },
+
+    onClickBtnFullfill: function () {
+        appContext.getSoundManager().playBtn();
+        this.btnFullfill.active = false;
+        this.fullfillGrade();
+    },
+
+    fullfillGrade() {
+        let score =1;
+        appContext.getDialogManager().showDialog(DialogTypes.Toast, "加满段位成功！\n直接获得积分" + score);
+
+        let userInfo = appContext.getUxManager().getUserInfo();
+        userInfo.basic.currentScore += score;
+        appContext.getUxManager().saveUserInfo(userInfo);
+
+        this.expArtNumPref.string = "积分已加满";
+        this.expArtNum.string = "";
+        let shakeAction1 = cc.scaleTo(0.5, 0.5).easing(cc.easeBackOut());
+        let shakeAction2 = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
+        this.expAddPart.runAction(cc.sequence(shakeAction1, shakeAction2));
+
+
+        //big grade icon. animate whatever it changes or not
+        let originalScale = this.selfPlayerInfo.gradeIcon.node.scale;
+        let seq = cc.sequence(
+            cc.scaleTo(0.3, 0),
+            cc.callFunc(function () {
+                debug.log(this.gradeInfoFrom.imgPath);
+                this.selfPlayerInfo.setGradeIcon(this.gradeInfoFrom.imgPath);
+            }, this),
+            cc.scaleTo(0.5, originalScale)
+        );
+        this.selfPlayerInfo.gradeIcon.node.runAction(seq);
+
+        let gradeFrom = this.gradeAndFillInfoFrom.grade;
+        let total = this.gradeAndFillInfoFrom.fillTop - this.gradeAndFillInfoFrom.fillBottom;
+        this.setPBProgress(this.gradeAndFillInfoFrom.fillAmount, total);
+
+        if (gradeFrom >= 10) {
+            this.setPBIcon(gradeFrom);
+        } else {
+            this.setPBIcon(gradeFrom, gradeFrom + 1);
+        }
+
+        this.expLowLabel.string = "加满段位成功";
+    },
 
     // 点击"返回首页"按钮
     onClickBtnBack: function () {
@@ -530,7 +619,13 @@ cc.Class({
             appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
 
         } else {
-            this.showVideo();
+            let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+            if (canWatchAd) {
+                this.showVideo();
+            } else {
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "暂时无法保段");
+            }
+
             this.hideKeepGradeButton();
         }
     },
@@ -574,7 +669,7 @@ cc.Class({
     },
 
     resetScore() {
-        let score = Math.abs(this.info.gradeScoreAdd)
+        let score = Math.abs(this.info.gradeScoreAdd);
         appContext.getDialogManager().showDialog(DialogTypes.Toast, "段位保护成功！\n回复积分" + score);
 
         let userInfo = appContext.getUxManager().getUserInfo();

@@ -549,6 +549,7 @@
     "grabFirstPrefabPath": "GrabFirstDialog",
     "checkinDialogPath": "CheckinDialog",
     "shopDialogPrefabPath": "ShopDialog",
+    "shareVideoDialogPrefabPath": "ShareVideoDialog",
     "_id": "82PstscXpM0Yz1ZLqEpUL2"
   },
   {

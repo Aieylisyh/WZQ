@@ -510,9 +510,12 @@ cc.Class({
             this.housePhrase = "您的居所 【陋室】\n对局获得金币+0%\n\n达到【小成三段】\n可升级到【简雅居】";
         }
 
-        this.house.node.runAction(cc.fadeTo(2, 255));
-        this.houseGlowComp.enable = !appContext.getUxManager().gameInfo.hasClickedHouse;
-        this.housePuddingComp.enable = !appContext.getUxManager().gameInfo.hasClickedHouse;
+        if (appContext.getUxManager().gameInfo.hasClickedHouse) {
+            this.house.node.runAction(cc.fadeTo(2, 255));
+        } else {
+            this.houseGlowComp.enable = true;
+            this.housePuddingComp.enable = true;
+        }
     },
 
     setRedDots() {
@@ -541,10 +544,13 @@ cc.Class({
     },
 
     onClickHouse() {
-        this.houseGlowComp.enable = false;
-        this.housePuddingComp.enable = false;
-        appContext.getUxManager().gameInfo.hasClickedHouse = true;
-        appContext.getUxManager().saveGameInfo();
+        if (!appContext.getUxManager().gameInfo.hasClickedHouse) {
+            this.houseGlowComp.enable = false;
+            this.housePuddingComp.enable = false;
+            appContext.getUxManager().gameInfo.hasClickedHouse = true;
+            appContext.getUxManager().saveGameInfo();
+        }
+
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, this.housePhrase);
     },
 });
