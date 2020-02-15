@@ -31,7 +31,7 @@ cc.Class({
     // 设置人物属性图
     setCharacterAttribute: function () {
         let userBasic = appContext.getUxManager().getUserInfo().basic;
-        debug.log(userBasic);
+        // debug.log(userBasic);
         // maxKeepWin: 0
         // crtKeepWin: 0
         // totalHands: 0

@@ -72,7 +72,6 @@ cc.Class({
         keepGradeRewardAdIcon: cc.Node,
     },
 
-
     show: function (info) {
         if (info == null) {
             this.hide();
@@ -394,7 +393,7 @@ cc.Class({
 
         if (!this.info.win) {
             let toRestore = Math.abs(this.info.gradeScoreAdd);
-            if (!this.info.win && toRestore > 0) {
+            if (toRestore > 0) {
                 this.btnKeepGrade.active = true;
                 this.keepGradeRewardTxt.node.active = true;
                 this.keepGradeRewardTxt.string = "恢复已损失积分" + toRestore;
@@ -403,18 +402,21 @@ cc.Class({
                 this.keepGradeRewardAdIcon.active = appContext.getUxManager().gameInfo.keepGradeCardCount < 1;
             }
         }
-
-        if (this.btnShowOff.active && !this.btnKeepGrade.active) {
-            this.btnShowOff.x = 0;
-        } else if (!this.btnShowOff.active && this.btnKeepGrade.active) {
-            this.btnKeepGrade.x = 0;
-        }
     },
 
     setFullfillGradeBtns() {
         this.btnFullfill.active = false;
-
+        //如果胜利，且当前段位大于1小于10，且差180积分以内可以升段，就出现这个包含广告图标的“加满段位”按钮，点击效果是看广告，获得刚好的经验上一个段位
         let isNearly = false;
+        if (this.info.win) {
+            let gradeTo = this.gradeAndFillInfoTo.grade;
+            if (gradeTo > 1 && gradeTo < 10) {
+                let deltaExp = this.gradeAndFillInfoTo.fillTop - this.info.toScore;
+                if (deltaExp <= 100) {
+                    isNearly = true;
+                }
+            }
+        }
         let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
         if (canWatchAd && isNearly) {
             this.btnFullfill.active = true;
@@ -423,10 +425,6 @@ cc.Class({
 
     setShareBtns() {
         this.btnShowOff.active = false;
-        if (this.btnFullfill.active) {
-            return;
-        }
-
         if (WechatAPI.enableShare) {
             this.btnShowOff.active = true;
 
@@ -467,44 +465,81 @@ cc.Class({
     onClickBtnFullfill: function () {
         appContext.getSoundManager().playBtn();
         this.btnFullfill.active = false;
-        this.fullfillGrade();
+        this.showVideo_fullfillGrade();
+    },
+
+    showVideo_fullfillGrade() {
+        let self = this;
+        WechatAPI.videoAdUtil.updateCb({
+            failCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_fullfill_fail");
+                appContext.getAnalyticManager().sendTT('videoAd_fullfill', {
+                    res: 1,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "加满未成功");
+            },
+            finishCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_fullfill_ok");
+                appContext.getAnalyticManager().sendTT('videoAd_fullfill', {
+                    res: 0,
+                });
+                this.fullfillGrade();
+            },
+            ceaseCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_fullfill_cease");
+                appContext.getAnalyticManager().sendTT('videoAd_fullfill', {
+                    res: 2,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后加满");
+            },
+            caller: self,
+        });
+
+        WechatAPI.videoAdUtil.show();
     },
 
     fullfillGrade() {
-        let score =1;
+        let userInfo = appContext.getUxManager().getUserInfo();
+
+        let currentScore = userInfo.basic.currentScore;
+        let gradeAndFillInfo = Grade.getGradeAndFillInfoByScore(currentScore);
+        let scoreTarget = gradeAndFillInfo.fillTop;
+
+
+        let score = scoreTarget - currentScore;
         appContext.getDialogManager().showDialog(DialogTypes.Toast, "加满段位成功！\n直接获得积分" + score);
 
-        let userInfo = appContext.getUxManager().getUserInfo();
-        userInfo.basic.currentScore += score;
+        userInfo.basic.currentScore = scoreTarget;
         appContext.getUxManager().saveUserInfo(userInfo);
 
-        this.expArtNumPref.string = "积分已加满";
+        this.expArtNumPref.string = "积分已加满!";
         this.expArtNum.string = "";
         let shakeAction1 = cc.scaleTo(0.5, 0.5).easing(cc.easeBackOut());
         let shakeAction2 = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
         this.expAddPart.runAction(cc.sequence(shakeAction1, shakeAction2));
 
-
+        let gradeAndFillInfo_new = Grade.getGradeAndFillInfoByScore(scoreTarget);
+        let grade_new = gradeAndFillInfo_new.grade;
+        let gradeInfo_new = Grade.getGradeInfo(grade_new);
         //big grade icon. animate whatever it changes or not
         let originalScale = this.selfPlayerInfo.gradeIcon.node.scale;
         let seq = cc.sequence(
             cc.scaleTo(0.3, 0),
             cc.callFunc(function () {
-                debug.log(this.gradeInfoFrom.imgPath);
-                this.selfPlayerInfo.setGradeIcon(this.gradeInfoFrom.imgPath);
+                debug.log(gradeInfo_new.imgPath);
+                this.selfPlayerInfo.setGradeIcon(gradeInfo_new.imgPath);
             }, this),
             cc.scaleTo(0.5, originalScale)
         );
         this.selfPlayerInfo.gradeIcon.node.runAction(seq);
 
-        let gradeFrom = this.gradeAndFillInfoFrom.grade;
-        let total = this.gradeAndFillInfoFrom.fillTop - this.gradeAndFillInfoFrom.fillBottom;
-        this.setPBProgress(this.gradeAndFillInfoFrom.fillAmount, total);
+        let total = gradeAndFillInfo_new.fillTop - gradeAndFillInfo_new.fillBottom;
+        this.setPBProgress(0, total);
 
-        if (gradeFrom >= 10) {
-            this.setPBIcon(gradeFrom);
+        if (grade_new >= 10) {
+            this.setPBIcon(grade_new);
         } else {
-            this.setPBIcon(gradeFrom, gradeFrom + 1);
+            this.setPBIcon(grade_new, grade_new + 1);
         }
 
         this.expLowLabel.string = "加满段位成功";

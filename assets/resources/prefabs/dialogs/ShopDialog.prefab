@@ -987,7 +987,7 @@
       "ctor": "Float64Array",
       "array": [
         -110,
-        220,
+        222,
         0,
         0,
         0,
@@ -1075,8 +1075,8 @@
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
-      "g": 255,
-      "b": 255,
+      "g": 202,
+      "b": 67,
       "a": 255
     },
     "_contentSize": {
@@ -1180,8 +1180,8 @@
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
-      "g": 255,
-      "b": 255,
+      "g": 202,
+      "b": 67,
       "a": 255
     },
     "_contentSize": {
@@ -4713,8 +4713,8 @@
       }
     ],
     "_useOriginalSize": false,
-    "_string": "获得80~120金币，每日限3次",
-    "_N$string": "获得80~120金币，每日限3次",
+    "_string": "获得80~120金币，每日限4次",
+    "_N$string": "获得80~120金币，每日限4次",
     "_fontSize": 40,
     "_lineHeight": 48,
     "_enableWrapText": false,

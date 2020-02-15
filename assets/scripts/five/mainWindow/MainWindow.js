@@ -24,8 +24,6 @@ cc.Class({
 
         house: cc.Sprite,
 
-        houseGlowComp: require("Glow"),
-
         housePuddingComp: require("Pudding"),
 
         house1: cc.SpriteFrame,
@@ -166,11 +164,9 @@ cc.Class({
 
         let btnMatchModeX = -50;
 
-        //let userInfo = appContext.getUxManager().playedTimes
-        // let grade = Grade.getGradeAndFillInfoByScore(userInfo.basic.currentScore).grade;
         let canEnterHardMode = appContext.getUxManager().playedTimes > 1;
         if (!canEnterHardMode) {
-            let userInfo = appContext.getUxManager().playedTimes
+            let userInfo = appContext.getUxManager().getUserInfo();
             let grade = Grade.getGradeAndFillInfoByScore(userInfo.basic.currentScore).grade;
             if (grade >= 2) {
                 canEnterHardMode = true;
@@ -510,11 +506,11 @@ cc.Class({
             this.housePhrase = "您的居所 【陋室】\n对局获得金币+0%\n\n达到【小成三段】\n可升级到【简雅居】";
         }
 
+        this.house.node.runAction(cc.fadeTo(2, 255));
         if (appContext.getUxManager().gameInfo.hasClickedHouse) {
-            this.house.node.runAction(cc.fadeTo(2, 255));
+
         } else {
-            this.houseGlowComp.enable = true;
-            this.housePuddingComp.enable = true;
+            this.housePuddingComp.enabled = true;
         }
     },
 
@@ -545,8 +541,9 @@ cc.Class({
 
     onClickHouse() {
         if (!appContext.getUxManager().gameInfo.hasClickedHouse) {
-            this.houseGlowComp.enable = false;
-            this.housePuddingComp.enable = false;
+            this.house.node.scaleX = 1;
+            this.house.node.scaleY = 1;
+            this.housePuddingComp.enabled = false;
             appContext.getUxManager().gameInfo.hasClickedHouse = true;
             appContext.getUxManager().saveGameInfo();
         }
