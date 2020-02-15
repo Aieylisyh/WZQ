@@ -734,7 +734,7 @@
     "_enabled": false,
     "minScale": 0.96,
     "maxScale": 1.05,
-    "turnTime": 0.6,
+    "turnTime": 0.8,
     "loop": true,
     "playOnEnable": true,
     "isPlaying": true,
@@ -5121,7 +5121,6 @@
     "house": {
       "__id__": 15
     },
-    "houseGlowComp": null,
     "housePuddingComp": {
       "__id__": 18
     },

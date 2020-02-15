@@ -3,7 +3,7 @@
 let DialogTypes = require("DialogTypes");
 // let StorageKey = require("StorageKey");
 // let DataUtil = require("DataUtil");
-let recordTime = 180;
+let recordTime = 240;
 let recordRestartTime = 90;
 
 let WechatAPI = {
@@ -1178,7 +1178,7 @@ let WechatAPI = {
             // console.log(WechatAPI.cache.gameRecordHideShare);
             // console.log(res);
 
-            if (WechatAPI.cache.gameRecordHideShare || duration < 1000) {
+            if (WechatAPI.cache.gameRecordHideShare || duration < 500) {
                 WechatAPI.cache.gameRecordHideShare = false;
                 WechatAPI.cache.gameRecording = false;
             }

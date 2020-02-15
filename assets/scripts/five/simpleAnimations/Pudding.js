@@ -2,9 +2,9 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        minScale: 0.5,
+        minScale: 0.9,
 
-        maxScale: 1,
+        maxScale: 1.1,
 
         turnTime: 1,
 

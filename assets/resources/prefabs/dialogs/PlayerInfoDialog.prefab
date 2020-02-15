@@ -3958,8 +3958,8 @@
       }
     ],
     "_useOriginalSize": false,
-    "_string": "棋手信息",
-    "_N$string": "棋手信息",
+    "_string": "我的信息",
+    "_N$string": "我的信息",
     "_fontSize": 60,
     "_lineHeight": 64,
     "_enableWrapText": true,

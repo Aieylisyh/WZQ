@@ -379,7 +379,7 @@ cc.Class({
         this.setShareBtns();
         this.setKeepGradeBtns();
 
-        this.buttons.y = -520;
+        this.buttons.y = -500;
         let action = cc.moveTo(0.5, 0, -40).easing(cc.easeCubicActionOut());
         this.buttons.runAction(action);
 
@@ -406,20 +406,18 @@ cc.Class({
 
     setFullfillGradeBtns() {
         this.btnFullfill.active = false;
-        //如果胜利，且当前段位大于1小于10，且差180积分以内可以升段，就出现这个包含广告图标的“加满段位”按钮，点击效果是看广告，获得刚好的经验上一个段位
-        let isNearly = false;
+        //如果胜利，且当前段位大于1小于10，且差150积分以内可以升段，就出现这个包含广告图标的“加满段位”按钮，点击效果是看广告，获得刚好的经验上一个段位
         if (this.info.win) {
             let gradeTo = this.gradeAndFillInfoTo.grade;
             if (gradeTo > 1 && gradeTo < 10) {
                 let deltaExp = this.gradeAndFillInfoTo.fillTop - this.info.toScore;
-                if (deltaExp <= 100) {
-                    isNearly = true;
+                if (deltaExp < 150) {
+                    let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+                    if (canWatchAd) {
+                        this.btnFullfill.active = true;
+                    }
                 }
             }
-        }
-        let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
-        if (canWatchAd && isNearly) {
-            this.btnFullfill.active = true;
         }
     },
 
@@ -428,15 +426,17 @@ cc.Class({
         if (WechatAPI.enableShare) {
             this.btnShowOff.active = true;
 
+            if (!WechatAPI.cache.lifetimeSuperShareVideoCount) {
+                WechatAPI.cache.lifetimeSuperShareVideoCount = 1;
+            } else {
+                WechatAPI.cache.lifetimeSuperShareVideoCount++;
+            }
+
             if (this.info.win) {
                 if (!appContext.getUxManager().isTodaySuperShareVideoShown()) {
-                    if (!WechatAPI.cache.lifetimeWinCount) {
-                        WechatAPI.cache.lifetimeWinCount = 1;
-                    } else {
-                        WechatAPI.cache.lifetimeWinCount++;
-                    }
+                   
 
-                    if (this.getHasVideoToShare() && WechatAPI.cache.lifetimeWinCount + Math.random() * 2.5 > 4) {
+                    if (this.getHasVideoToShare() && WechatAPI.cache.lifetimeSuperShareVideoCount + Math.random() * 4 > 4) {
                         appContext.getUxManager().setTodaySuperShareVideo()
 
                         this.shareRewardTxt.node.active = false;
@@ -512,7 +512,7 @@ cc.Class({
         userInfo.basic.currentScore = scoreTarget;
         appContext.getUxManager().saveUserInfo(userInfo);
 
-        this.expArtNumPref.string = "积分已加满!";
+        this.expArtNumPref.string = "段位提升！";
         this.expArtNum.string = "";
         let shakeAction1 = cc.scaleTo(0.5, 0.5).easing(cc.easeBackOut());
         let shakeAction2 = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());

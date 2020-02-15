@@ -1,6 +1,7 @@
 let DialogTypes = require("DialogTypes");
 let Grade = require("Grade");
 let DataUtil = require('DataUtil');
+let cdDianFeng =3600000;
 
 cc.Class({
     extends: cc.Component,
@@ -129,10 +130,10 @@ cc.Class({
 
         if (timestampHM) {
             let delta = Date.now() - timestampHM;
-            if (delta >= 900000) {
+            if (delta >= cdDianFeng) {
                 this.btnMatchModeTimer.string = "";
             } else {
-                this.btnMatchModeTimer.string = DataUtil.getCountDownHMSStringByMS(900000 - delta);
+                this.btnMatchModeTimer.string = DataUtil.getCountDownHMSStringByMS(cdDianFeng - delta);
             }
         }
 
@@ -237,7 +238,7 @@ cc.Class({
                 let self = this;
 
                 let info = {
-                    content: "连续下棋极易走火入魔\n此境界乃心识过于执著之幻觉\n请稍息片刻后再战\n\n也可看一个视频，立即匹配并获得20金币",
+                    content: "连续下棋极易走火入魔\n请稍息片刻再战\n\n也可看一个视频，立即匹配并获得20金币",
                 };
                 info.btn1 = {
                     clickFunction: function () {
@@ -300,7 +301,7 @@ cc.Class({
 
         if (timestamp) {
             let delta = Date.now() - timestamp;
-            if (delta < 900000) {
+            if (delta < cdDianFeng) {
                 let self = this;
 
                 let info = {

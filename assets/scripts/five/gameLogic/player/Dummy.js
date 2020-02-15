@@ -143,7 +143,7 @@ let Dummy = cc.Class({
             return;
         }
 
-       // debug.log("dummy playChess");
+        // debug.log("dummy playChess");
         let myTurn = Math.floor((game.currentTurn + 1) / 2);
 
         if (myTurn > 8 && Math.random() < this.status.offlineChance / 100) {
@@ -519,7 +519,7 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 3 + Math.floor(Math.random() * 5);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
-                    fastChance = 75;
+                    fastChance = 80;
                     turnTimeAdd = -0.1;
                     playStyle = 1;
                     break;
@@ -530,7 +530,7 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 3 + Math.floor(Math.random() * 3);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
-                    fastChance = 70;
+                    fastChance = 80;
                     turnTimeAdd = 0;
                     playStyle = 2;
                     break;
@@ -541,7 +541,7 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 2 + Math.floor(Math.random() * 3);
                     admitLooseChance = 20;
                     grabFirstChance = 30;
-                    fastChance = 70;
+                    fastChance = 80;
                     turnTimeAdd = 0;
                     playStyle = 1;
                     break;
@@ -552,7 +552,7 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 3);
                     admitLooseChance = 15;
                     grabFirstChance = 35;
-                    fastChance = 70;
+                    fastChance = 75;
                     turnTimeAdd = 0;
                     playStyle = 2;
                     break;
@@ -563,7 +563,7 @@ let Dummy = cc.Class({
                     rawSolutionTurns = Math.floor(Math.random() * 3);
                     admitLooseChance = 12;
                     grabFirstChance = 40;
-                    fastChance = 70;
+                    fastChance = 75;
                     turnTimeAdd = 0;
                     playStyle = 1;
                     break;
@@ -574,7 +574,7 @@ let Dummy = cc.Class({
                     rawSolutionTurns = Math.floor(Math.random() * 2);
                     admitLooseChance = 10;
                     grabFirstChance = 50;
-                    fastChance = 70;
+                    fastChance = 75;
                     turnTimeAdd = 0;
                     break;
 
@@ -584,7 +584,7 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 0;
                     admitLooseChance = 5;
                     grabFirstChance = 55;
-                    fastChance = 70;
+                    fastChance = 75;
                     turnTimeAdd = 0;
                     break;
 
@@ -594,7 +594,7 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 0;
                     admitLooseChance = 1;
                     grabFirstChance = 75;
-                    fastChance = 60;
+                    fastChance = 75;
                     turnTimeAdd = 0.6;
                     break;
 
@@ -604,17 +604,17 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 0;
                     admitLooseChance = 0;
                     grabFirstChance = 80;
-                    fastChance = 60;
+                    fastChance = 75;
                     turnTimeAdd = 1;
                     break;
             }
 
             if (Math.random() * 100 > fastChance) {
-                turnTimeMin = 0.5 + turnTimeAdd;
-                turnTimeMax = 12 + turnTimeAdd;
+                turnTimeMin = 0.4 + turnTimeAdd;
+                turnTimeMax = 10 + turnTimeAdd;
             } else {
                 turnTimeMin = 0.4 + turnTimeAdd;
-                turnTimeMax = 2.8 + turnTimeAdd;
+                turnTimeMax = 2.7 + turnTimeAdd;
             }
             //offlineChance = 100;//test
             // turnTimeMin = 0;//test

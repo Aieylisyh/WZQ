@@ -572,8 +572,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -240,
-        20,
+        -220,
+        0,
         0,
         0,
         0,
@@ -637,9 +637,9 @@
       "__id__": 13
     },
     "_enabled": true,
-    "minScale": 0.5,
-    "maxScale": 1,
-    "turnTime": 1,
+    "minScale": 0.95,
+    "maxScale": 1.05,
+    "turnTime": 2,
     "loop": true,
     "playOnEnable": true,
     "isPlaying": true,
@@ -654,7 +654,7 @@
       "__id__": 13
     },
     "_enabled": true,
-    "speed": 10,
+    "speed": 20,
     "glowInterval": 1,
     "opacityMax": 255,
     "opacityMin": 255,
@@ -1101,16 +1101,16 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        140,
+        150,
         0,
         0,
         0,
         0,
         0,
         1,
-        0.2,
-        0.2,
-        0.2
+        0.25,
+        0.25,
+        1
       ]
     },
     "_eulerAngles": {
@@ -1203,7 +1203,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 698.7,
+      "width": 650.7,
       "height": 126.55999999999999
     },
     "_anchorPoint": {
@@ -1215,7 +1215,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        55,
+        60,
         110,
         0,
         0,
@@ -1267,7 +1267,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 698.7,
+      "width": 650.7,
       "height": 70.56
     },
     "_anchorPoint": {
@@ -1279,7 +1279,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -349.35,
+        -325.35,
         -70.55999999999999,
         0,
         0,
@@ -1320,8 +1320,8 @@
       }
     ],
     "_useOriginalSize": true,
-    "_string": "获得了一次【4倍金币】的机会！",
-    "_N$string": "获得了一次【4倍金币】的机会！",
+    "_string": "获得一次【4倍金币】的机会！",
+    "_N$string": "获得一次【4倍金币】的机会！",
     "_fontSize": 48,
     "_lineHeight": 56,
     "_enableWrapText": true,
@@ -1344,7 +1344,7 @@
     "asset": {
       "__uuid__": "85fe9e6a-0e60-4952-92b6-b215e3d8581a"
     },
-    "fileId": "bclZ2eTutOU7mw0TkGUVnx",
+    "fileId": "44zTVAc0RPA5uDo5KijJvR",
     "sync": false
   },
   {
@@ -1386,7 +1386,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -274.65,
+        -298.65,
         -126.55999999999999,
         0,
         0,
@@ -1451,7 +1451,7 @@
     "asset": {
       "__uuid__": "85fe9e6a-0e60-4952-92b6-b215e3d8581a"
     },
-    "fileId": "6bGBaebTdOb4vd7zxxOyGv",
+    "fileId": "64iJt8745Mf4xgCg7lrz4A",
     "sync": false
   },
   {
@@ -1464,7 +1464,7 @@
     "_enabled": true,
     "_fontFamily": "Arial",
     "_isSystemFontUsed": true,
-    "_N$string": "获得了一次【4倍金币】的机会！\n分享录屏成功后，您将获得：",
+    "_N$string": "获得一次【4倍金币】的机会！\n分享录屏成功后，您将获得：",
     "_N$horizontalAlign": 2,
     "_N$fontSize": 48,
     "_N$font": null,
@@ -1513,7 +1513,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 0,
-      "height": 70.56
+      "height": 80.64
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1524,7 +1524,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        100,
+        110,
         0,
         0,
         0,
@@ -1565,8 +1565,8 @@
     "_useOriginalSize": false,
     "_string": "",
     "_N$string": "",
-    "_fontSize": 48,
-    "_lineHeight": 56,
+    "_fontSize": 56,
+    "_lineHeight": 64,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,

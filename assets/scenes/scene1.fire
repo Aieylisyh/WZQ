@@ -198,7 +198,7 @@
       "array": [
         0,
         0,
-        420.0223208354528,
+        420.8883462392372,
         0,
         0,
         0,
@@ -327,7 +327,7 @@
       "__id__": 5
     },
     "_enabled": true,
-    "enableLog": true,
+    "enableLog": false,
     "useDevFileDownloadRoot": false,
     "attachVersionToFileDownloadRoot": false,
     "useDevLocalServerIp": false,

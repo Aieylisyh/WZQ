@@ -43,7 +43,7 @@ cc.Class({
 
         if (canLure) {
             let info = {
-                content: "金币不足\n尚有未使用的免费金币次数\n看完广告后可以获得大量金币",
+                content: "金币不足\n有未使用的免费金币次数\n看个广告即可获得大量金币",
                 btn1: {
                     name: "好 的",
                     clickFunction: function () {
@@ -163,7 +163,7 @@ cc.Class({
     giveReward(reward, isBuyOrLottery = true) {
         appContext.getUxManager().rewardItems(reward);
         let text = Item.getTextByItem(reward);
-        let text1 = isBuyOrLottery ? "购买" : "抽取";
+        let text1 = isBuyOrLottery ? "购买" : "获取";
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, text1 + "成功\n获得: " + text);
     },
 });
