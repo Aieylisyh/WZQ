@@ -53,6 +53,7 @@ let TtShare = {
             },
             fail(e) {
                 console.log('分享失败');
+                console.log(e);
                 if (param && param.cb && param.cb.failCb) {
                     param.cb.failCb.call(param.cb.caller);
                 }
@@ -181,7 +182,8 @@ let TtShare = {
                 }
             },
             fail(e) {
-                console.log('分享视频失败');
+                console.log(e);
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "分享视频失败");
                 //如果少于三秒这里会报错！但是不一定是因为少于三秒
                 //appContext.getDialogManager().showDialog("Toast", "请录制3秒以上的视频")
             }

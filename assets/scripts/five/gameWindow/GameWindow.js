@@ -93,9 +93,14 @@ cc.Class({
     },
 
     onClickRecording() {
-        WechatAPI.recordGameEnd();
-        this.onResetRecording();
+        if (this.gameRecordtime < 2) {
+            appContext.getDialogManager().showDialog(DialogTypes.Toast, "录屏时间过短，请多录几秒哦");
+            WechatAPI.recordGameEnd(true);
+        } else {
+            WechatAPI.recordGameEnd();
+        }
 
+        this.onResetRecording();
         this.recording = false;
     },
 

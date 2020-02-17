@@ -14,7 +14,7 @@ cc.Class({
 
         isPlaying: false,
 
-        timer:0,
+        timer: 0,
     },
 
 

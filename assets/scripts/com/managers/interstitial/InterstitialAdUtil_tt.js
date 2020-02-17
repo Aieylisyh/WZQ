@@ -6,6 +6,8 @@ cc.Class({
     },
 
     isEnabled: function() {
+        return false;
+        
         if (!debug.extraSettings.hasIntAd) {
             return false;
         }

@@ -1178,7 +1178,7 @@ let WechatAPI = {
             // console.log(WechatAPI.cache.gameRecordHideShare);
             // console.log(res);
 
-            if (WechatAPI.cache.gameRecordHideShare || duration < 500) {
+            if (WechatAPI.cache.gameRecordHideShare || duration < 100) {
                 WechatAPI.cache.gameRecordHideShare = false;
                 WechatAPI.cache.gameRecording = false;
             }
