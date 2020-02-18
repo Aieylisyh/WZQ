@@ -572,7 +572,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -220,
+        -210,
         0,
         0,
         0,
@@ -637,9 +637,9 @@
       "__id__": 13
     },
     "_enabled": true,
-    "minScale": 0.95,
-    "maxScale": 1.05,
-    "turnTime": 2,
+    "minScale": 0.94,
+    "maxScale": 1,
+    "turnTime": 3,
     "loop": true,
     "playOnEnable": true,
     "isPlaying": true,
@@ -654,7 +654,7 @@
       "__id__": 13
     },
     "_enabled": true,
-    "speed": 20,
+    "speed": 25,
     "glowInterval": 1,
     "opacityMax": 255,
     "opacityMin": 255,
@@ -1344,7 +1344,7 @@
     "asset": {
       "__uuid__": "85fe9e6a-0e60-4952-92b6-b215e3d8581a"
     },
-    "fileId": "44zTVAc0RPA5uDo5KijJvR",
+    "fileId": "f6Y4e8JapOkp1eZKLUc/sa",
     "sync": false
   },
   {
@@ -1451,7 +1451,7 @@
     "asset": {
       "__uuid__": "85fe9e6a-0e60-4952-92b6-b215e3d8581a"
     },
-    "fileId": "64iJt8745Mf4xgCg7lrz4A",
+    "fileId": "d9VXpJCwNAJIZY8IACJ2lR",
     "sync": false
   },
   {

@@ -86,9 +86,7 @@ cc.Class({
         this.fadeInBackground();
         this.info = info;
         this.step = 1;
-
-        WechatAPI.cache.gameRecordHideShare = true;
-        //WechatAPI.recordGameEnd(true);
+        WechatAPI.ttRecorder.willShare = false;
 
         this.processStep();
     },
@@ -266,7 +264,7 @@ cc.Class({
 
         this.scheduleOnce(function () {
             this.processStep();
-        }, 0.75);
+        }, 0.5);
     },
 
     showGradeExp: function () {
@@ -434,7 +432,7 @@ cc.Class({
 
             if (this.info.win) {
                 if (!appContext.getUxManager().isTodaySuperShareVideoShown()) {
-                   
+
 
                     if (this.getHasVideoToShare() && WechatAPI.cache.lifetimeSuperShareVideoCount + Math.random() * 4 > 4) {
                         appContext.getUxManager().setTodaySuperShareVideo()
@@ -566,19 +564,7 @@ cc.Class({
     },
 
     getHasVideoToShare() {
-        let hasVideo = false;
-        if (WechatAPI.isTT && !this.autoShareVideo && WechatAPI.getCanStopGameRecording()) {
-            hasVideo = true;
-            //在录屏
-            if (WechatAPI.cache.autoRecording) {
-                //自动录屏而不是手动录屏
-
-            }
-        } else {
-            hasVideo = false;
-        }
-
-        return hasVideo;
+        return WechatAPI.ttRecorder && WechatAPI.ttRecorder.state == "started";
     },
 
     // 点击"炫耀"按钮
@@ -597,13 +583,10 @@ cc.Class({
             } else {
                 WechatAPI.shareUtil.setShareVideoCB();
             }
-            WechatAPI.cache.gameRecordHideShare = false;
-            WechatAPI.recordGameEnd();
+            WechatAPI.ttRecorder.willShare = true;
+            WechatAPI.ttRecorder.stop();
             this.shareRewardTxt.node.active = false;//这个隐藏了就好 反正用户取消了录屏，这个视频就没了 不可能再次调起
             this.hasShareReward = false;
-            appContext.scheduleOnce(function () {
-                WechatAPI.assignRecordListeners();
-            }, 3);
 
         } else {
             reward[0].count = Math.floor(Math.random() * 31 + 10);
@@ -621,7 +604,7 @@ cc.Class({
                                 appContext.getUxManager().rewardItems(reward);
                                 let text = Item.getTextByItem(reward);
                                 appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "分享成功\n获得: " + text);
-                                this.keepGradeRewardTxt.string = "已分享成功!";
+                                this.shareRewardTxt.string = "已分享成功!";
                                 appContext.getUxManager().saveGameInfo();
                             }
                         }

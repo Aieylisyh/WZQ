@@ -37,7 +37,6 @@ cc.Class({
 
         recordBtn: cc.Node,
         recordingBtn: cc.Node,
-        //recordingTimeLabel: cc.Label,
 
         tip: cc.Node,
     },
@@ -59,55 +58,66 @@ cc.Class({
                 WechatAPI.PoorTTBtn.hide();
             }
 
-            this.recordBtn.active = false;
-            this.recordingBtn.active = false;
+            this.resetRecordBtns();
         }
     },
 
     onClickRecord() {
-        this.recordBtn.active = false;
-        this.recordingBtn.active = true;
-        WechatAPI.recordGameStart();
+        console.log('!!!点击录屏');
+        WechatAPI.ttRecorder.start();
 
-        this.gameRecordtime = 0;
-        this.gameRecordtimeInt = 0;
-        this.recording = true;
-
-        WechatAPI.cache.autoRecording = false;
+        this.resetRecordBtns();
     },
 
     update(dt) {
-        if (this.recording) {
-            this.gameRecordtime += dt * 0.5;
-            let tempInt = Math.floor(this.gameRecordtime);
-            if (tempInt != this.gameRecordtimeInt) {
-                if (WechatAPI.getCanStopGameRecording()) {
-                    this.gameRecordtimeInt = tempInt;
-                    //this.recordingTimeLabel.string = tempInt;
-                } else {
-                    this.onResetRecording();
-                    this.recording = false;
-                }
+        if (WechatAPI.ttRecorder) {
+            let state = WechatAPI.ttRecorder.state;
+
+            switch (state) {
+                case "stopped":
+                    this.recordBtn.active = true;
+                    this.recordingBtn.active = false;
+                    break;
+
+                case "stopping":
+                    this.recordBtn.active = false;
+                    this.recordingBtn.active = false;
+                    break;
+
+                case "started":
+                    if (WechatAPI.ttRecorder.isAuto) {
+                        this.recordBtn.active = true;
+                        this.recordingBtn.active = false;
+                    } else {
+                        this.recordBtn.active = false;
+                        this.recordingBtn.active = true;
+                    }
+                    break;
+
+                case "starting":
+                    this.recordBtn.active = false;
+                    this.recordingBtn.active = false;
+                    break;
+
+                case "wait":
+                    this.recordBtn.active = false;
+                    this.recordingBtn.active = false;
+                    break;
             }
         }
     },
 
     onClickRecording() {
-        if (this.gameRecordtime < 2) {
-            appContext.getDialogManager().showDialog(DialogTypes.Toast, "录屏时间过短，请多录几秒哦");
-            WechatAPI.recordGameEnd(true);
-        } else {
-            WechatAPI.recordGameEnd();
-        }
+        console.log('!!!点击结束录屏');
+        WechatAPI.ttRecorder.willShare = true;
+        WechatAPI.ttRecorder.stop();
 
-        this.onResetRecording();
-        this.recording = false;
+        this.resetRecordBtns();
     },
 
-    onResetRecording() {
-        this.recordBtn.active = true;
+    resetRecordBtns() {
+        this.recordBtn.active = false;
         this.recordingBtn.active = false;
-        //this.recordingTimeLabel.string = "";
     },
 
     reset: function () {
@@ -172,15 +182,8 @@ cc.Class({
 
         this.chessSPLeft.node.runAction(cc.scaleTo(2, 1).easing(cc.easeElasticOut()));
         this.chessSPRight.node.runAction(cc.scaleTo(2, 1).easing(cc.easeElasticOut()));
-        // this.scheduleOnce(function () {
-        //     this.chessSPRight.node.runAction(cc.scaleTo(1, 1).easing(cc.easeElasticOut()));
-        // }, 1);
-        if (WechatAPI.gameRecorderManager) {
-            this.onResetRecording();
-        } else {
-            this.recordBtn.active = false;
-            this.recordingBtn.active = false;
-        }
+
+        this.resetRecordBtns();
     },
 
     closeChatBoard() {

@@ -7554,8 +7554,8 @@
         0,
         0,
         1,
-        0.3,
-        0.3,
+        0.275,
+        0.275,
         1
       ]
     },
@@ -7750,8 +7750,8 @@
         0,
         0,
         1,
-        0.3,
-        0.3,
+        0.275,
+        0.275,
         1
       ]
     },
@@ -8002,7 +8002,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 778.69,
+      "width": 730.69,
       "height": 70.56
     },
     "_anchorPoint": {
@@ -8053,8 +8053,8 @@
       }
     ],
     "_useOriginalSize": false,
-    "_string": "滑动手指确定位置，再点击        落子",
-    "_N$string": "滑动手指确定位置，再点击        落子",
+    "_string": "滑动手指确定位置，再点        落子",
+    "_N$string": "滑动手指确定位置，再点        落子",
     "_fontSize": 48,
     "_lineHeight": 56,
     "_enableWrapText": false,
@@ -8123,7 +8123,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        122,
+        110,
         0,
         0,
         0,
@@ -8674,7 +8674,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -262,
+        -264,
         -370,
         0,
         0,

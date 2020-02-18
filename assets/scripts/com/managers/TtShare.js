@@ -142,8 +142,8 @@ let TtShare = {
         debug.log("分享视频");
         debug.log(path);
         let recordTimeEnough = true;
-        let delta = Date.now() - WechatAPI.cache.gameRecordStartTime;
-        if (delta == null || delta <= 3000) {
+        let deltaSecond = WechatAPI.ttRecorder.getDuration();
+        if (deltaSecond == null || deltaSecond <= 3) {
             recordTimeEnough = false;
         }
 

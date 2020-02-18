@@ -14,8 +14,6 @@ cc.Class({
     },
 
     onClickClose: function () {
-        //WechatAPI.cache.gameRecordHideShare = true;
-
         this.hide();
     },
 
@@ -26,13 +24,8 @@ cc.Class({
         }];
 
         WechatAPI.shareUtil.setShareVideoCB(reward);
-        WechatAPI.cache.gameRecordHideShare = false;
-        WechatAPI.recordGameEnd();
-
-        appContext.scheduleOnce(function () {
-            WechatAPI.assignRecordListeners();
-        }, 3);
-
+        WechatAPI.ttRecorder.willShare = true;
+        WechatAPI.ttRecorder.stop();
         this.hide();
     },
 });

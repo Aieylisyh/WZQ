@@ -3,8 +3,6 @@
 let DialogTypes = require("DialogTypes");
 // let StorageKey = require("StorageKey");
 // let DataUtil = require("DataUtil");
-let recordTime = 240;
-let recordRestartTime = 90;
 
 let WechatAPI = {
 
@@ -31,6 +29,8 @@ let WechatAPI = {
     enableYXSDK: true, //是否启用益欣的sdk。在这里更改！如果否，则使用我这里写的代码
 
     enableShare: false,
+
+    ttRecorder: require("TTRecorder"),
 
     init() {
         let self = this;
@@ -177,7 +177,7 @@ let WechatAPI = {
                 this.isTT = true;
                 console.log("is toutiao");
                 window.wx = window.tt;
-                this.recordSetup();
+                this.ttRecorder.setup();
 
                 let BannerAdUtil_tt = require("BannerAdUtil_tt");
                 this.bannerAdUtil = new BannerAdUtil_tt();
@@ -1148,130 +1148,6 @@ let WechatAPI = {
             this.systemInfo.SDKVersion = s.osVersion;
         }
         debug.log(this.systemInfo);
-    },
-
-    recordSetup() {
-        if (this.isTT) {
-            WechatAPI.gameRecorderManager = tt.getGameRecorderManager();
-
-            if (WechatAPI.gameRecorderManager) {
-                WechatAPI.assignRecordListeners();
-            }
-        }
-    },
-
-    assignRecordListeners() {
-        //console.log("录屏assignRecordListeners");
-        WechatAPI.gameRecorderManager.onStart(res => {
-            WechatAPI.cache.gameRecordStartTime = Date.now();
-            WechatAPI.cache.gameRecording = true;
-            WechatAPI.cache.blockTryStartAutoRecord = false;
-            console.log('录屏开始');
-            //console.log(res);
-        })
-
-        WechatAPI.gameRecorderManager.onStop((res) => {
-            console.log("录屏结束 " + res.videoPath);
-            let duration = Date.now() - WechatAPI.cache.gameRecordStartTime;
-            // console.log('时间 ' + duration);
-            // console.log(WechatAPI.cache.gameRecording);
-            // console.log(WechatAPI.cache.gameRecordHideShare);
-            // console.log(res);
-
-            if (WechatAPI.cache.gameRecordHideShare || duration < 100) {
-                WechatAPI.cache.gameRecordHideShare = false;
-                WechatAPI.cache.gameRecording = false;
-            }
-
-            if (WechatAPI.cache.gameRecording) {
-                WechatAPI.shareUtil.shareVideo(res.videoPath);
-                WechatAPI.cache.gameRecording = false;
-            }
-
-            if (WechatAPI.cache.recordAfterStop) {
-                WechatAPI.cache.recordAfterStop = false;
-                WechatAPI.startRecorderWithDelay();
-            }
-        })
-    },
-
-    startRecorderWithDelay() {
-        WechatAPI.cache.blockTryStartAutoRecord = true;
-
-        appContext.scheduleOnce(function () {
-            console.log("录屏startRecorderWithDelay再开始");
-            WechatAPI.gameRecorderManager.start({
-                duration: recordTime, //录屏改为120秒，已经录了90秒则自动续时间
-            });
-        }, 1);
-    },
-
-    recordGameStart() {
-        if (WechatAPI.gameRecorderManager) {
-            if (WechatAPI.cache.gameRecording) {
-                //更新录频的时间，也就是丢掉之前的
-                console.log('!!!录屏重新开始');
-                WechatAPI.cache.recordAfterStop = true;
-                this.recordGameEnd(true);
-
-            } else {
-                console.log('!!!录屏开始');
-                WechatAPI.gameRecorderManager.start({
-                    duration: recordTime, //录屏改为150秒，已经录了60秒则自动续时间
-                });
-            }
-
-            WechatAPI.cache.autoRecording = false;
-        }
-    },
-
-    tryStartAutoRecordAndKeepTime() {
-        if (WechatAPI.cache.blockTryStartAutoRecord) {
-            debug.log("在苟且 不续录屏");
-            return;
-        }
-        //如果在手动录屏。则跳过 如果在自动录屏，检测时间
-        if (!WechatAPI.cache.autoRecording && WechatAPI.cache.gameRecording) {
-            debug.log("在手动录屏 不续录屏");
-            return;
-        }
-
-        if (WechatAPI.cache.autoRecording) {
-            let dt = (Date.now() - WechatAPI.cache.gameRecordStartTime) / 1000;
-            //debug.log("时间dt " + dt);
-            if (dt < recordRestartTime) {
-                //debug.log("时间不够 不续录屏");
-                return;
-            }
-        }
-        debug.log("续录屏");
-        this.recordGameStart();
-        WechatAPI.cache.autoRecording = true;
-    },
-
-    getCanStopGameRecording() {
-        return WechatAPI.gameRecorderManager && (WechatAPI.cache.blockTryStartAutoRecord || WechatAPI.cache.gameRecording);
-    },
-
-    recordGameEnd(silent = false) {
-        if (silent) {
-            WechatAPI.cache.gameRecordHideShare = true;
-        } else {
-            WechatAPI.cache.gameRecordHideShare = false;
-        }
-
-        if (WechatAPI.gameRecorderManager) {
-            debug.log("录屏stop");
-            WechatAPI.gameRecorderManager.stop();
-            //这段代码用于截取精彩瞬间，适合有操作的片段！
-            // this.gameRecorderManager.recordClip({
-            //     timeRange: [5, 3],
-            //     success(r) {
-            //         console.log(r.index) // 裁剪唯一索引
-            //         clipIndexList.push(r.index)
-            //     }
-            // })
-        }
     },
 }
 
