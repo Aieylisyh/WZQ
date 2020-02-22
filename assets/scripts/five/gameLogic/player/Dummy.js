@@ -164,7 +164,7 @@ let Dummy = cc.Class({
         }
 
         param.evaluatingParam = this.status.evaluatingParam;
-
+        param.coreNoMiss = this.status.coreNoMiss;
         // if (WechatAPI.isEnabled()) {
         //     //如果是微信平台，发送消息给副线程
         //     WechatAPI.threadWorker.startWorker(param);
@@ -500,43 +500,47 @@ let Dummy = cc.Class({
             let turnTimeAdd = 0;
 
             let playStyle = 0;
+            let coreNoMiss = 95;
 
             switch (grade) {
                 case 1:
-                    missChance = 60;
+                    missChance = 80;
                     offlineChance = 0;
-                    rawSolutionTurns = 3 + Math.floor(Math.random() * 6);
+                    rawSolutionTurns = 5 + Math.floor(Math.random() * 5);
                     admitLooseChance = 0;
                     grabFirstChance = 10;
-                    fastChance = 90;
+                    fastChance = 95;
                     turnTimeAdd = -0.1;
                     playStyle = 2;
+                    coreNoMiss = 40;
                     break;
 
                 case 2:
-                    missChance = 45;
+                    missChance = 70;
                     offlineChance = 0;
-                    rawSolutionTurns = 3 + Math.floor(Math.random() * 5);
+                    rawSolutionTurns = 5 + Math.floor(Math.random() * 4);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
-                    fastChance = 80;
+                    fastChance = 90;
                     turnTimeAdd = -0.1;
                     playStyle = 1;
+                    coreNoMiss = 50;
                     break;
 
                 case 3:
-                    missChance = 30;
+                    missChance = 60;
                     offlineChance = 0.3;
-                    rawSolutionTurns = 3 + Math.floor(Math.random() * 3);
+                    rawSolutionTurns = 5 + Math.floor(Math.random() * 3);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
-                    fastChance = 80;
+                    fastChance = 90;
                     turnTimeAdd = 0;
                     playStyle = 2;
+                    coreNoMiss = 60;
                     break;
 
                 case 4:
-                    missChance = 20;
+                    missChance = 25;
                     offlineChance = 0.5;
                     rawSolutionTurns = 2 + Math.floor(Math.random() * 3);
                     admitLooseChance = 20;
@@ -544,26 +548,28 @@ let Dummy = cc.Class({
                     fastChance = 80;
                     turnTimeAdd = 0;
                     playStyle = 1;
+                    coreNoMiss = 88;
                     break;
 
                 case 5:
-                    missChance = 10;
+                    missChance = 15;
                     offlineChance = 0.5;
                     rawSolutionTurns = 1 + Math.floor(Math.random() * 3);
                     admitLooseChance = 15;
                     grabFirstChance = 35;
-                    fastChance = 75;
+                    fastChance = 80;
                     turnTimeAdd = 0;
                     playStyle = 2;
+                    coreNoMiss = 92;
                     break;
 
                 case 6:
-                    missChance = 8;
+                    missChance = 10;
                     offlineChance = 0.3;
                     rawSolutionTurns = Math.floor(Math.random() * 3);
                     admitLooseChance = 12;
                     grabFirstChance = 40;
-                    fastChance = 75;
+                    fastChance = 80;
                     turnTimeAdd = 0;
                     playStyle = 1;
                     break;
@@ -574,7 +580,7 @@ let Dummy = cc.Class({
                     rawSolutionTurns = Math.floor(Math.random() * 2);
                     admitLooseChance = 10;
                     grabFirstChance = 50;
-                    fastChance = 75;
+                    fastChance = 80;
                     turnTimeAdd = 0;
                     break;
 
@@ -584,8 +590,9 @@ let Dummy = cc.Class({
                     rawSolutionTurns = 0;
                     admitLooseChance = 5;
                     grabFirstChance = 55;
-                    fastChance = 75;
+                    fastChance = 80;
                     turnTimeAdd = 0;
+                    coreNoMiss = 96;
                     break;
 
                 case 9:
@@ -595,7 +602,8 @@ let Dummy = cc.Class({
                     admitLooseChance = 1;
                     grabFirstChance = 75;
                     fastChance = 75;
-                    turnTimeAdd = 0.6;
+                    turnTimeAdd = 0.5;
+                    coreNoMiss = 98;
                     break;
 
                 case 10:
@@ -605,17 +613,18 @@ let Dummy = cc.Class({
                     admitLooseChance = 0;
                     grabFirstChance = 80;
                     fastChance = 75;
-                    turnTimeAdd = 1;
+                    turnTimeAdd = 0.7;
+                    coreNoMiss = 100;
                     break;
             }
 
+            turnTimeMin = 0.4 + turnTimeAdd;
             if (Math.random() * 100 > fastChance) {
-                turnTimeMin = 0.4 + turnTimeAdd;
-                turnTimeMax = 10 + turnTimeAdd;
+                turnTimeMax = 9 + turnTimeAdd;
             } else {
-                turnTimeMin = 0.4 + turnTimeAdd;
                 turnTimeMax = 2.7 + turnTimeAdd;
             }
+            
             //offlineChance = 100;//test
             // turnTimeMin = 0;//test
             // turnTimeMax = 0;//test
@@ -651,6 +660,8 @@ let Dummy = cc.Class({
 
                 turnTimeMin: turnTimeMin, //回合最小时间 f
                 turnTimeMax: turnTimeMax, //回合最大时间 f
+
+                coreNoMiss: coreNoMiss,
             };
         },
     },

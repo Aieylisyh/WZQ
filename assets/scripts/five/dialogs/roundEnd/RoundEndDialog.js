@@ -150,7 +150,8 @@ cc.Class({
     processStep: function () {
         switch (++this.step) {
             case 1:
-                this.showChests();
+                //this.showChests();
+                this.processStep();
                 break;
 
             case 2:
@@ -184,24 +185,24 @@ cc.Class({
         }
     },
 
-    showChests: function () {
-        if (this.info.chestInfo == null) {
-            this.processStep();
-            return;
-        }
+    // showChests: function () {
+    //     if (this.info.chestInfo == null) {
+    //         this.processStep();
+    //         return;
+    //     }
 
-        this.chestsNode.active = true;
-        this.mainNode.active = false;
+    //     this.chestsNode.active = true;
+    //     this.mainNode.active = false;
 
-        this.chestsNode.scale = 0.1;
-        let action1 = cc.scaleTo(0.2, 1).easing(cc.easeBackOut());
-        let action2 = cc.callFunc(function () {
-            this.createChests();
-        }, this);
+    //     this.chestsNode.scale = 0.1;
+    //     let action1 = cc.scaleTo(0.2, 1).easing(cc.easeBackOut());
+    //     let action2 = cc.callFunc(function () {
+    //         this.createChests();
+    //     }, this);
 
-        let seq = cc.sequence(action1, action2);
-        this.chestsNode.runAction(seq);
-    },
+    //     let seq = cc.sequence(action1, action2);
+    //     this.chestsNode.runAction(seq);
+    // },
 
     showMainBoard: function () {
         this.chestsNode.active = false;
@@ -216,7 +217,7 @@ cc.Class({
 
         this.scheduleOnce(function () {
             this.processStep();
-        }, 0.6);
+        }, 0.5);
     },
 
     showWinner: function () {
@@ -324,7 +325,7 @@ cc.Class({
         this.scheduleOnce(function () {
             this.expLowLabel.string = this.getExpLowLabel();
             this.processStep();
-        }, 1);
+        }, 0.8);
     },
 
     getExpLowLabel() {
@@ -367,7 +368,7 @@ cc.Class({
 
         this.scheduleOnce(function () {
             this.processStep();
-        }, 1);
+        }, 0.8);
     },
 
     showButtons: function () {
@@ -726,76 +727,76 @@ cc.Class({
         this.expLowLabel.string = "段位保护成功，积分已恢复";
     },
 
-    onClickChest: function (chest) {
-        if (chest == null) {
-            return;
-        }
+    // onClickChest: function (chest) {
+    //     if (chest == null) {
+    //         return;
+    //     }
 
-        let id = chest.id;
-        this.chests = [];
-        this.chests.push(this.chestsVisual[id]);
-        this.chestsVisual.splice(id, 1);
-        this.chests.push(this.chestsVisual.pop());
-        this.chests.push(this.chestsVisual.pop());
-        this.chestsVisual = null;
+    //     let id = chest.id;
+    //     this.chests = [];
+    //     this.chests.push(this.chestsVisual[id]);
+    //     this.chestsVisual.splice(id, 1);
+    //     this.chests.push(this.chestsVisual.pop());
+    //     this.chests.push(this.chestsVisual.pop());
+    //     this.chestsVisual = null;
 
-        //TODO获得对应奖励
-        this.chests[0].onOpen(true, this.info.chestInfo.chest0);
+    //     //TODO获得对应奖励
+    //     this.chests[0].onOpen(true, this.info.chestInfo.chest0);
 
-        this.scheduleOnce(function () {
-            this.chests[1].onOpen(false, this.info.chestInfo.chest1);
-            this.chests[2].onOpen(false, this.info.chestInfo.chest2);
-        }, 1);
+    //     this.scheduleOnce(function () {
+    //         this.chests[1].onOpen(false, this.info.chestInfo.chest1);
+    //         this.chests[2].onOpen(false, this.info.chestInfo.chest2);
+    //     }, 1);
 
-        this.scheduleOnce(function () {
-            this.chests[0].node.destroy();
-            this.chests[1].node.destroy();
-            this.chests[2].node.destroy();
-            this.chests = null;
+    //     this.scheduleOnce(function () {
+    //         this.chests[0].node.destroy();
+    //         this.chests[1].node.destroy();
+    //         this.chests[2].node.destroy();
+    //         this.chests = null;
 
-            this.step = 2;
-            this.processStep();
-        }, 3);
-    },
+    //         this.step = 2;
+    //         this.processStep();
+    //     }, 3);
+    // },
 
-    createChests: function () {
-        //TODO
-        /*  info.chestInfo = {
-              chest0: {
-                  text: "大奖",
-                  resUrl: "images/rankImg/rank1",
-              },
-              chest1: null,
-              chest2: {
-                  text: "参与奖",
-                  resUrl: "images/rankImg/rank2",
-              },
-          };*/
-
-
-        this.chestsVisual = [];
-
-        for (let i = 0; i < 3; i++) {
-            this.createChest(i);
-        }
-    },
-
-    createChest: function (i) {
-        this.scheduleOnce(function () {
-            let chestNode = cc.instantiate(this.chestPrefab);
-            let chest = chestNode.getComponent("Chest");
-
-            chest.init(this, i);
-            this.chestsVisual.push(chest);
+    // createChests: function () {
+    //     //TODO
+    //     /*  info.chestInfo = {
+    //           chest0: {
+    //               text: "大奖",
+    //               resUrl: "images/rankImg/rank1",
+    //           },
+    //           chest1: null,
+    //           chest2: {
+    //               text: "参与奖",
+    //               resUrl: "images/rankImg/rank2",
+    //           },
+    //       };*/
 
 
-            this.chestsNode.addChild(chestNode);
-            chestNode.x = (i - 1) * 190;
-            if (i === 1) {
-                chestNode.y = -200;
-            } else {
-                chestNode.y = -260;
-            }
-        }, i * 0.4);
-    },
+    //     this.chestsVisual = [];
+
+    //     for (let i = 0; i < 3; i++) {
+    //         this.createChest(i);
+    //     }
+    // },
+
+    // createChest: function (i) {
+    //     this.scheduleOnce(function () {
+    //         let chestNode = cc.instantiate(this.chestPrefab);
+    //         let chest = chestNode.getComponent("Chest");
+
+    //         chest.init(this, i);
+    //         this.chestsVisual.push(chest);
+
+
+    //         this.chestsNode.addChild(chestNode);
+    //         chestNode.x = (i - 1) * 190;
+    //         if (i === 1) {
+    //             chestNode.y = -200;
+    //         } else {
+    //             chestNode.y = -260;
+    //         }
+    //     }, i * 0.4);
+    // },
 });

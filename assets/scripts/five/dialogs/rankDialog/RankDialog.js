@@ -9,51 +9,51 @@ cc.Class({
         selfRankItem: require("RankItem"),
     },
 
-    show: function (info) {
-
-        //this.resizeFrame();
+    show: function () {
         this.fadeInBackground();
         this.fastShowAnim();
 
-        return;//TODO
-        // 根据段位和积分排序todo
-        let rankList = info.rankList;
-        if (rankList != null && rankList.length > 0) {
-            this.sortRankList(rankList);
-            this.createRankItems(rankList);
-        }
+        this.showRanks();
+        // let rankList = info.rankList;
+        // if (rankList != null && rankList.length > 0) {
+        //     this.sortRankList(rankList);
+        //     this.createRankItems(rankList);
+        // }
 
     },
 
-    sortRankList: function (rankList) {
-        // TODO 暂定第1个是自己
-        rankList[0].isSelf = true;
+    // sortRankList: function (rankList) {
+    //     // TODO 暂定第1个是自己
+    //     rankList[0].isSelf = true;
 
-        rankList.sort(function (m, n) {
-            let result = 1;
-            if (m.grade > n.grade) {
-                result = 1;
-            } else if (m.grade < n.grade) {
-                result = -1;
-            } else if (m.grade === n.grade) {
-                if (m.currentScore > n.currentScore) {
-                    result = 1;
-                } else if (m.currentScore < n.currentScore) {
-                    result = -1;
-                } else if (m.currentScore === n.currentScore) {
-                    if (m.nickname >= n.nickname) {
-                        result = 1;
-                    } else {
-                        result = -1;
-                    }
-                }
-            }
+    //     rankList.sort(function (m, n) {
+    //         let result = 1;
+    //         if (m.grade > n.grade) {
+    //             result = 1;
+    //         } else if (m.grade < n.grade) {
+    //             result = -1;
+    //         } else if (m.grade === n.grade) {
+    //             if (m.currentScore > n.currentScore) {
+    //                 result = 1;
+    //             } else if (m.currentScore < n.currentScore) {
+    //                 result = -1;
+    //             } else if (m.currentScore === n.currentScore) {
+    //                 if (m.nickname >= n.nickname) {
+    //                     result = 1;
+    //                 } else {
+    //                     result = -1;
+    //                 }
+    //             }
+    //         }
 
-            return result;
-        });
-    },
+    //         return result;
+    //     });
+    // },
 
-    createRankItems: function (rankList) {
+    showRanks: function () {
+        //
+        selfRankItem
+        let rankList = null;
         for (let i = 0; i < rankList.length; i++) {
             let rankData = rankList[i];
             rankData.rank = i + 1;
@@ -67,9 +67,5 @@ cc.Class({
                 this.selfRankItem.bindData(rankData);
             }
         }
-    },
-
-    onClickBtnClose: function () {
-        this.hide();
     },
 });

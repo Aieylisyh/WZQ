@@ -1,7 +1,7 @@
 let DialogTypes = require("DialogTypes");
 let Grade = require("Grade");
 let DataUtil = require('DataUtil');
-let cdDianFeng =3600000;
+let cdDianFeng = 5400000;
 
 cc.Class({
     extends: cc.Component,
@@ -160,21 +160,22 @@ cc.Class({
     buildAnim: function () {
         if (this.btnMatchMode.active) {
             debug.log("buildAnim return!");
-            return;
+            return; true
         }
 
         let btnMatchModeX = -50;
 
-        let canEnterHardMode = appContext.getUxManager().playedTimes > 1;
-        if (!canEnterHardMode) {
-            let userInfo = appContext.getUxManager().getUserInfo();
-            let grade = Grade.getGradeAndFillInfoByScore(userInfo.basic.currentScore).grade;
-            if (grade >= 2) {
-                canEnterHardMode = true;
-            }
-        }
+        // let canEnterHardMode = appContext.getUxManager().playedTimes > 1;
+        // if (!canEnterHardMode) {
+        //     let userInfo = appContext.getUxManager().getUserInfo();
+        //     let grade = Grade.getGradeAndFillInfoByScore(userInfo.basic.currentScore).grade;
+        //     if (grade >= 2) {
+        //         canEnterHardMode = true;
+        //     }
+        // }
 
-        if (canEnterHardMode) {
+        if (true) {
+            // if (canEnterHardMode) {
             this.btnHardMode.active = true;
             let btnHardModeY = this.btnHardMode.y;
             let btnHardModeAction = cc.moveTo(0.5, 70, btnHardModeY).easing(cc.easeCubicActionOut());
@@ -297,6 +298,26 @@ cc.Class({
     onClickBtnHardModeMatch: function () {
         //TODO 看广告 ，可以看广告立即匹配
         appContext.getSoundManager().playBtn();
+        let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+        if (canWatchAd && !debug.extraSettings.global) {
+            let hasUnlocked = appContext.getUxManager().gameInfo.hasUnlockedHardModeMatch;
+            if (!hasUnlocked) {
+                let self = this;
+
+                let info = {
+                    content: "看一个视频即可永久解锁【巅峰对决】模式",
+                };
+                info.btn1 = {
+                    clickFunction: function () {
+                        self.showVideoUnlockHardMode();
+                    },
+                };
+
+                appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+                return;
+            }
+        }
+
         let timestamp = appContext.getUxManager().gameInfo.lastHardModeTimestamp;
 
         if (timestamp) {
@@ -325,6 +346,55 @@ cc.Class({
 
     startHardModeMatch() {
         appContext.getDialogManager().showDialog(DialogTypes.Match, true);
+    },
+
+    showVideoUnlockHardMode() {
+        let self = this;
+        WechatAPI.videoAdUtil.updateCb({
+            failCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_unlockHardmode_fail");
+                appContext.getAnalyticManager().sendTT('videoAd_unlockHardmode', {
+                    res: 1,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "请稍后重试");
+            },
+            finishCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_unlockHardmode_ok");
+                appContext.getAnalyticManager().sendTT('videoAd_unlockHardmode', {
+                    res: 0,
+                });
+                this.startHardModeMatch();
+            },
+            ceaseCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_unlockHardmode_cease");
+                appContext.getAnalyticManager().sendTT('videoAd_unlockHardmode', {
+                    res: 2,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以立即解锁");
+            },
+            caller: self,
+        });
+
+        WechatAPI.videoAdUtil.show();
+    },
+
+    unlockHardModeMatch() {
+        appContext.getUxManager().gameInfo.hasUnlockedHardModeMatch = true;
+        appContext.getUxManager().saveGameInfo();
+        let self = this;
+
+        let info = {
+            content: "您已永久解锁【巅峰对决】，是否立尝试匹配？",
+        };
+        info.btn1 = {
+            clickFunction: function () {
+                self.startHardModeMatch();
+            },
+        };
+        info.btn2 = {
+        };
+        info.hideCloseBtn = true;
+        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
     },
 
     showVideoHardMode() {
@@ -362,7 +432,7 @@ cc.Class({
         //看广告，说明5倍积分
         appContext.getSoundManager().playBtn();
         let info = {
-            content: "在【巅峰对决】模式\n您可以不受自身段位的影响\n优先匹配到段位最高的对手\n获胜得到的积分较多\n失败损失的积分较少\n\n每15分钟可匹配一次",
+            content: "在【巅峰对决】模式\n您可以不受自身段位的影响\n优先匹配到段位最高的对手\n获胜得到的积分较多\n失败损失的积分较少\n\n每匹配一次，需要休息较长的时间",
         };
         info.hideCloseBtn = true;
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
@@ -542,8 +612,8 @@ cc.Class({
 
     onClickHouse() {
         if (!appContext.getUxManager().gameInfo.hasClickedHouse) {
-            this.house.node.scaleX = 1;
-            this.house.node.scaleY = 1;
+            this.house.node.scaleX = 0.5;
+            this.house.node.scaleX = 0.5;
             this.housePuddingComp.enabled = false;
             appContext.getUxManager().gameInfo.hasClickedHouse = true;
             appContext.getUxManager().saveGameInfo();
