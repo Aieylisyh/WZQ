@@ -198,7 +198,7 @@
       "array": [
         0,
         0,
-        420.0223208354528,
+        419.15629543166835,
         0,
         0,
         0,
@@ -332,7 +332,7 @@
     "attachVersionToFileDownloadRoot": false,
     "useDevLocalServerIp": false,
     "useDevRemoteServerIp": false,
-    "clientVersion": "1.0.8",
+    "clientVersion": "1.0.9",
     "pipDownloadPath": "/config.",
     "devFileDownloadRoot": "https://resource-1256190400.cos.ap-chengdu.myqcloud.com",
     "releaseFileDownloadRoot": "https://resource-1256190400.cos.ap-chengdu.myqcloud.com",

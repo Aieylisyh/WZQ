@@ -548,7 +548,7 @@ let Dummy = cc.Class({
                     fastChance = 80;
                     turnTimeAdd = 0;
                     playStyle = 1;
-                    coreNoMiss = 88;
+                    coreNoMiss = 90;
                     break;
 
                 case 5:

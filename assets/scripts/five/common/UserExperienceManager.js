@@ -566,7 +566,7 @@ cc.Class({
     },
 
     getGoldByGameEnd(win, grade) {
-        let res = 10 + grade + Math.random() * 12;
+        let res = 10 + grade + Math.random() * 13;
 
         if (win) {
             res += 10;
@@ -579,15 +579,15 @@ cc.Class({
         }
 
         if (grade > 8) {
-            res *= 1.4;
+            res *= 1.25;
         } else if (grade > 6) {
-            res *= 1.3;
+            res *= 1.22;
         } else if (grade > 4) {
             res *= 1.2;
         } else if (grade > 2) {
             res *= 1.1;
         } else {
-
+            res *= 1;
         }
 
         return Math.floor(res);

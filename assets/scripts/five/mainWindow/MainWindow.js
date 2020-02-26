@@ -363,7 +363,7 @@ cc.Class({
                 appContext.getAnalyticManager().sendTT('videoAd_unlockHardmode', {
                     res: 0,
                 });
-                this.startHardModeMatch();
+                this.unlockHardModeMatch();
             },
             ceaseCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_unlockHardmode_cease");
