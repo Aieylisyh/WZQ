@@ -4671,7 +4671,7 @@
       "__id__": 121
     },
     "_enabled": true,
-    "freq": 0.07,
+    "freq": 0.05,
     "force": 150,
     "startAwake": true,
     "isPlaying": true,
@@ -4735,15 +4735,15 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -200,
+        -70,
         -145,
         0,
         0,
         0,
         0,
         1,
-        1.25,
-        1.25,
+        1,
+        1,
         1
       ]
     },
@@ -4800,7 +4800,7 @@
       "__id__": 125
     },
     "_enabled": true,
-    "freq": 0.1,
+    "freq": 0.07,
     "force": 220,
     "startAwake": true,
     "isPlaying": true,

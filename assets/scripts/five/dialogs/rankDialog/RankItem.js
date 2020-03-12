@@ -16,8 +16,10 @@ cc.Class({
     },
 
     start() {
-        this.node.scale = 0.5;
-        this.runAction(cc.scaleTo(0.6, 1, 1).easing(cc.easeCubicActionOut()));
+        this.node.runAction(cc.sequence(
+            cc.scaleTo(0.2, 0.8, 0.8),
+            cc.scaleTo(0.6, 1, 1).easing(cc.easeCubicActionOut())
+        ));
     },
 
     setup(grade) {

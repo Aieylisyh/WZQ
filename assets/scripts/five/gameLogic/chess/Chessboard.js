@@ -173,7 +173,7 @@ cc.Class({
         this.newChessEffect.x = pos.x;
         this.newChessEffect.y = pos.y;
 
-        appContext.getWindowManager().shakeWindow(0.4);
+        appContext.getWindowManager().shakeWindow(0.2);
     },
 
     playWinEffect() {
