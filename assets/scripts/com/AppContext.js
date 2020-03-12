@@ -120,15 +120,11 @@ cc.Class({
         this.appController.startListenWxOnShowEarlyParam();
 
         //切换到首场景
+
+
         this.scheduleOnce(function () {
-            let lm = appContext.getLoginManager();
-            if (!lm.isInLoginProcess()) {
-                this.getAnalyticManager().addEvent("login");
-                this.getLoginManager().login();
-            }
-            this.getRemoteAPI().loadFakePlayerInfo();
-            this.windowManager.switchToMainWindow();
-        }, 0);
+            this.windowManager.switchToLoadingWindow();
+        }, 0.1);
     },
 
     update: function (dt) {

@@ -60,22 +60,22 @@ let Grade = {
         {
             exist: 5,
             fail: 0,
-            bUser: 45,
+            bUser: 10,
         },
         {
             exist: 8,
             fail: 0,
-            bUser: 35,
+            bUser: 30,
         },
         {
             exist: 15,
             fail: 1,
-            bUser: 30,
+            bUser: 20,
         },
         {
             exist: 20,
             fail: 2,
-            bUser: 20,
+            bUser: 15,
         },
         {
             exist: 28,

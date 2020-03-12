@@ -405,12 +405,12 @@ cc.Class({
 
     setFullfillGradeBtns() {
         this.btnFullfill.active = false;
-        //如果胜利，且当前段位大于1小于10，且差150积分以内可以升段，就出现这个包含广告图标的“加满段位”按钮，点击效果是看广告，获得刚好的经验上一个段位
+        //如果胜利，且当前段位大于1小于10，且差200积分以内可以升段，就出现这个包含广告图标的“加满段位”按钮，点击效果是看广告，获得刚好的经验上一个段位
         if (this.info.win) {
             let gradeTo = this.gradeAndFillInfoTo.grade;
             if (gradeTo > 1 && gradeTo < 10) {
                 let deltaExp = this.gradeAndFillInfoTo.fillTop - this.info.toScore;
-                if (deltaExp < 150) {
+                if (deltaExp < 200) {
                     let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
                     if (canWatchAd) {
                         this.btnFullfill.active = true;
@@ -432,12 +432,20 @@ cc.Class({
             }
 
             if (this.info.win) {
+                let useSuperSVD = false;
                 if (!appContext.getUxManager().isTodaySuperShareVideoShown()) {
+                    if (debug.extraSettings.controlSVD) {
+                        if (debug.extraSettings.chanceSVD > Math.random() * 100) {
+                            useSuperSVD = true;
+                        }
+                    } else {
+                        if (this.getHasVideoToShare() && WechatAPI.cache.lifetimeSuperShareVideoCount + Math.random() * 4 > 4) {
+                            appContext.getUxManager().setTodaySuperShareVideo()
+                            useSuperSVD = true;
+                        }
+                    }
 
-
-                    if (this.getHasVideoToShare() && WechatAPI.cache.lifetimeSuperShareVideoCount + Math.random() * 4 > 4) {
-                        appContext.getUxManager().setTodaySuperShareVideo()
-
+                    if (useSuperSVD) {
                         this.shareRewardTxt.node.active = false;
                         this.hasShareReward = false;
                         appContext.getDialogManager().showDialog(DialogTypes.ShareVideo);

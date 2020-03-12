@@ -1,4 +1,4 @@
-let AppState = require("AppState");
+//let AppState = require("AppState");
 
 cc.Class({
     ctor: function () {

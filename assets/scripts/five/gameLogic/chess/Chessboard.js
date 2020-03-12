@@ -175,6 +175,7 @@ cc.Class({
     },
 
     playWinEffect() {
+        appContext.getWindowManager().shakeWindow(8);
         this.winEff1.scale = 0;
         this.winEff2.scale = 0;
         this.winEff3.scale = 0;

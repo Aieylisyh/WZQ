@@ -1,11 +1,11 @@
 let LoginState = require("LoginState");
-let StorageKey = require("StorageKey");
-let StringUtil = require("StringUtil");
 let SequenceStateMachine = require("SequenceStateMachine");
-let DialogTypes = require("DialogTypes");
 let PipLogic = require('PipLogic');
-let DataKey = require('DataKey');
-let AppState = require('AppState');
+// let StorageKey = require("StorageKey");
+// let StringUtil = require("StringUtil");
+// let DialogTypes = require("DialogTypes");
+// let DataKey = require('DataKey');
+// let AppState = require('AppState');
 
 cc.Class({
     init: function () {

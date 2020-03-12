@@ -45,8 +45,6 @@ cc.Class({
 
         btnNormalModeTimer: cc.Label,
 
-        iconLogo: cc.Node,
-
         bottomBtns: cc.Node,
     },
 
@@ -75,21 +73,7 @@ cc.Class({
         }
 
         this.setupLoginFinish = true;
-
-        if (WechatAPI.cache.iconShowed) {
-            this.buildWindow();
-        } else {
-            WechatAPI.cache.iconShowed = true;
-
-            this.iconLogo.runAction(cc.sequence(
-                cc.fadeTo(0.5, 255),
-                cc.delayTime(0.5),
-                cc.fadeTo(1, 0),
-                cc.callFunc(function () {
-                    this.buildWindow();
-                }, this),
-            ));
-        }
+        this.buildWindow();
     },
 
     buildWindow() {
@@ -231,28 +215,29 @@ cc.Class({
     // 点击"随机匹配"
     onClickBtnMatch: function () {
         appContext.getSoundManager().playBtn();
-        let timestampNM = appContext.getUxManager().gameInfo.fatigueTimestamp;
+        //暂时去掉普通难度的冷却时间机制
+        // let timestampNM = appContext.getUxManager().gameInfo.fatigueTimestamp;
 
-        if (timestampNM) {
-            let delta2 = Date.now() - timestampNM;
-            if (delta2 < 60000) {
-                let self = this;
+        // if (timestampNM) {
+        //     let delta2 = Date.now() - timestampNM;
+        //     if (delta2 < 60000) {
+        //         let self = this;
 
-                let info = {
-                    content: "连续下棋极易走火入魔\n请稍息片刻再战\n\n也可看一个视频，立即匹配并获得20金币",
-                };
-                info.btn1 = {
-                    clickFunction: function () {
-                        self.showVideo();
-                    },
-                };
-                info.btn2 = {
-                };
-                info.hideCloseBtn = true;
-                appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
-                return;
-            }
-        }
+        //         let info = {
+        //             content: "连续下棋极易走火入魔\n请稍息片刻再战\n\n也可看一个视频，立即匹配并获得20金币",
+        //         };
+        //         info.btn1 = {
+        //             clickFunction: function () {
+        //                 self.showVideo();
+        //             },
+        //         };
+        //         info.btn2 = {
+        //         };
+        //         info.hideCloseBtn = true;
+        //         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+        //         return;
+        //     }
+        // }
 
         appContext.getDialogManager().showDialog(DialogTypes.Match);
     },

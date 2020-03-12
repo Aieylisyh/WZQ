@@ -56,6 +56,8 @@ cc.Class({
             platformToutiao: this.platformToutiao,
 
             extraSettings: {
+                controlSVD: false,
+                chanceSVD: 100,
                 global: true,
             },
 
@@ -126,49 +128,49 @@ cc.Class({
                 title: "时下热门",
                 list: [
                     {
-                        name: "我的射门会转弯",
-                        localImg: prefix+"wdsm",
-                        appid: "tt78b80e05e792be9d"
+                        name: "数独大王",
+                        localImg: prefix + "sddw",
+                        appid: "tta91adfa7363051b9"
                     },
                     {
                         name: "弓箭手王者",
-                        localImg: prefix+"gjswz",
+                        localImg: prefix + "gjswz",
                         appid: "tt6c451af8f36f596b"
                     },
                     {
                         name: "蚂蚁部落大作战",
-                        localImg: prefix+"mybl",
+                        localImg: prefix + "mybl",
                         appid: "tt2a405cfdb56a26a1"
                     },
                     {
                         name: "牛仔对决",
-                        localImg: prefix+"nzdj",
+                        localImg: prefix + "nzdj",
                         appid: "tt515627ebce7c7b79"
                     },
                     {
                         name: "坦克兵团",
-                        localImg: prefix+"tkbt",
+                        localImg: prefix + "tkbt",
                         appid: "tt8415f2a81b3fb5f2"
                     },
                     {
                         name: "消灭曹操",
-                        localImg: prefix+"xmcc",
+                        localImg: prefix + "xmcc",
                         appid: "tt6d481bf5f2624129"
                     },
                     {
                         name: "玩转三明治",
-                        localImg: prefix+"smz",
+                        localImg: prefix + "smz",
                         appid: "tt237055cdbc5ad129"
                     },
 
                     {
                         name: "超级守门员",
-                        localImg: prefix+"cjsmy",
+                        localImg: prefix + "cjsmy",
                         appid: "tt39254f98a60fd13b"
                     },
                     {
                         name: "别掉进岩浆",
-                        localImg: prefix+"bdjyj",
+                        localImg: prefix + "bdjyj",
                         appid: "tt43e43559dcce8145"
                     },
 

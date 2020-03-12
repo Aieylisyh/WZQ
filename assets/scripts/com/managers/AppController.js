@@ -19,18 +19,18 @@ cc.Class({
         _userStay3Minutes: 0,
     },
 
-    start: function() {
+    start: function () {
         this.bindDataContainer();
         this._userStayRecordTimer = 0;
     },
 
-    bindDataContainer: function() {
+    bindDataContainer: function () {
         let kv = {};
         kv[DataKey.AppState] = "onAppStateUpdate";
         DataContainerUpdater.bind.call(this, kv);
     },
 
-    update: function(dt) {
+    update: function (dt) {
         DataContainerUpdater.update.call(this);
 
         let state = this.getAppState();
@@ -50,7 +50,7 @@ cc.Class({
 
                 debug.tempBlockOnHideExit = false;
 
-                this.scheduleOnce(function() {
+                this.scheduleOnce(function () {
                     this.onWxOnShowUpdate();
                 }, 0.15);
             }
@@ -65,23 +65,23 @@ cc.Class({
         }
     },
 
-    startListenWxOnShowParam: function() {
+    startListenWxOnShowParam: function () {
         if (typeof this.wxOnShowTimestamp !== "number") {
             this.wxOnShowTimestamp = 0;
         }
     },
 
-    startListenWxOnShowEarlyParam: function() {
+    startListenWxOnShowEarlyParam: function () {
         if (typeof this.wxOnShowEarlyTimestamp !== "number") {
             this.wxOnShowEarlyTimestamp = 0;
         }
     },
 
-    getAppState: function() {
+    getAppState: function () {
         return this._currentAppState;
     },
 
-    onWxOnShowUpdate: function() {
+    onWxOnShowUpdate: function () {
         if (this.node == null) {
             return;
         }
@@ -130,7 +130,7 @@ cc.Class({
         }
     },
 
-    getGiftByItemsString: function(inCode) {
+    getGiftByItemsString: function (inCode) {
         try {
             let giftList = Encoder.getGiftListByCode(inCode);
             //debug.logObj(giftList);
@@ -156,7 +156,7 @@ cc.Class({
         }
     },
 
-    onWxOnShowEarlyUpdate: function() {
+    onWxOnShowEarlyUpdate: function () {
         if (this.node == null) {
             return;
         }
@@ -225,7 +225,7 @@ cc.Class({
         }
     },
 
-    isCardCodeValid: function(code) {
+    isCardCodeValid: function (code) {
         debug.log("CardCode " + code);
         if (code == null || code === "") {
             debug.log("!!isCardCodeValid no code!");
@@ -255,7 +255,7 @@ cc.Class({
         return true;
     },
 
-    onAppStateUpdate: function(curState) {
+    onAppStateUpdate: function (curState) {
         //debug.log("!!!!!!onAppStateUpdate " + curState);
         if (curState === this._currentAppState) {
             return;
@@ -267,8 +267,8 @@ cc.Class({
         // 根据当前游戏的状态，切换界面状态。
         let windowManager = appContext.getWindowManager();
         switch (curState) {
-            case AppState.Main:
-                windowManager.switchToMainWindow();
+            case AppState.Null:
+                windowManager.switchToLoadingWindow();
                 break;
 
             case AppState.Playing:
@@ -277,30 +277,34 @@ cc.Class({
                 // this.startListenWxOnShowParam(); // 如果是断线重连进入游戏，有可能会跳过读取启动参数的流程
                 break;
 
-            default:
+            default://AppState.Main:
                 windowManager.switchToMainWindow();
                 break;
         }
     },
 
-    clearGameData: function() {
+    clearGameData: function () {
         this.clearLoginData();
         this.clearCurrentGameData();
     },
 
-    clearCurrentGameData: function() {
+    clearCurrentGameData: function () {
         //debug.log("clearCurrentGameData");
     },
 
-    clearLoginData: function() {
+    clearLoginData: function () {
         //debug.log("clearLoginData");
     },
 
-    backToMain: function() {
+    backToMain: function () {
         appContext.getDataRepository().getContainer(DataKey.AppState).write(AppState.Main, cc.director.getTotalFrames());
     },
 
-    toPlaying: function() {
+    toPlaying: function () {
         appContext.getDataRepository().getContainer(DataKey.AppState).write(AppState.Playing, cc.director.getTotalFrames());
+    },
+
+    toLoading: function () {
+        appContext.getDataRepository().getContainer(DataKey.AppState).write(AppState.Null, cc.director.getTotalFrames());
     },
 });

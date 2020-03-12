@@ -6,6 +6,8 @@ let WindowManager = cc.Class({
 
         gameWindowPath: "prefab/GameWindow",
 
+        loadingWindowPath: "prefabs/LoadingWindow",
+
         _windowPathSwitchingTo: "",
 
         _currentWindowPath: "",
@@ -25,20 +27,25 @@ let WindowManager = cc.Class({
         },
     },
 
-    start: function() {
+    start: function () {
         this._windowPathSwitchingTo = "";
         this._currentWindowPath = "";
     },
 
-    switchToGameWindow: function() {
+    switchToGameWindow: function () {
         this.switchToWindow(this.gameWindowPath);
     },
 
-    switchToMainWindow: function() {
+    switchToMainWindow: function () {
         this.switchToWindow(this.mainWindowPath);
     },
 
-    switchToWindow: function(path) {
+    switchToLoadingWindow: function () {
+        this.switchToWindow(this.loadingWindowPath);
+    },
+
+
+    switchToWindow: function (path) {
         if (this._windowPathSwitchingTo === path) {
             return;
         }
@@ -55,7 +62,7 @@ let WindowManager = cc.Class({
             //debug.log("direct switch");
         } else {
             //debug.log("undirect switch");
-            appContext.getFileManager().loadResourceSafe(path, cc.Prefab, function(prefab) {
+            appContext.getFileManager().loadResourceSafe(path, cc.Prefab, function (prefab) {
                 if (prefab != null) {
                     this.windowPrefabs[path] = prefab;
                 }
@@ -64,7 +71,7 @@ let WindowManager = cc.Class({
         }
     },
 
-    switchWindow: function(prefab, path) {
+    switchWindow: function (prefab, path) {
         if (prefab == null) {
             debug.warn("switchToWindow prefab null");
         } else {
@@ -78,7 +85,7 @@ let WindowManager = cc.Class({
         }
     },
 
-    onSceneLoaded: function(path, pPrefab) {
+    onSceneLoaded: function (path, pPrefab) {
         if (path === this._windowPathSwitchingTo) {
             if (path !== this._currentWindowPath) {
                 this._windowPathSwitchingTo = "";
@@ -100,19 +107,23 @@ let WindowManager = cc.Class({
         }
     },
 
-    isInMainWindow: function() {
+    isInMainWindow: function () {
         return this._currentWindowPath === this.mainWindowPath;
     },
 
-    isInGameWindow: function() {
+    isInLoadingWindow: function () {
+        return this._currentWindowPath === this.loadingWindowPath;
+    },
+
+    isInGameWindow: function () {
         return this._currentWindowPath === this.gameWindowPath;
     },
 
-    getCurrentWindowNode: function() {
+    getCurrentWindowNode: function () {
         return this.currentWindowNode;
     },
 
-    shakeWindow: function(force = 1) {
+    shakeWindow: function (force = 1) {
         this.windowContainer.stopAllActions();
         this.windowContainer.x = 0;
         this.windowContainer.y = 0;
@@ -121,7 +132,7 @@ let WindowManager = cc.Class({
         let shake02 = cc.moveBy(0.06, 0, -16 * force);
         let shake03 = cc.moveBy(0.06, 0, 16 * force);
 
-        let end = cc.callFunc(function() {
+        let end = cc.callFunc(function () {
             this.windowContainer.x = 0;
             this.windowContainer.y = 0;
         }, this);

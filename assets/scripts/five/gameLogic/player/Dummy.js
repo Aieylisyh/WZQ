@@ -504,31 +504,31 @@ let Dummy = cc.Class({
 
             switch (grade) {
                 case 1:
-                    missChance = 80;
+                    missChance = 90;
                     offlineChance = 0;
-                    rawSolutionTurns = 5 + Math.floor(Math.random() * 5);
+                    rawSolutionTurns = 6 + Math.floor(Math.random() * 4);
                     admitLooseChance = 0;
                     grabFirstChance = 10;
-                    fastChance = 95;
+                    fastChance = 96;
                     turnTimeAdd = -0.1;
                     playStyle = 2;
-                    coreNoMiss = 40;
+                    coreNoMiss = 50;
                     break;
 
                 case 2:
-                    missChance = 70;
+                    missChance = 75;
                     offlineChance = 0;
                     rawSolutionTurns = 5 + Math.floor(Math.random() * 4);
                     admitLooseChance = 35;
                     grabFirstChance = 10;
-                    fastChance = 90;
+                    fastChance = 92;
                     turnTimeAdd = -0.1;
                     playStyle = 1;
-                    coreNoMiss = 50;
+                    coreNoMiss = 60;
                     break;
 
                 case 3:
-                    missChance = 60;
+                    missChance = 70;
                     offlineChance = 0.3;
                     rawSolutionTurns = 5 + Math.floor(Math.random() * 3);
                     admitLooseChance = 35;
@@ -536,7 +536,7 @@ let Dummy = cc.Class({
                     fastChance = 90;
                     turnTimeAdd = 0;
                     playStyle = 2;
-                    coreNoMiss = 60;
+                    coreNoMiss = 75;
                     break;
 
                 case 4:
@@ -620,11 +620,11 @@ let Dummy = cc.Class({
 
             turnTimeMin = 0.4 + turnTimeAdd;
             if (Math.random() * 100 > fastChance) {
-                turnTimeMax = 9 + turnTimeAdd;
+                turnTimeMax = 8 + turnTimeAdd;
             } else {
-                turnTimeMax = 2.7 + turnTimeAdd;
+                turnTimeMax = 2.5 + turnTimeAdd;
             }
-            
+
             //offlineChance = 100;//test
             // turnTimeMin = 0;//test
             // turnTimeMax = 0;//test

@@ -1,3 +1,6 @@
+let DialogTypes = require("DialogTypes");
+let PlayerInfo = require("PlayerInfo");
+
 cc.Class({
     extends: require("BaseDialog"),
 
@@ -6,7 +9,11 @@ cc.Class({
 
         rankItemsContainer: cc.Node,
 
-        selfRankItem: require("RankItem"),
+        playerinfo: PlayerInfo,
+
+        //rankDay: "",//今日上升超过百分之多少
+
+        superPassLabel: cc.Label,//总排名超过百分之多少
     },
 
     show: function () {
@@ -14,58 +21,66 @@ cc.Class({
         this.fastShowAnim();
 
         this.showRanks();
-        // let rankList = info.rankList;
-        // if (rankList != null && rankList.length > 0) {
-        //     this.sortRankList(rankList);
-        //     this.createRankItems(rankList);
-        // }
 
+        let user = appContext.getUxManager().getUserInfo();
+        this.playerinfo.setup(user);
+
+        let score = user.basic.currentScore;
+        this.superPassLabel.string = this.getSuperpass(score);
     },
-
-    // sortRankList: function (rankList) {
-    //     // TODO 暂定第1个是自己
-    //     rankList[0].isSelf = true;
-
-    //     rankList.sort(function (m, n) {
-    //         let result = 1;
-    //         if (m.grade > n.grade) {
-    //             result = 1;
-    //         } else if (m.grade < n.grade) {
-    //             result = -1;
-    //         } else if (m.grade === n.grade) {
-    //             if (m.currentScore > n.currentScore) {
-    //                 result = 1;
-    //             } else if (m.currentScore < n.currentScore) {
-    //                 result = -1;
-    //             } else if (m.currentScore === n.currentScore) {
-    //                 if (m.nickname >= n.nickname) {
-    //                     result = 1;
-    //                 } else {
-    //                     result = -1;
-    //                 }
-    //             }
-    //         }
-
-    //         return result;
-    //     });
-    // },
 
     showRanks: function () {
         //
-        selfRankItem
-        let rankList = null;
-        for (let i = 0; i < rankList.length; i++) {
-            let rankData = rankList[i];
-            rankData.rank = i + 1;
+        // selfRankItem
+        // let rankList = null;
+        // for (let i = 0; i < rankList.length; i++) {
+        //     let rankData = rankList[i];
+        //     rankData.rank = i + 1;
 
+        //     let rankObj = cc.instantiate(this.rankItemPrefab);
+        //     this.rankItemsContainer.addChild(rankObj);
+        //     let rankItemComp = rankObj.getComponent("RankItem");
+        //     rankItemComp.bindData(rankData);
+
+        //     if (rankData.isSelf) {
+        //         this.selfRankItem.bindData(rankData);
+        //     }
+        // }
+        for (let i = 1; i < 11; i++) {
             let rankObj = cc.instantiate(this.rankItemPrefab);
             this.rankItemsContainer.addChild(rankObj);
             let rankItemComp = rankObj.getComponent("RankItem");
-            rankItemComp.bindData(rankData);
-
-            if (rankData.isSelf) {
-                this.selfRankItem.bindData(rankData);
-            }
+            rankItemComp.setup(i);
         }
+    },
+
+    onClickQuestion: function () {
+        appContext.getSoundManager().playBtn();
+        let info = {
+            content: "\n一场场对弈，胜负早已是往日烟云。\n\n对决的记忆，成为了棋力进步的阶梯。",
+        };
+        info.hideCloseBtn = true;
+        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+
+    },
+
+    onClickInfo: function () {
+        appContext.getDialogManager().showDialog(DialogTypes.PlayerInfo);
+    },
+
+    getSuperpass: function (score) {
+        //积分9900差不多可以几乎登顶
+        let f = score / 10000;
+        f = Math.sqrt(f);//开根号提高排名
+
+        let superpass = Math.floor(f * 1000);
+
+        if (superpass > 999) {
+            superpass = 999;
+        }
+        if (superpass < 1) {
+            superpass = 1;
+        }
+        return superpass / 10;
     },
 });

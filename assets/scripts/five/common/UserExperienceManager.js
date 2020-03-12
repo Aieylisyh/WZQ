@@ -509,6 +509,25 @@ cc.Class({
         this.toSaveGameInfo = true;
     },
 
+    registerRankInfo(oppoGrade, win) {
+        if (this.gameInfo.rankInfo == null) {
+            this.gameInfo.rankInfo = {};
+        }
+
+        let label1 = "winCount_" + oppoGrade;
+        let label2 = "combatCount_" + oppoGrade;
+        if (this.gameInfo.rankInfo[label1] == null) {
+            this.gameInfo.rankInfo[label1] = 0;
+        }
+        if (this.gameInfo.rankInfo[label2] == null) {
+            this.gameInfo.rankInfo[label2] = 0;
+        }
+        this.gameInfo.rankInfo[label2] += 1;
+        if (win) {
+            this.gameInfo.rankInfo[label1] += 1;
+        }
+    },
+
     registerGameEnd: function (info) {
         debug.log("游戏结束！！！");
         // debug.log(info.selfPlayer.basic.currentScore);
@@ -519,6 +538,8 @@ cc.Class({
         let grade2 = Grade.getGradeAndFillInfoByScore(info.opponentPlayer.basic.currentScore).grade;
 
         info.gradeScoreAdd = Grade.getScoreByGradeDelta(grade1, grade2, info.win);
+        this.registerRankInfo(grade2, info.win);
+
         if (info.win) {
             if (this.tryUseBonusScore()) {
                 info.gradeScoreAdd += 120;
