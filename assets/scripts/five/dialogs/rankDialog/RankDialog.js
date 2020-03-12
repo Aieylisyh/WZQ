@@ -20,13 +20,15 @@ cc.Class({
         this.fadeInBackground();
         this.fastShowAnim();
 
-        this.showRanks();
-
         let user = appContext.getUxManager().getUserInfo();
         this.playerinfo.setup(user);
 
         let score = user.basic.currentScore;
         this.superPassLabel.string = this.getSuperpass(score);
+    },
+
+    onAnimComplete: function () {
+        this.showRanks();
     },
 
     showRanks: function () {
@@ -47,17 +49,19 @@ cc.Class({
         //     }
         // }
         for (let i = 1; i < 11; i++) {
-            let rankObj = cc.instantiate(this.rankItemPrefab);
-            this.rankItemsContainer.addChild(rankObj);
-            let rankItemComp = rankObj.getComponent("RankItem");
-            rankItemComp.setup(i);
+            this.scheduleOnce(function () {
+                let rankObj = cc.instantiate(this.rankItemPrefab);
+                this.rankItemsContainer.addChild(rankObj);
+                let rankItemComp = rankObj.getComponent("RankItem");
+                rankItemComp.setup(i);
+            }, 0.2 * (i - 1));
         }
     },
 
     onClickQuestion: function () {
         appContext.getSoundManager().playBtn();
         let info = {
-            content: "\n一场场对弈，胜负早已是往日烟云。\n\n对决的记忆，成为了棋力进步的阶梯。",
+            content: "\n对决的记忆，胜负都早已是往日烟云\n\n一场场对弈，已成为棋力进步的阶梯",
         };
         info.hideCloseBtn = true;
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);

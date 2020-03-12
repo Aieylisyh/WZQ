@@ -172,10 +172,12 @@ cc.Class({
         let pos = this.chessPointToPosition(x, y);
         this.newChessEffect.x = pos.x;
         this.newChessEffect.y = pos.y;
+
+        appContext.getWindowManager().shakeWindow(0.4);
     },
 
     playWinEffect() {
-        appContext.getWindowManager().shakeWindow(8);
+        appContext.getWindowManager().shakeWindow(1);
         this.winEff1.scale = 0;
         this.winEff2.scale = 0;
         this.winEff3.scale = 0;

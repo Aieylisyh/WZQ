@@ -620,9 +620,9 @@ let Dummy = cc.Class({
 
             turnTimeMin = 0.4 + turnTimeAdd;
             if (Math.random() * 100 > fastChance) {
-                turnTimeMax = 8 + turnTimeAdd;
+                turnTimeMax = 7 + turnTimeAdd;
             } else {
-                turnTimeMax = 2.5 + turnTimeAdd;
+                turnTimeMax = 2.7 + turnTimeAdd;
             }
 
             //offlineChance = 100;//test

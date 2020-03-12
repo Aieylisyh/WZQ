@@ -15,6 +15,11 @@ cc.Class({
         gradeIcon: cc.Sprite,
     },
 
+    start() {
+        this.node.scale = 0.5;
+        this.runAction(cc.scaleTo(0.6, 1, 1).easing(cc.easeCubicActionOut()));
+    },
+
     setup(grade) {
         let gradeInfo = Grade.getGradeInfo(grade);
 

@@ -7,10 +7,12 @@ cc.Class({
 
     start: function () {
         this.iconLogo.runAction(cc.sequence(
-            cc.fadeTo(0.5, 255),
-            cc.delayTime(0.5),
-            cc.fadeTo(1, 0),
-            this.onPreloadDone()
+            cc.fadeTo(1, 255),
+            cc.delayTime(0.4),
+            cc.fadeTo(0.8, 0),
+            cc.callFunc(function(){
+                this.onPreloadDone();
+            },this),
         ));
     },
 

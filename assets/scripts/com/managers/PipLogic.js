@@ -73,7 +73,7 @@ cc.Class({
 
                 try {
                     self.usePip(content);
-                    self.downloadMisc();
+                    //self.downloadMisc();
                     debug.log("usePip ok");
                 } catch (e) {
                     debug.warn("usePip fail");

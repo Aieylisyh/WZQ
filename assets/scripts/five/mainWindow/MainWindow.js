@@ -78,7 +78,7 @@ cc.Class({
 
     buildWindow() {
         this.bottomBtns.active = true;
-        this.iconLogo.active = false
+
         this.buildAnim();
         appContext.getUxManager().tryTriggerFatigue();
         let userInfo = appContext.getUxManager().getUserInfo();
@@ -417,7 +417,7 @@ cc.Class({
         //看广告，说明5倍积分
         appContext.getSoundManager().playBtn();
         let info = {
-            content: "在【巅峰对决】模式\n您可以不受自身段位的影响\n优先匹配到段位最高的对手\n获胜得到的积分较多\n失败损失的积分较少\n\n每匹配一次，需要休息较长的时间",
+            content: "在【巅峰对决】模式\n您可以匹配到段位最高的对手\n获胜得到积分较多\n失败损失积分较少\n\n每匹配一次\n需要休息较长的时间",
         };
         info.hideCloseBtn = true;
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
