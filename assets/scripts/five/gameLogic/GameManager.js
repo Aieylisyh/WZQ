@@ -349,7 +349,7 @@ cc.Class({
 
     getOpening() {
         //暂时不用这个，开局的信息太多，影响用户体验
-        let index = Math.floor(Math.random() * 10);
+        let index = Math.floor(Math.random() * 15);
         let p1 = "";
         let p2 = "";
 
@@ -383,6 +383,21 @@ cc.Class({
         } else if (index == 9) {
             p1 = "我下棋是很精准的";
             p2 = "你这个棋子就放歪了";
+        }else if (index == 10) {
+            p1 = "下五子棋哪家强";
+            p2 = "对面这家最不强";
+        }else if (index == 11) {
+            p1 = "你这手棋下的不错";
+            p2 = "这是真的夸我吗？";
+        }else if (index == 12) {
+            p1 = "失败乃成功之母";
+            p2 = "看来你离成功不远了";
+        }else if (index == 13) {
+            p1 = "快点，我要赢了";
+            p2 = "你只会输的更快";
+        }else if (index == 14) {
+            p1 = "别着急，慢慢来";
+            p2 = "怕看到自己扣积分吧？";
         }
 
         return {

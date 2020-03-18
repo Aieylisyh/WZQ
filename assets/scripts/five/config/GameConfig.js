@@ -162,7 +162,6 @@ cc.Class({
                         localImg: prefix + "smz",
                         appid: "tt237055cdbc5ad129"
                     },
-
                     {
                         name: "超级守门员",
                         localImg: prefix + "cjsmy",

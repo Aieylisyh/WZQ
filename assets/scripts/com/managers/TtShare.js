@@ -43,7 +43,7 @@ let TtShare = {
         //ch4n5gsi0njkflegg5
         let shareObj = {
             templateId: '8ee2j69haaaijm7gid', // 替换成通过审核的分享ID
-            title: '官方正版五子棋作战，休闲免费1秒上手',
+            title: '极速五子棋对战，进来看就能玩',
             imageUrl: "customRes/shareImg.png",
             success() {
                 console.log('分享成功');

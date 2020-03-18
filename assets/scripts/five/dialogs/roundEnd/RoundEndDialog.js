@@ -431,34 +431,34 @@ cc.Class({
                 WechatAPI.cache.lifetimeSuperShareVideoCount++;
             }
 
-            if (this.info.win) {
-                let useSuperSVD = false;
-                if (!appContext.getUxManager().isTodaySuperShareVideoShown()) {
-                    if (debug.extraSettings.controlSVD) {
-                        if (debug.extraSettings.chanceSVD > Math.random() * 100) {
-                            useSuperSVD = true;
-                        }
-                    } else {
+            let useSuperSVD = false;
+            if (debug.extraSettings.controlSVD) {
+                if (debug.extraSettings.chanceSVD > Math.random() * 100) {
+                    useSuperSVD = true;
+                }
+            }
+
+            if (!useSuperSVD) {
+                if (this.info.win) {
+                    if (!appContext.getUxManager().isTodaySuperShareVideoShown()) {
                         if (this.getHasVideoToShare() && WechatAPI.cache.lifetimeSuperShareVideoCount + Math.random() * 4 > 4) {
                             appContext.getUxManager().setTodaySuperShareVideo()
                             useSuperSVD = true;
                         }
                     }
-
-                    if (useSuperSVD) {
-                        this.shareRewardTxt.node.active = false;
-                        this.hasShareReward = false;
-                        appContext.getDialogManager().showDialog(DialogTypes.ShareVideo);
-                        return;
-                    }
                 }
-            };
+            }
 
+            if (useSuperSVD) {
+                this.shareRewardTxt.node.active = false;
+                this.hasShareReward = false;
+                appContext.getDialogManager().showDialog(DialogTypes.ShareVideo);
+            }
 
             if (this.hasShareReward) {
                 this.shareRewardTxt.node.active = true;
                 if (this.getHasVideoToShare()) {
-                    this.shareRewardTxt.string = "分享录屏送20~50金币";
+                    this.shareRewardTxt.string = "分享录屏送15~45金币";
                 } else {
                     this.shareRewardTxt.string = "分享成功送10~40金币";
                 }
@@ -585,13 +585,13 @@ cc.Class({
 
         if (this.getHasVideoToShare()) {
             //has Video
-
             if (this.hasShareReward) {
-                reward[0].count = Math.floor(Math.random() * 31 + 20);
+                reward[0].count = Math.floor(Math.random() * 31 + 15);
                 WechatAPI.shareUtil.setShareVideoCB(reward);
             } else {
                 WechatAPI.shareUtil.setShareVideoCB();
             }
+
             WechatAPI.ttRecorder.willShare = true;
             WechatAPI.ttRecorder.stop();
             this.shareRewardTxt.node.active = false;//这个隐藏了就好 反正用户取消了录屏，这个视频就没了 不可能再次调起

@@ -9,7 +9,7 @@ cc.Class({
         this.fadeInBackground();
         this.fastShowAnim();
 
-        this.goldNum = Math.floor(Math.random() * 40 + 120);
+        this.goldNum = Math.floor(Math.random() * 40 + 100);//60~180(120)
         this.numLabel.string = "金币 " + this.goldNum;
     },
 
