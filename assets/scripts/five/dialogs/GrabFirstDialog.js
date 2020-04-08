@@ -37,7 +37,7 @@ cc.Class({
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "您使用了先手卡");
             appContext.getGameManager().game.selfPlayer.grabFirst(true);
         } else {
-            appContext.getDialogManager().showDialog(DialogTypes.Toast, "先手卡不足");
+            appContext.getDialogManager().showDialog(DialogTypes.Toast, "先手卡不足\n可以从【商店】中购买");
             appContext.getGameManager().game.selfPlayer.grabFirst(false);
         }
 

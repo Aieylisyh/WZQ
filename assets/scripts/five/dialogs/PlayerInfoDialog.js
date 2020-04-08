@@ -22,7 +22,7 @@ cc.Class({
 
     show: function () {
         this.setCharacterAttribute();
-        this.playerinfo.setup(appContext.getUxManager().getUserInfo());
+        this.playerinfo.setup(appContext.getUxManager().getUserInfo(), true);
 
         this.fadeInBackground();
         this.fastShowAnim();

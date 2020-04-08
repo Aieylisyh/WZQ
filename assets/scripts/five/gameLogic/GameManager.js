@@ -461,7 +461,7 @@ cc.Class({
 
     playChat(type) {
         let isSelf = this.getCurrentPlayerIsSelf();
-        if (Math.random() > 0.93) {
+        if (Math.random() > 0.91) {
             let phrase = this.getOpening();
             this.getGameWindow().playChat(isSelf, phrase.p1);
             this.scheduleOnce(function () {

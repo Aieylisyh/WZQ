@@ -205,7 +205,7 @@ cc.Class({
     // },
 
     showMainBoard: function () {
-        this.chestsNode.active = false;
+        // this.chestsNode.active = false;
         this.mainNode.active = true;
 
         this.mainNode.scale = 0.1;
@@ -442,7 +442,7 @@ cc.Class({
                 if (this.info.win) {
                     if (!appContext.getUxManager().isTodaySuperShareVideoShown()) {
                         if (this.getHasVideoToShare() && WechatAPI.cache.lifetimeSuperShareVideoCount + Math.random() * 4 > 4) {
-                            appContext.getUxManager().setTodaySuperShareVideo()
+                            appContext.getUxManager().setTodaySuperShareVideo();
                             useSuperSVD = true;
                         }
                     }
@@ -465,7 +465,6 @@ cc.Class({
             } else {
                 this.shareRewardTxt.node.active = false;
             }
-
         }
     },
 

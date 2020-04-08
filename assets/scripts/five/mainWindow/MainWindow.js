@@ -1,6 +1,7 @@
 let DialogTypes = require("DialogTypes");
 let Grade = require("Grade");
 let DataUtil = require('DataUtil');
+let Item = require('Item');
 let cdDianFeng = 5400000;
 
 cc.Class({
@@ -41,11 +42,15 @@ cc.Class({
 
         redDot_checkin: cc.Node,
 
+        redDot_house: cc.Node,
+
         btnMatchModeTimer: cc.Label,
 
         btnNormalModeTimer: cc.Label,
 
         bottomBtns: cc.Node,
+
+        btnDaily: cc.Node,
     },
 
     start: function () {
@@ -82,7 +87,7 @@ cc.Class({
         this.buildAnim();
         appContext.getUxManager().tryTriggerFatigue();
         let userInfo = appContext.getUxManager().getUserInfo();
-        this.playerInfoBoard.setup(userInfo);
+        this.playerInfoBoard.setup(userInfo, true);
         this.playerInfoBoard.notifyClick();
         this.setHouse(userInfo);
         this.setRedDots();
@@ -121,16 +126,17 @@ cc.Class({
             }
         }
 
-        let timestampNM = appContext.getUxManager().gameInfo.fatigueTimestamp;
+        //暂时不加
+        // let timestampNM = appContext.getUxManager().gameInfo.fatigueTimestamp;
 
-        if (timestampNM) {
-            let delta2 = Date.now() - timestampNM;
-            if (delta2 >= 60000) {
-                this.btnNormalModeTimer.string = "";
-            } else {
-                this.btnNormalModeTimer.string = DataUtil.getCountDownHMSStringByMS(60000 - delta2);
-            }
-        }
+        // if (timestampNM) {
+        //     let delta2 = Date.now() - timestampNM;
+        //     if (delta2 >= 60000) {
+        //         this.btnNormalModeTimer.string = "";
+        //     } else {
+        //         this.btnNormalModeTimer.string = DataUtil.getCountDownHMSStringByMS(60000 - delta2);
+        //     }
+        // }
     },
 
     onCloseAllDialogs: function () {
@@ -190,6 +196,8 @@ cc.Class({
         // 如果有需要在动画完毕后的执行某些操作，可以放在这里
         this.playUserInfoAction();
         this.showPromo();
+        
+        this.btnDaily.active =  appContext.getUxManager().isValidDailyRewardClaimedDay();
     },
 
     // 播放用户信息栏动画
@@ -310,14 +318,23 @@ cc.Class({
             if (delta < cdDianFeng) {
                 let self = this;
 
+                // let info = {
+                //     content: "看一个视频，立即进行【巅峰对决】的匹配？",
+                // };
+                // info.btn1 = {
+                //     clickFunction: function () {
+                //         self.showVideoHardMode();
+                //     },
+                // };
                 let info = {
-                    content: "看一个视频，立即进行【巅峰对决】的匹配？",
+                    content: "用80金币加速，立即进行【巅峰对决】的匹配？",
                 };
                 info.btn1 = {
                     clickFunction: function () {
-                        self.showVideoHardMode();
+                        self.tryBuyHardModeAccess();
                     },
                 };
+
                 info.btn2 = {
                 };
                 info.hideCloseBtn = true;
@@ -327,6 +344,85 @@ cc.Class({
         }
 
         this.startHardModeMatch();
+    },
+
+    tryBuyHardModeAccess() {
+        if (appContext.getUxManager().useGold(80)) {
+            appContext.getSoundManager().playUseGold();
+            this.startHardModeMatch();
+        } else {
+            let canLure = false;
+            if (appContext.getUxManager().canUseRandomGold()) {
+                let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+                if (canWatchAd) {
+                    canLure = true;
+                }
+            }
+
+            if (canLure) {
+                let info = {
+                    content: "金币不足\n看个广告即可获得大量金币",
+                    btn1: {
+                        name: "好 的",
+                        clickFunction: function () {
+                            this.startwatchAdReward();
+                        },
+                        clickFunctionCaller: this,
+                    },
+                };
+
+                appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+                return;
+            } else {
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "金币不足");
+            }
+        }
+    },
+
+    startwatchAdReward() {
+        this.watchAdReward(function () {
+            appContext.getSoundManager().playUseGold();
+            let count = Math.floor(Math.random() * 41 + 80);
+            this.giveReward([{ type: "Gold", count: count }], false);
+            appContext.getUxManager().useRandomGold();
+        }, this);
+    },
+
+    watchAdReward(funcSuc, caller) {
+        let self = this;
+        WechatAPI.videoAdUtil.updateCb({
+            failCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_shop_fail");
+                appContext.getAnalyticManager().sendTT('videoAd_shop', {
+                    res: 1,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "抽取失败，请稍候重试");
+            },
+            finishCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_shop_ok");
+                appContext.getAnalyticManager().sendTT('videoAd_shop', {
+                    res: 0,
+                });
+                funcSuc.call(caller);
+            },
+            ceaseCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_shop_cease");
+                appContext.getAnalyticManager().sendTT('videoAd_shop', {
+                    res: 2,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以抽取");
+            },
+            caller: self,
+        });
+
+        WechatAPI.videoAdUtil.show();
+    },
+
+    giveReward(reward, isBuyOrLottery = true) {
+        appContext.getUxManager().rewardItems(reward);
+        let text = Item.getTextByItem(reward);
+        let text1 = isBuyOrLottery ? "购买" : "获取";
+        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, text1 + "成功\n获得: " + text);
     },
 
     startHardModeMatch() {
@@ -469,7 +565,7 @@ cc.Class({
         }
 
         //console.log(WechatAPI.followBtn);
-        // console.log("关注按钮");
+        console.log("关注按钮");
         // console.log(typeof tt.checkFollowState);
         // console.log(typeof tt.createFollowButton);
         if (WechatAPI.followBtn == null && typeof tt.checkFollowState == "function" && typeof tt.createFollowButton == "function") {
@@ -593,9 +689,14 @@ cc.Class({
         } else {
             this.redDot_shop.active = true;
         }
+
+        if (!appContext.getUxManager().gameInfo.hasClickedHouse || Math.random() > 0.9) {
+            this.redDot_house.active = true;
+        }
     },
 
     onClickHouse() {
+        this.redDot_house.active = false;
         if (!appContext.getUxManager().gameInfo.hasClickedHouse) {
             this.house.node.scaleX = 0.5;
             this.house.node.scaleX = 0.5;

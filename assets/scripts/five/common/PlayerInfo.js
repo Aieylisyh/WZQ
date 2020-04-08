@@ -33,7 +33,6 @@ cc.Class({
 
         gradeScoreLabel: cc.Label, // 段位积分
 
-
         gradePB: cc.ProgressBar,
 
         gradePBTop: cc.Label,
@@ -43,9 +42,15 @@ cc.Class({
         gradeIcon: cc.Sprite,
     },
 
-    setup: function (user) {
+    setup: function (user, hasAnime = false) {
         if (user == null) {
             return;
+        }
+
+        if (hasAnime) {
+            this.animeToggler = true;
+            this.animeTime = 2.5;
+            this.animeTimer = 0;
         }
 
         let sex = user.basic.sex;
@@ -85,14 +90,32 @@ cc.Class({
         let roundCount = user.basic.roundCount;
         if (this.winRateLabel != null) {
             let winRate = Math.round((winCount / roundCount) * 100);
-            this.winRateLabel.string = (winRate || 100) + "%";
+            if (hasAnime) {
+                this.winRateLabel.string = "0%";
+                this.anime_winRate = winRate;
+            } else {
+                this.winRateLabel.string = (winRate || 100) + "%";
+            }
         }
+
         if (this.winCountLabel != null) {
-            this.winCountLabel.string = winCount;
+            if (hasAnime) {
+                this.winCountLabel.string = "0";
+                this.anime_winCount = winCount;
+            } else {
+                this.winCountLabel.string = winCount;
+            }
         }
+
         if (this.roundCountLabel != null) {
-            this.roundCountLabel.string = roundCount;
+            if (hasAnime) {
+                this.roundCountLabel.string = "0";
+                this.anime_roundCount = roundCount;
+            } else {
+                this.roundCountLabel.string = roundCount;
+            }
         }
+
         if (this.winHandLabel != null) {
             let winHand = Math.round(user.basic.totalHands / roundCount);
             if (!winHand) {
@@ -118,7 +141,7 @@ cc.Class({
         }
 
         if (this.gradePBTop != null) {
-            this.gradePBTop.string = gradeAndFillInfo.fillTop;
+            this.gradePBTop.string = gradeInfo.exp;
         }
 
         if (this.gradePBBottom != null) {
@@ -133,7 +156,12 @@ cc.Class({
                 v = 1;
             }
 
-            this.gradePB.value = gradeAndFillInfo.fillAmount / gradeInfo.exp;
+            if (hasAnime) {
+                this.gradePB.progress = 0;
+                this.anime_gradePBV = v;
+            } else {
+                this.gradePB.progress = v;
+            }
         }
 
         this.setGradeIcon(gradeInfo.imgPath);
@@ -151,6 +179,37 @@ cc.Class({
 
             if (StringUtil.isEmpty(s) || s == "我") {
                 this.nicknameLabel.string = "点此修改信息";
+            }
+        }
+    },
+
+    update(dt) {
+        if (this.animeToggler) {
+            let f = this.animeTimer / this.animeTime;
+            if (f >= 1) {
+                f = 1;
+                this.animeToggler = false;
+            }
+            this.animeTimer += dt;
+
+            if (this.winRateLabel != null) {
+                let winRate = Math.round(this.anime_winRate * f);
+                this.winRateLabel.string = winRate + "%";
+            }
+
+            if (this.winCountLabel != null) {
+                let winCount = Math.round(this.anime_winCount * f);
+                this.winCountLabel.string = winCount;
+            }
+
+            if (this.roundCountLabel != null) {
+                let roundCount = Math.round(this.anime_roundCount * f);
+                this.roundCountLabel.string = roundCount;
+            }
+
+
+            if (this.gradePB != null) {
+                this.gradePB.progress = this.anime_gradePBV * f;
             }
         }
     },

@@ -27,11 +27,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 46
+        "__id__": 49
       }
     ],
     "_prefab": {
-      "__id__": 47
+      "__id__": 50
     },
     "_opacity": 255,
     "_color": {
@@ -329,19 +329,22 @@
       },
       {
         "__id__": 40
+      },
+      {
+        "__id__": 43
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 43
+        "__id__": 46
       },
       {
-        "__id__": 44
+        "__id__": 47
       }
     ],
     "_prefab": {
-      "__id__": 45
+      "__id__": 48
     },
     "_opacity": 255,
     "_color": {
@@ -354,7 +357,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 560,
-      "height": 320
+      "height": 340
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -421,7 +424,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 510,
-      "height": 267
+      "height": 287
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -908,8 +911,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
-        -78,
+        5,
+        -70,
         0,
         0,
         0,
@@ -1102,7 +1105,7 @@
       "ctor": "Float64Array",
       "array": [
         150,
-        0,
+        10,
         0,
         0,
         0,
@@ -1203,7 +1206,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 650.7,
+      "width": 554.7,
       "height": 126.55999999999999
     },
     "_anchorPoint": {
@@ -1216,7 +1219,7 @@
       "ctor": "Float64Array",
       "array": [
         60,
-        110,
+        120,
         0,
         0,
         0,
@@ -1267,7 +1270,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 650.7,
+      "width": 554.7,
       "height": 70.56
     },
     "_anchorPoint": {
@@ -1279,7 +1282,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -325.35,
+        -277.35,
         -70.55999999999999,
         0,
         0,
@@ -1320,8 +1323,8 @@
       }
     ],
     "_useOriginalSize": true,
-    "_string": "获得一次【4倍金币】的机会！",
-    "_N$string": "获得一次【4倍金币】的机会！",
+    "_string": "【4倍金币】的机会来啦！",
+    "_N$string": "【4倍金币】的机会来啦！",
     "_fontSize": 48,
     "_lineHeight": 56,
     "_enableWrapText": true,
@@ -1344,7 +1347,7 @@
     "asset": {
       "__uuid__": "85fe9e6a-0e60-4952-92b6-b215e3d8581a"
     },
-    "fileId": "f6Y4e8JapOkp1eZKLUc/sa",
+    "fileId": "e7Rgr0U8BJzrtMVOqYACrN",
     "sync": false
   },
   {
@@ -1374,7 +1377,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 624,
+      "width": 480,
       "height": 70.56
     },
     "_anchorPoint": {
@@ -1386,7 +1389,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -298.65,
+        -202.64999999999998,
         -126.55999999999999,
         0,
         0,
@@ -1427,8 +1430,8 @@
       }
     ],
     "_useOriginalSize": true,
-    "_string": "分享录屏成功后，您将获得：",
-    "_N$string": "分享录屏成功后，您将获得：",
+    "_string": "分享录屏成功将获得：",
+    "_N$string": "分享录屏成功将获得：",
     "_fontSize": 48,
     "_lineHeight": 56,
     "_enableWrapText": true,
@@ -1451,7 +1454,7 @@
     "asset": {
       "__uuid__": "85fe9e6a-0e60-4952-92b6-b215e3d8581a"
     },
-    "fileId": "d9VXpJCwNAJIZY8IACJ2lR",
+    "fileId": "d1L19k8qBMILtRQRHGRFkD",
     "sync": false
   },
   {
@@ -1464,7 +1467,7 @@
     "_enabled": true,
     "_fontFamily": "Arial",
     "_isSystemFontUsed": true,
-    "_N$string": "获得一次【4倍金币】的机会！\n分享录屏成功后，您将获得：",
+    "_N$string": "【4倍金币】的机会来啦！\n分享录屏成功将获得：",
     "_N$horizontalAlign": 2,
     "_N$fontSize": 48,
     "_N$font": null,
@@ -1487,7 +1490,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "num",
+    "_name": "tip",
     "_objFlags": 0,
     "_parent": {
       "__id__": 8
@@ -1505,27 +1508,27 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 130,
-      "g": 72,
-      "b": 24,
+      "r": 78,
+      "g": 155,
+      "b": 43,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 0,
-      "height": 80.64
+      "width": 840,
+      "height": 60.48
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 1,
+      "x": 0.5,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        110,
-        0,
+        36,
+        -125,
         0,
         0,
         0,
@@ -1555,6 +1558,111 @@
     "_objFlags": 0,
     "node": {
       "__id__": 40
+    },
+    "_enabled": true,
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_useOriginalSize": false,
+    "_string": "您和其他小伙伴都能从分享出去的录屏进入游戏",
+    "_N$string": "您和其他小伙伴都能从分享出去的录屏进入游戏",
+    "_fontSize": 40,
+    "_lineHeight": 48,
+    "_enableWrapText": true,
+    "_N$file": null,
+    "_isSystemFontUsed": true,
+    "_spacingX": 0,
+    "_batchAsBitmap": false,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
+    "_N$fontFamily": "Arial",
+    "_N$overflow": 0,
+    "_N$cacheMode": 1,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__uuid__": "85fe9e6a-0e60-4952-92b6-b215e3d8581a"
+    },
+    "fileId": "24KAEd5dpHj4TpVwO6NhIN",
+    "sync": false
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "num",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 8
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 44
+      }
+    ],
+    "_prefab": {
+      "__id__": 45
+    },
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 130,
+      "g": 72,
+      "b": 24,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 80.64
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 1,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        110,
+        10,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0.5,
+        0.5,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.Label",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 43
     },
     "_enabled": true,
     "_materials": [
@@ -1669,7 +1777,7 @@
     "_isAnimComplete": false,
     "bgOpacity": 180,
     "numLabel": {
-      "__id__": 41
+      "__id__": 44
     },
     "_id": ""
   },

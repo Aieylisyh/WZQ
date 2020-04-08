@@ -634,4 +634,26 @@ cc.Class({
             this.startFatigue();
         }
     },
+
+    isValidDailyRewardClaimedDay() {
+        let date = new Date();
+        let day = date.getDay();
+
+        let d = this.gameInfo.lastDailyRewardClaimedDay;
+        if (d == null) {
+            return true;
+        }
+
+        if (d < day) {
+            return true;
+        }
+
+        return false;
+    },
+
+    setDailyRewardClaimedDay() {
+        let d = new Date();
+        this.gameInfo.lastDailyRewardClaimedDay = d.getDay();
+        this.saveGameInfo();
+    },
 });
