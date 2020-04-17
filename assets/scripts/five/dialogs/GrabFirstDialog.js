@@ -18,7 +18,7 @@ cc.Class({
         this.numLabel.string = "有先手卡" + num + "张";
         this.artNumLabel.string = num;
 
-        this.timer = 10;
+        this.timer = 8;
     },
 
     update(dt) {

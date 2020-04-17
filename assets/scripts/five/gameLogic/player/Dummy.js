@@ -204,7 +204,7 @@ let Dummy = cc.Class({
         }
 
         this.addTask({
-            turns: Math.random() * 4.5 + 0.2,
+            turns: Math.random() * 4 + 0.2,
             type: 3,
             param: grab,
         });

@@ -90,6 +90,9 @@ cc.Class({
         let roundCount = user.basic.roundCount;
         if (this.winRateLabel != null) {
             let winRate = Math.round((winCount / roundCount) * 100);
+            if (roundCount < 1) {
+                winRate = 50;
+            }
             if (hasAnime) {
                 this.winRateLabel.string = "0%";
                 this.anime_winRate = winRate;

@@ -174,16 +174,16 @@ cc.Class({
     },
 
     getMatchTime() {
-        let time = 0.6 + Math.random() * 3;
+        let time = 0.5 + Math.random() * 2;
         if (this.isHardMode) {
-            time = 2 + Math.random() * 4;
+            time = 2 + Math.random() * 3;
         }
 
         let d = new Date();
         let h = d.getHours();
         if (h < 7 && h > 0) {
             //1~6 very slow
-            time = time * 2.5 + 4;
+            time = time * 2 + 4;
         } else if (h < 11) {
             //6~11  slow
             time = time * 1.5 + 2;
@@ -192,7 +192,7 @@ cc.Class({
             time = time * 1.2 + 0.5;
         } else if (h < 18) {
             //15~18 quick
-            time = time * 1.2 + 1.5;
+            time = time * 1 + 1.5;
         } else {
             //very quick
         }

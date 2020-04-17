@@ -84,7 +84,8 @@ let TtShare = {
             //8ee2j69haaaijm7gid
             //ch4n5gsi0njkflegg5
             return {
-                title: '官方正版五子棋作战，休闲免费1秒上手',
+                title: '#下棋#五子棋#对战#好玩#真人#休闲 #抖音小游戏 #益智小游戏|',
+                //title: '官方正版五子棋作战，休闲免费1秒上手',
                 templateId: '8ee2j69haaaijm7gid',
                 imageUrl: "customRes/shareImg2.png",
                 success() {
@@ -163,7 +164,7 @@ let TtShare = {
             query: '',
             extra: {
                 videoPath: path,
-                videoTopics: ['五子棋', '棋牌']
+                videoTopics: ['五子棋', '棋牌', '益智', '烧脑', '经典']
             },
             success() {
                 console.log('分享视频成功');

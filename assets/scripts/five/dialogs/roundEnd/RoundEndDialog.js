@@ -70,6 +70,8 @@ cc.Class({
         keepGradeRewardTxt: cc.Label,
 
         keepGradeRewardAdIcon: cc.Node,
+
+        buttonDaily: cc.Node,
     },
 
     show: function (info) {
@@ -381,6 +383,8 @@ cc.Class({
         this.buttons.y = -500;
         let action = cc.moveTo(0.5, 0, -40).easing(cc.easeCubicActionOut());
         this.buttons.runAction(action);
+
+        this.buttonDaily.active = (Math.random() > 0.6);
 
         this.scheduleOnce(function () {
             this.processStep();

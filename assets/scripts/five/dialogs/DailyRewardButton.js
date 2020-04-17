@@ -5,6 +5,17 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
+        rewardType: 1,//1 棋灵占星 2 棋圣祈福
+
+        txt: cc.Label,
+    },
+
+    start() {
+        if (this.rewardType == 1) {
+            this.txt.string = "棋灵占星";
+        } else if (this.rewardType == 2) {
+            this.txt.string = "棋圣祈福";
+        }
     },
 
     onClick() {
@@ -49,28 +60,67 @@ cc.Class({
     giveReward() {
         appContext.getSoundManager().playUseGold();
 
-        let d = new Date();
-        let day = d.getDay();
 
-        let reward1 = getRewardByDay(day);
 
-        let day2 = day + 1;
-        if (day2 == 7) {
-            day2 = 0
+        let reward1;
+        let reward2;
+        if (this.rewardType == 1) {
+            let d = new Date();
+            let day = d.getDay();
+            let day2 = day + 1;
+            if (day2 == 7) {
+                day2 = 0
+            }
+
+            reward1 = this.getRewardByDay(day);
+            reward2 = this.getRewardByDay(day2);
+        } else if (this.rewardType == 2) {
+            let count = appContext.getUxManager().getTodayGameCount();
+
+            reward1 = this.getRewardByDailyCount(count);
+            reward2 = this.getRewardByDailyCount(count + 1);
         }
-        let reward2 = getRewardByDay(day2);
 
-        appContext.getUxManager().rewardItems(reward1);
         let text1 = Item.getTextByItem(reward1);
         let text2 = Item.getTextByItem(reward2);
-        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "获得占星奖励: " + text1 + "\n明日占星结果预测：" + text2);
 
+        if (this.rewardType == 1) {
+            appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "获得了占星奖励: \n【" + text1 + "】!\n\n明日占星预测：\n【" + text2 + "】\n记得来哦~");
+        } else if (this.rewardType == 2) {
+            appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "获得了祈福奖励: \n【" + text1 + "】!\n\n下次祈福预测：\n【" + text2 + "】\n记得来哦~");
+        }
+
+        appContext.getUxManager().rewardItems(reward1);
         appContext.getUxManager().setDailyRewardClaimedDay();
         this.node.active = false;
     },
 
+    getRewardByDailyCount(count) {
+        let obj = {};
+        if (count == 0) {
+            obj.type = "Gold";
+            obj.count = 8;
+        } else if (count == 1) {
+            obj.type = "Gold";
+            obj.count = 33;
+        } else if (count == 2) {
+            obj.type = "Gold";
+            obj.count = 66;
+        } else if (count == 3) {
+            obj.type = "Gold";
+            obj.count = 88;
+        } else if (count == 4) {
+            obj.type = "GrabFirstCard";
+            obj.count = 1;
+        } else {
+            obj.type = "Gold";
+            obj.count = Math.floor(Math.random() * 20 + 1);
+        }
+        return [obj];
+    },
+
     getRewardByDay(day) {
-        let obj = { type: "GrabFirstCard", count: 1 };
+        let obj = {};
         if (day == 0) {
             obj.type = "Gold";
             obj.count = 50;
@@ -96,6 +146,4 @@ cc.Class({
 
         return [obj];
     },
-
-    //100 200 bao 100 xian 100 xian
 });

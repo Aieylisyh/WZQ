@@ -530,6 +530,7 @@ cc.Class({
 
     registerGameEnd: function (info) {
         debug.log("游戏结束！！！");
+        this.setTodayGameCount();
         // debug.log(info.selfPlayer.basic.currentScore);
         // debug.log(info.opponentPlayer.basic.currentScore);
         // debug.log(info.win);
@@ -552,7 +553,7 @@ cc.Class({
         }
 
         let userInfo = this.getUserInfo();
-        debug.log(userInfo.basic.currentScore);
+        //debug.log(userInfo.basic.currentScore);
         info.fromScore = userInfo.basic.currentScore;
         userInfo.basic.roundCount += 1;
         userInfo.basic.currentScore += info.gradeScoreAdd;
@@ -655,5 +656,34 @@ cc.Class({
         let d = new Date();
         this.gameInfo.lastDailyRewardClaimedDay = d.getDay();
         this.saveGameInfo();
+    },
+
+    setTodayGameCount() {
+        this.initTodayGameCount();
+
+        this.gameInfo.todayGameCount++;
+        this.saveGameInfo();
+    },
+
+    getTodayGameCount() {
+        this.initTodayGameCount();
+
+        return this.gameInfo.todayGameCount = 0;
+    },
+
+    initTodayGameCount() {
+        let day = Math.floor((Date.now() + 3600000 * 8) / 86400000);
+
+        if (this.gameInfo.todayGameCount == null) {
+            this.gameInfo.todayGameCount = 0;
+            this.gameInfo.todayGameDayStamp = day;
+            this.saveGameInfo();
+        } else if (this.gameInfo.todayGameDayStamp < day) {
+            this.gameInfo.todayGameCount = 0;
+            this.gameInfo.todayGameDayStamp = day;
+            this.saveGameInfo();
+        } else if (this.gameInfo.todayGameDayStamp >= day) {
+            this.gameInfo.todayGameDayStamp = day;
+        }
     },
 });
