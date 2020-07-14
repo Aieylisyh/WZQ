@@ -9,7 +9,7 @@ cc.Class({
         _loaded: false,
     },
 
-    isEnabled: function() {
+    isEnabled: function () {
         return false;
     },
 
@@ -38,7 +38,7 @@ cc.Class({
         }
     },
 
-    create: function() {
+    create: function () {
         if (!this.isEnabled()) {
             return;
         }
@@ -57,7 +57,7 @@ cc.Class({
         }
     },
 
-    updateCb: function(cb) {
+    updateCb: function (cb) {
         debug.log("updateCb");
         debug.log(cb);
         if (cb != null) {
@@ -67,50 +67,51 @@ cc.Class({
         }
     },
 
-    has: function() {
+    has: function () {
         return this._ad != null;
     },
 
-    customLoad() {},
-    customCreate() {},
-    customShow() {},
-    customShowOnLoad() {},
+    customLoad() { },
+    customCreate() { },
+    customShow() { },
+    customShowOnLoad() { },
 
-    onFail: function() {
+    onFail: function () {
         debug.log("onFail");
         this.cb && this.cb.failCb && this.cb.failCb.call(this.cb.caller);
         this._loaded = false;
         this._isLoading = false;
     },
 
-    onCanPlay: function() {
+    onCanPlay: function () {
         debug.log("onCanPlay!!");
         this.cb && this.cb.canPlayCb && this.cb.canPlayCb.call(this.cb.caller);
         this._loaded = true;
         this._isLoading = false;
     },
 
-    onCease: function() {
+    onCease: function () {
         this.cb && this.cb.ceaseCb && this.cb.ceaseCb.call(this.cb.caller);
         // appContext.getSoundManager,
         //     this._loaded = false;
         // this.customLoad();
         this._isLoading = false;
-        appContext.getSoundManager().startBackgroundMusic();
+        this.onBackFromVideoAd();
         //debug.log("onCease!!");
         this._loaded = true;
         this._isLoading = false;
     },
 
-    onFinish: function() {
+    onFinish: function () {
         this.cb && this.cb.finishCb && this.cb.finishCb.call(this.cb.caller);
         this._loaded = false;
         this._isLoading = false;
         this.customLoad();
-        appContext.getSoundManager().startBackgroundMusic();
+
+        this.onBackFromVideoAd();
     },
 
-    onError: function(err) {
+    onError: function (err) {
         console.warn("!video ad onError", err);
         debug.log(err);
 
@@ -120,8 +121,8 @@ cc.Class({
 
     getYXCallback() {
         let self = WechatAPI.videoAdUtil;
-        return function(isEnd) {
-            appContext.getSoundManager().startBackgroundMusic();
+        return function (isEnd) {
+            self.onBackFromVideoAd();
             if (isEnd) {
                 console.log('video success');
                 self.cb && self.cb.finishCb && self.cb.finishCb.call(self.cb.caller);
@@ -147,4 +148,11 @@ cc.Class({
 
         return true;
     },
+
+    onBackFromVideoAd() {
+        if (!appContext.getWindowManager().isInGameWindow()) {
+            appContext.getSoundManager().startBackgroundMusic();
+        }
+    },
+
 });

@@ -9,6 +9,10 @@ cc.Class({
         if (debug.extraSettings.nobanner) {
             return false;
         }
+        if (WechatAPI.systemInfo.appName == "Douyin") {
+            return false;
+        }
+        
         return typeof wx.createBannerAd == "function";
     },
 
@@ -42,7 +46,7 @@ cc.Class({
                 this.customDestroy();
             }
 
-            const { windowWidth, windowHeight } = tt.getSystemInfoSync();
+            const { windowWidth, windowHeight } = wx.getSystemInfoSync();
             var targetBannerAdWidth = 200;
 
             debug.log("tt banner crt " + this.id);
