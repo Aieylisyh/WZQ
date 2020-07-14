@@ -5,13 +5,14 @@ cc.Class({
         id: "adunit-29dd38c41995382f",
     },
 
-    isEnabled: function() {
+    isEnabled: function () {
         return false;
-        
         if (!debug.extraSettings.hasIntAd) {
             return false;
         }
-
+        if (WechatAPI.systemInfo.appName == "Douyin") {
+            return false;
+        }
         return typeof wx.createInterstitialAd == "function";
     },
 
@@ -26,7 +27,7 @@ cc.Class({
             adUnitId: this.id
         })
 
-        this._ad.onError(function(res) {
+        this._ad.onError(function (res) {
             debug.log("ad.onError");
             debug.log(res);
             //WechatAPI.interstitialAdUtil.reload();
@@ -34,7 +35,7 @@ cc.Class({
 
         this._ad.onLoad(this.onLoad);
 
-        this._ad.onClose(function() {
+        this._ad.onClose(function () {
             //WechatAPI.interstitialAdUtil.reload();
             if (self._ad.load) {
                 self._ad.load();
