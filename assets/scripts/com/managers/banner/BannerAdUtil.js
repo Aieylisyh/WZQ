@@ -111,7 +111,7 @@ cc.Class({
 
     customDestroy() { },
     customHide() { },
-    customCreate(posParam, show) { },
+    customCreate() { },
     customShow() { },
     customShowOnLoad() { },
 });

@@ -2,6 +2,7 @@ let DialogTypes = require("DialogTypes");
 let Grade = require("Grade");
 let PlayerInfo = require("PlayerInfo");
 let StringUtil = require("StringUtil");
+const WechatAPI = require("../../com/managers/WechatAPI");
 
 cc.Class({
     extends: require("BaseDialog"),
@@ -18,12 +19,17 @@ cc.Class({
         triangle03: cc.Node,// 下胜率h右段位w
 
         triangle04: cc.Node,// 右段位h上连胜w
+
+        shareBtn: cc.Node,
     },
 
     show: function () {
         this.setCharacterAttribute();
         this.playerinfo.setup(appContext.getUxManager().getUserInfo(), true);
-
+        if (!WechatAPI.enableShare) {
+            this.shareBtn.active = false;
+        }
+        
         this.fadeInBackground();
         this.fastShowAnim();
     },
@@ -180,17 +186,17 @@ cc.Class({
 
     onClickBtnProfile: function () {
         appContext.getSoundManager().playBtn();
-        if (WechatAPI.isTT) {
-            let self = this;
+        let self = this;
 
-            if (typeof tt.authorize == "function") {
-                tt.getSetting({
+        if (WechatAPI.isTT) {
+            if (typeof wx.authorize == "function") {
+                wx.getSetting({
                     success(res) {
                         debug.log("getSetting success");
                         debug.log(res);
                         debug.log(res.authSetting["scope.album"]);
                         if (res.authSetting["scope.album"]) {
-                            tt.authorize({
+                            wx.authorize({
                                 scope: "scope.album",
                                 success() {
                                     debug.log("authorize success");
@@ -216,6 +222,43 @@ cc.Class({
             } else {
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "您的应用版本不能上传头像");
             }
+        } if (WechatAPI.isMZ) {
+
+            if (typeof wx.authorize == "function") {
+                wx.getSetting({
+                    success(res) {
+                        debug.log("getSetting success");
+                        debug.log(res);
+                        debug.log(res.authSetting["scope.album"]);
+                        if (res.authSetting["scope.album"]) {
+                            wx.authorize({
+                                scope: "scope.album",
+                                success() {
+                                    debug.log("authorize success");
+                                    self.uploadFile();
+                                },
+
+                                fail() {
+                                    debug.log("authorize fail");
+                                    self.openSettings();
+                                }
+                            });
+                        } else {
+                            self.openSettings();
+                        }
+                    },
+
+                    fail() {
+                        debug.log("getSetting fail");
+                        appContext.getDialogManager().showDialog(DialogTypes.Toast, "无法授权");
+                    }
+                });
+
+            } else {
+                //appContext.getDialogManager().showDialog(DialogTypes.Toast, "您的应用版本不能上传头像");
+
+                self.uploadFile();
+            }
         } else {
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "抱歉，暂时不能上传头像");
 
@@ -229,7 +272,7 @@ cc.Class({
             btn1: {
                 name: "好 的",
                 clickFunction: function () {
-                    tt.openSetting({
+                    wx.openSetting({
                         success(res) {
                             debug.log("openSetting success");
                             self.uploadFile();
@@ -249,7 +292,7 @@ cc.Class({
 
     uploadFile() {
         let self = this;
-        tt.chooseImage({
+        wx.chooseImage({
             sourceType: ["album"],
             count: 1,
 
@@ -263,12 +306,12 @@ cc.Class({
         debug.log("onUploadFileOK " + tempFilePath);
         let self = this;
 
-        // tt.compressImage({
+        // wx.compressImage({
         //     src: tempFilePath, // 图片路径
         //     quality: 75, // 压缩质量
         //     success(compressedTempFilePath) {
         //         debug.log("compressImage " + compressedTempFilePath);
-        //         tt.saveFile({
+        //         wx.saveFile({
         //             tempFilePath: compressedTempFilePath,
         //             success(res) {
         //                 debug.log("saveFile " + res);
@@ -282,7 +325,7 @@ cc.Class({
         //         });
         //     },
         // });
-        tt.saveFile({
+        wx.saveFile({
             tempFilePath: tempFilePath,
             success(res) {
                 // debug.log("saveFile");

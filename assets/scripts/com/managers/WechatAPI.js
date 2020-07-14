@@ -72,11 +72,7 @@ let WechatAPI = {
 
                 let oppOpackageName = "submarine.xplay.kyx.nearme.gamecenter";
                 let oppAppid = "30154796";
-                // 炸潜艇H5-激励视频ID: 108240 
-                // 炸潜艇H5-原生ID: 108239
-                // 炸潜艇H5-开屏ID: 108237 
-                // 炸潜艇H5-插屏ID: 108236
-                // 炸潜艇H5-bannerID: 108235
+
                 //需要获取用户信息才登录
                 //YXSDK initAdService包含在里面，login是登陆的功能需要自己写 所以如果不需要用户信息就不用执行下面了
                 if (!this.isYX) {
@@ -136,6 +132,28 @@ let WechatAPI = {
                 let InterstitialAdUtil_vivo = require("InterstitialAdUtil_vivo");
                 this.interstitialAdUtil = new InterstitialAdUtil_vivo();
                 // this.nativeAdUtil = require("NativeAdUtil_vivo");
+
+                this.initAdUtils();
+            } else if (debug.platformMZ) {
+                console.log("isMeizu");
+                this.isMZ = true;
+                if (typeof (mz_jsb) != "undefined") {
+                    console.log("魅族有");
+                    this.hasMZ = true;
+                } else {
+                    console.log("魅族无");
+                    this.hasMZ = false;
+                }
+                //window.wx = window.mz;
+                window.wx = window.qg;
+                //大坑爹：魅族的本地化字段是mz，广告的是qg 声音是qg
+                // packageName: "com.feilu.zqt",
+                let BannerAdUtil_mz = require("BannerAdUtil_mz");
+                this.bannerAdUtil = new BannerAdUtil_mz();
+                let VideoAdUtil_mz = require("VideoAdUtil_mz");
+                this.videoAdUtil = new VideoAdUtil_mz();
+                let InterstitialAdUtil_mz = require("InterstitialAdUtil_mz");
+                this.interstitialAdUtil = new InterstitialAdUtil_mz();
 
                 this.initAdUtils();
             } else {
@@ -554,7 +572,7 @@ let WechatAPI = {
             return;
         }
 
-        if (this.isWx || this.isTT) {
+        if (this.isWx || this.isTT || this.isBaidu) {
             let obj = {
                 title: title,
 
@@ -572,9 +590,11 @@ let WechatAPI = {
             qg.showToast({
                 message: title
             })
-        } else if (this.isOppo) {
-            appContext.getDialogManager().showDialog(DialogTypes.Toast, title);
-        } else if (this.isApp) {
+        } else if (this.isMZ && hasMZ) {
+            mz.showToast({
+                message: title//https://shimo.im/docs/enni3mhvNyo5fZOm/read
+            })
+        } else {
             appContext.getDialogManager().showDialog(DialogTypes.Toast, title);
         }
     },
@@ -669,19 +689,19 @@ let WechatAPI = {
         }
 
 
-        if (this.isWx || this.isTT) {
-            this.getWx().setStorage({
+        if (this.isWx || this.isTT || this.isBaidu) {
+            wx.setStorage({
                 key: storageKey,
 
                 data: storageData,
             });
         } else if (this.isVivo) {
-            this.getWx().setStorage({
+            wx.setStorage({
                 key: storageKey,
 
                 value: storageData,
             });
-        } else if (this.isOppo) {
+        } else if (this.isOppo || this.isMZ) {
             window.localStorage && window.localStorage.setItem(storageKey, storageData);
         } else if (this.isApp) {
             this.setStorageSync(storageKey, storageData);
@@ -705,7 +725,7 @@ let WechatAPI = {
 
                 value: storageData,
             });
-        } else if (this.isOppo) {
+        } else if (this.isOppo || this.isUC || this.isMZ) {
             window.localStorage && window.localStorage.setItem(storageKey, storageData);
         } else if (this.isApp) {
             let dataStr = "";
@@ -726,13 +746,13 @@ let WechatAPI = {
             return;
         }
 
-        if (this.isWx || this.isTT) {
+        if (this.isWx || this.isTT || this.isBaidu) {
             wx.removeStorageSync(storageKey);
         } else if (this.isVivo) {
-            qg.deleteStorage({
+            wx.deleteStorage({
                 key: storageKey
             })
-        } else if (this.isOppo) {
+        } else if (this.isOppo || this.isUC || this.isMZ) {
             window.localStorage && window.localStorage.removeItem(storageKey);
         } else if (this.isApp) {
             cc.sys.localStorage.removeItem(storageKey)
@@ -745,13 +765,13 @@ let WechatAPI = {
         }
 
         let info;
-        if (this.isWx || this.isTT) {
-            info = this.getWx().getStorageSync(storageKey);
+        if (this.isWx || this.isTT || this.isBaidu) {
+            info = wx.getStorageSync(storageKey);
         } else if (this.isVivo) {
-            info = this.getWx().getStorageSync({
+            info = wx.getStorageSync({
                 key: storageKey
             });
-        } else if (this.isOppo) {
+        } else if (this.isOppo || this.isUC || this.isMZ) {
             if (window.localStorage) {
                 info = window.localStorage.getItem(storageKey);
             }
@@ -793,7 +813,7 @@ let WechatAPI = {
             return;
         }
 
-        if (this.isWx || this.isVivo || this.isTT) {
+        if (this.isWx || this.isVivo || this.isTT || this.isBaidu) {
             wx.getStorage({
                 key: storageKey,
 
@@ -805,22 +825,14 @@ let WechatAPI = {
                     callback.call(caller);
                 },
             });
-        } else if (this.isOppo) {
-            callback.call(caller, this.getStorageSync(storageKey));
-        } else if (this.isApp) {
+        } else if (this.isOppo || this.isApp || this.isUC || this.isMZ) {
             callback.call(caller, this.getStorageSync(storageKey));
         }
     },
 
     GC() {
-        if (this.isWx) {
+        if (this.isEnabled() && typeof wx.triggerGC == "function") {
             wx.triggerGC();
-        } else if (this.isVivo) {
-            qg.triggerGC();
-        } else if (this.isOppo) {
-            qg.triggerGC();
-        } else if (this.isTT) {
-            tt.triggerGC();
         } else if (this.isApp) {
             cc.sys && cc.sys.garbageCollect && cc.sys.garbageCollect();
         }
@@ -969,120 +981,22 @@ let WechatAPI = {
         }
     },
 
-    /*
-        captureScreenAndPreview: function () {
-            let myCanvas = window.canvas;
-            if (myCanvas == null) {
-                myCanvas = cc.canvas
-            }
-
-            myCanvas.toTempFilePath({
-                fileType: "jpg",
-
-                success: (res) => {
-                    let filePath = res.tempFilePath;
-                    if (filePath == null || filePath == "") {
-                        return;
-                    }
-
-                    debug.log("截图成功"); //https://developers.weixin.qq.com/minigame/dev/document/media/image/wx.saveImageToPhotosAlbum.html
-                    wx.authorize({
-                        scope: 'scope.writePhotosAlbum',
-
-                        success: function (res) {
-                            WechatAPI.saveAlbum(filePath);
-                        },
-
-                        fail: function () {
-                            debug.log("用户拒绝scope.writePhotosAlbum");
-                            let info = {
-                                content: "是否开启[保存到相册]的授权\n方便保存截图？",
-                                btn1: {
-                                    name: "查看授权",
-                                    clickFunction: function () {
-                                        if (typeof wx.openSetting == "function") {
-                                            wx.openSetting({
-                                                success(res) {
-                                                    if (res.authSetting['scope.writePhotosAlbum'] === true) {
-                                                        WechatAPI.saveAlbum(filePath);
-                                                    } else {
-                                                        WechatAPI.preview(filePath);
-                                                    }
-                                                },
-
-                                                fail: function (res) {
-                                                    WechatAPI.preview(filePath);
-                                                },
-                                            })
-                                        } else {
-                                            WechatAPI.preview(filePath);
-                                        }
-                                    },
-                                },
-                            };
-                            appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
-                        },
-                    })
-                }
-            });
-        },
-
-        preview: function (filePath, s) {
-            if (s == null) {
-                s = "由于没有您的授权，不能自动保存截图\n我们将为您打开截图预览\n您仍可以手动保存截图哦~";
-            }
-
-            let info = {
-                content: s,
-                btn1: {
-                    name: "查看截图",
-                    clickFunction: function () {
-                        wx.previewImage({
-                            urls: [filePath]
-                        });
-                    },
-                },
-            };
-            appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
-        },
-
-        saveAlbum: function (filePath) {
-            wx.saveImageToPhotosAlbum({
-                filePath: filePath,
-                success: function (res) {
-                    debug.log("saveImageToPhotosAlbum suc");
-                    debug.log(res);
-                },
-                fail: function (res) {
-                    debug.log("saveImageToPhotosAlbum fail");
-                    debug.log(res);
-                    WechatAPI.preview(filePath, "自动保存截图失败\n我们将为您打开截图预览\n您仍可以手动保存截图哦~");
-                },
-            })
-        },
-    */
-
     vibrate: function () {
         if (appContext.getGameSettingManager().noVibrate) {
             return;
         }
-
-        //15 ms
-        if (WechatAPI.isEnabled()) {
-            if (this.isWx) {
-                wx.vibrateShort(); //vibrateLong()
-            } else if (this.isVivo) {
-                qg.vibrateShort(); //vibrateLong()
-            } else if (this.isOppo) {
-                qg.vibrateShort(); //vibrateLong()
-            } else if (this.isTT) {
-                tt.vibrateShort(); //vibrateLong()
-            } else if (this.isApp) {
-                //在js代码里调用cc.Device.vibrate()， 参数是震动时间， 单位是秒。
-                // 安卓的AndroidManifest.xml增加震动权限， 不加会闪退黑屏
-                if (wx.device && typeof wx.device.vibrate == "function") {
-                    wx.device.vibrate(0.03)
-                }
+        //vibrateLong()
+        if (typeof wx.vibrateShort == "function") {
+            wx.vibrateShort();
+        } if (this.hasMZ && typeof mz.vibrateShort == "function") {
+            mz.vibrateShort();
+        } else if (window.navigator && typeof window.navigator.vibrate == "function") {
+            window.navigator.vibrate(15);
+        } else if (this.isApp) {
+            //在js代码里调用cc.Device.vibrate()， 参数是震动时间， 单位是秒。
+            // 安卓的AndroidManifest.xml增加震动权限， 不加会闪退黑屏
+            if (wx.device && typeof wx.device.vibrate == "function") {
+                wx.device.vibrate(0.03)
             }
         }
     },
@@ -1095,32 +1009,41 @@ let WechatAPI = {
         let s = null;
         if (window.navigator && navigator.systemInfo) {
             s = navigator.systemInfo;
-        } else if (this.isWx || this.isTT) {
+        } else if (typeof wx.getSystemInfoSync == "function") {
             s = wx.getSystemInfoSync();
-        } else if (this.isVivo) {
-            s = qg.getSystemInfoSync();
-        } else if (this.isOppo) {
-            s = qg.getSystemInfoSync();
         } else if (this.isApp) {
             s = cc.sys;
         }
 
         debug.log("setSystemInfo");
-        if (this.isWx || this.isTT) {
-            if (this.isTT) {
-                if (s.appName == "Toutiao") {
-                    console.log("今日头条");
-                } else if (s.appName == "Douyin") {
-                    console.log("抖音");
-                }
+        if (this.isTT) {
+            if (s.appName == "Toutiao") {
+                console.log("今日头条");
+            } else if (s.appName == "Douyin") {
+                console.log("抖音");
             }
+        }
 
+        if (this.isWx || this.isTT || this.isBaidu) {
+            this.systemInfo.appName = s.appName;
             this.systemInfo.platform = s.platform;
             this.systemInfo.model = s.model;
             this.systemInfo.windowHeight = s.windowHeight;
             this.systemInfo.windowWidth = s.windowWidth;
             this.systemInfo.version = s.version;
             this.systemInfo.SDKVersion = s.SDKVersion;
+        } else if (this.isUC) {
+            //异常的特殊 返回的字符串！
+            s = JSON.parse(s);
+            //statusBarHeight
+            //pixelRatio
+            //brand
+            this.systemInfo.platform = s.osType;
+            this.systemInfo.model = s.model;
+            this.systemInfo.windowHeight = s.screenHeight;
+            this.systemInfo.windowWidth = s.screenWidth;
+            this.systemInfo.version = s.osVersionName;
+            this.systemInfo.SDKVersion = s.osVersionCode;
         } else if (this.isVivo) {
             //https://minigame.vivo.com.cn/documents/#/api/system/system-info
             this.systemInfo.platform = s.osType;
@@ -1131,6 +1054,19 @@ let WechatAPI = {
             this.systemInfo.SDKVersion = s.osVersionCode;
         } else if (this.isOppo) {
             //https://minigame.vivo.com.cn/documents/#/api/system/system-info?id=qggetsysteminfosync
+            this.systemInfo.platform = s.osType;
+            this.systemInfo.model = s.model;
+            this.systemInfo.windowHeight = s.screenHeight;
+            this.systemInfo.windowWidth = s.screenWidth;
+            this.systemInfo.version = s.osVersionName;
+            this.systemInfo.SDKVersion = s.osVersionCode;
+        } else if (this.isMZ) {
+            //https://minigame.vivo.com.cn/documents/#/api/system/system-info?id=qggetsysteminfosync
+            this.systemInfo.platformVersionCode = this.systemInfo.platformVersion;
+            if (this.systemInfo.platformVersionCode > 1031) {
+                this.systemInfo.platformVersionCode = 1064;//??????
+            }
+
             this.systemInfo.platform = s.osType;
             this.systemInfo.model = s.model;
             this.systemInfo.windowHeight = s.screenHeight;

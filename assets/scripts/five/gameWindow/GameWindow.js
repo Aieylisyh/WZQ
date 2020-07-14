@@ -58,8 +58,12 @@ cc.Class({
                 WechatAPI.PoorTTBtn.hide();
             }
 
-            this.resetRecordBtns();
+            
+        }else  if (WechatAPI.isMZ) {
+            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.hide();
         }
+
+        this.resetRecordBtns();
     },
 
     onClickRecord() {

@@ -1,5 +1,3 @@
-let prefix = "images/smallModule/promott/";
-
 cc.Class({
     extends: cc.Component,
 
@@ -20,13 +18,13 @@ cc.Class({
 
         pipDownloadPath: '/pip/pip.',
 
-        devFileDownloadRoot: '',
+        devFileDownloadRoot: 'https://devfile.ttigd.cn',
 
-        releaseFileDownloadRoot: '',
+        releaseFileDownloadRoot: 'https://wxfile.ttigd.cn',
 
         testPlatform: "",
 
-        appId: "wx4072065173bb346e",//wx4072065173bb346e fashicun
+        appId: "wxd439a052b42ffd16", //wx wxd439a052b42ffd16, oppo, vivo etc in their ad Util
 
         platformOppo: false,
 
@@ -35,6 +33,12 @@ cc.Class({
         platformApp: false,
 
         platformToutiao: false,
+
+        platformBaidu: false,
+
+        platformUC: false,
+
+        platformMZ: false,
 
         remoteFileUrlSuffix_wx: "/wx",
 
@@ -45,6 +49,12 @@ cc.Class({
         remoteFileUrlSuffix_app: "/app",
 
         remoteFileUrlSuffix_tt: "/tt",
+
+        remoteFileUrlSuffix_baidu: "/bd",
+
+        remoteFileUrlSuffix_uc: "/uc",
+
+        remoteFileUrlSuffix_mz: "/mz",
     },
 
     init: function () {
@@ -54,10 +64,25 @@ cc.Class({
             platformVivo: this.platformVivo,
             platformApp: this.platformApp,
             platformToutiao: this.platformToutiao,
-
+            platformBaidu: this.platformBaidu,
+            platformUC: this.platformUC,
+            platformMZ: this.platformMZ,
+            
             extraSettings: {
-                controlSVD: false,
-                chanceSVD: 100,
+                fg: true,
+                fgCount: 5, //free gift count
+                fgSr: 0, //share rate, 0 is always ad, 100 is always share
+                fgRate: 25, //percentage chance to show fg(weapon)
+                lr: 0, //lureRate
+                nobanner: false,
+                hasIntAd: true,
+                protectionLevelLow: 2,
+                protectionLevelHigh: 4,
+                lureChestLevelTrigger1: 2,
+                lureChestLevelTrigger2: 4,
+                hideInvite: false,
+                checkinMustAd: false,
+                wxBannerInterval: 30,
                 global: true,
             },
 
@@ -124,47 +149,6 @@ cc.Class({
             useDevRemoteServerIp: this.useDevRemoteServerIp,
             useDevLocalServerIp: this.useDevLocalServerIp,
 
-            promoInfo: {
-                title: "时下热门",
-                list: [
-                    {
-                        name: "超级好玩",
-                        localImg: prefix + "ttae35d888311fdef4",
-                        appid: "ttae35d888311fdef4"
-                    },
-                    {
-                        name: "停不下来",
-                        localImg: prefix + "tta58bd3363aa1cb7f",
-                        appid: "tta58bd3363aa1cb7f"
-                    },
-                    {
-                        name: "休闲益智",
-                        localImg: prefix + "tt544422f9cb6e3a93",
-                        appid: "tt544422f9cb6e3a93"
-                    },
-                    {
-                        name: "她们在玩",
-                        localImg: prefix + "tt17ef615288c57025",
-                        appid: "tt17ef615288c57025"
-                    },
-                    {
-                        name: "他们也玩",
-                        localImg: prefix + "tt6d481bf5f2624129",
-                        appid: "tt6d481bf5f2624129"
-                    },
-                    {
-                        name: "时下热门",
-                        localImg: prefix + "tt2e5358eeb179a8c3",
-                        appid: "tt2e5358eeb179a8c3"
-                    },
-                    {
-                        name: "不要错过",
-                        localImg: prefix + "tt1e5e68e3817498c1",
-                        appid: "tt1e5e68e3817498c1"
-                    },
-                ]
-            },
-
             getPromoList: function () {
                 let str = JSON.stringify(debug.promoInfo);
                 let promoInfo = str ? JSON.parse(str) : null;
@@ -192,10 +176,16 @@ cc.Class({
             debug.pureFileDownloadRoot += this.remoteFileUrlSuffix_vivo;
         } else if (WechatAPI.isOppo) {
             debug.pureFileDownloadRoot += this.remoteFileUrlSuffix_oppo;
+        } else if (WechatAPI.isMZ) {
+            debug.pureFileDownloadRoot += this.remoteFileUrlSuffix_mz;
         } else if (WechatAPI.isApp) {
             debug.pureFileDownloadRoot += this.remoteFileUrlSuffix_app;
         } else if (WechatAPI.isTT) {
             debug.pureFileDownloadRoot += this.remoteFileUrlSuffix_tt;
+        } else if (WechatAPI.isBaidu) {
+            debug.pureFileDownloadRoot += this.remoteFileUrlSuffix_baidu;
+        } else if (WechatAPI.isUC) {
+            debug.pureFileDownloadRoot += this.remoteFileUrlSuffix_uc;
         }
 
         debug.pipDownloadUrl = debug.pureFileDownloadRoot + this.pipDownloadPath + this.clientVersion + ".txt";

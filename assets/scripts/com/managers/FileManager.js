@@ -13,18 +13,16 @@ cc.Class({
         _loadCache: [],
     },
 
-    ctor: function() {
+    ctor: function () {
         this._loadCache = [];
         this._currentDownloadings = [];
         this._currentSavings = [];
 
-        if (WechatAPI.isWx) {
-            this._fs = WechatAPI.getWx().getFileSystemManager();
-        } else if (WechatAPI.isOppo) {
-            this._fs = qg.getFileSystemManager();
-        } else if (WechatAPI.isTT) {
-            this._fs = tt.getFileSystemManager();
+        if (typeof  wx.getFileSystemManager=="function") {
+            //WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu  MZ
+            this._fs = wx.getFileSystemManager();
         }
+
     },
 
     //encoding默认为ArrayBuffer 
@@ -60,7 +58,7 @@ cc.Class({
     //     }
     // },
 
-    loadRemoteTxtFile: function(url, cb, caller) {
+    loadRemoteTxtFile: function (url, cb, caller) {
         if (WechatAPI.isApp) {
             //Cocos的api太垃圾了，改用原生的。 下载后得到的是arraybuffer
             //需要解码。uft8和unicode的解码方式不同，ansi的暂时不支持
@@ -76,7 +74,7 @@ cc.Class({
             let readAsUtf8 = true;
 
             var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
+            xhr.onreadystatechange = function () {
                 debug.log("xhr.readyState  " + xhr.readyState);
                 debug.log("xhr.status  " + xhr.status);
                 if (xhr.readyState === 4) {
@@ -106,11 +104,21 @@ cc.Class({
             debug.log("xhr.send");
             return;
         }
-        this.downloadFile(url, function(path) {
-            debug.log("download ok " + url);
+
+        if (WechatAPI.isUC) {
+            cc.loader.load(url, function (err, content) {
+                console.log("web下载文本");
+                console.log(arguments);
+                cb.call(caller, content);
+            });
+            return;
+        }
+
+        this.downloadFile(url, function (path) {
+            debug.log("downlsoad ok " + url);
             if (path) {
                 debug.log(path);
-                cc.loader.load(path, function(err, content) {
+                cc.loader.load(path, function (err, content) {
                     //debug.log("loadRemoteTxtFile ok " + content);
                     cb.call(caller, content);
                 });
@@ -120,7 +128,7 @@ cc.Class({
         }, this);
     },
 
-    convertPathRemoveDirectory: function(path) {
+    convertPathRemoveDirectory: function (path) {
         if (!WechatAPI.isEnabled() || path == null) {
             return "";
         }
@@ -130,10 +138,8 @@ cc.Class({
         path = path.replace(/\//g, '__');
 
         let root = "customRoot";
-        if (WechatAPI.isWx || WechatAPI.isTT) {
+        if (WechatAPI.isWx || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isOppo || WechatAPI.isUC || WechatAPI.isMZ) {
             root = wx.env.USER_DATA_PATH;
-        } else if (WechatAPI.isOppo) {
-            root = qg.env.USER_DATA_PATH;
         } else if (WechatAPI.isVivo) {
             root = 'internal://files';
         } else if (WechatAPI.isApp) {
@@ -143,7 +149,7 @@ cc.Class({
         return root + '/' + path;
     },
 
-    isValidCommonSuffix: function(s) {
+    isValidCommonSuffix: function (s) {
         //debug.log("fm isValidCommonSuffix " + s);
         let index = s.indexOf('.');
         if (index == -1) {
@@ -165,7 +171,7 @@ cc.Class({
         return true;
     },
 
-    getSuffixFromPath: function(path) {
+    getSuffixFromPath: function (path) {
         let index = path.lastIndexOf('.');
         if (index < 0) {
             return "";
@@ -175,23 +181,23 @@ cc.Class({
     },
 
     //判断一个文件是否存在，后缀名必须一致,由于图片文件可能不明确后缀名，请用hasImageFile
-    hasFile: function(url, callback, caller) {
+    hasFile: function (url, callback, caller) {
         //debug.log("fm hasFile " + url);
         if (WechatAPI.isEnabled()) {
             let localPath = this.convertPathRemoveDirectory(url);
-            let sucCb = function() {
+            let sucCb = function () {
                 debug.warn('file exsit: ' + localPath);
                 if (callback && caller) {
                     callback.call(caller, localPath);
                 }
             };
-            let failCb = function() {
+            let failCb = function () {
                 debug.warn('file unexsit: ' + localPath);
                 if (callback && caller) {
                     callback.call(caller);
                 }
             };
-            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT) {
+            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC|| WechatAPI.isMZ) {
                 this._fs.access({
                     path: localPath,
                     success: sucCb,
@@ -223,54 +229,60 @@ cc.Class({
     //判断一个文件是否存在，url不带后缀名，模糊判断jpg jpeg png三种后缀名
     //根据出现频率，优先判断png
     //返回一个可能补充加了有效后缀的文件名
-    hasImageFile: function(url, callback, caller) {
+    hasImageFile: function (url, callback, caller) {
         //debug.log("fm hasImageFile " + url);
         let self = this;
-        let sucCb = function(param) {
+        let sucCb = function (param) {
             //debug.warn('ImageFile exsit: ' + param);
             if (callback && caller) {
                 callback.call(caller, param);
             }
         }
-        let failCb = function(param) {
+        let failCb = function (param) {
             debug.warn('ImageFile unexsit: ' + param);
             if (callback && caller) {
                 callback.call(caller);
             }
         }
 
+        if (WechatAPI.isUC) {
+            failCb(path);
+            return;
+        }
+
         if (WechatAPI.isEnabled()) {
             let localPath = this.convertPathRemoveDirectory(url);
+
             let path = localPath;
-            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT) {
+            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC|| WechatAPI.isMZ) {
                 self._fs.access({
                     path: path,
-                    success: function(res) {
+                    success: function (res) {
                         sucCb(path);
                     },
 
-                    fail: function(res) {
+                    fail: function (res) {
                         path = localPath + ".png";
                         self._fs.access({
                             path: path,
-                            success: function(res) {
+                            success: function (res) {
                                 sucCb(path);
                             },
-                            fail: function(res) {
+                            fail: function (res) {
                                 path = localPath + ".jpg";
                                 self._fs.access({
                                     path: path,
-                                    success: function(res) {
+                                    success: function (res) {
                                         sucCb(path);
                                     },
-                                    fail: function(res) {
+                                    fail: function (res) {
                                         path = localPath + ".jpeg";
                                         self._fs.access({
                                             path: path,
-                                            success: function(res) {
+                                            success: function (res) {
                                                 sucCb(path);
                                             },
-                                            fail: function(res) {
+                                            fail: function (res) {
                                                 failCb(path);
                                             }
                                         });
@@ -339,7 +351,7 @@ cc.Class({
         }
     },
 
-    downloadFile: function(url, callback, caller) {
+    downloadFile: function (url, callback, caller) {
         if (url == null || url === "") {
             debug.warn("fm downloadFile invalid url:" + url);
             if (callback && caller) {
@@ -356,7 +368,7 @@ cc.Class({
                 let downloadCb = {
                     url: url,
 
-                    success: function(res) {
+                    success: function (res) {
                         let tempFilePath = res.tempFilePath;
                         if (tempFilePath == null || tempFilePath === "") {
                             debug.log("fm downloadFile " + url + " no tempFilePath");
@@ -367,22 +379,31 @@ cc.Class({
                         }
                     },
 
-                    fail: function(res) {
+                    fail: function (res) {
                         debug.warn("fm downloadFile fail");
                         debug.log(res);
                         self.onDownloadCallback(url);
                     }
                 };
-                if (WechatAPI.isWx) {
+
+                if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC|| WechatAPI.isMZ) {
                     wx.downloadFile(downloadCb);
                 } else if (WechatAPI.isVivo) {
                     qg.download(downloadCb);
-                } else if (WechatAPI.isOppo) {
-                    qg.downloadFile(downloadCb);
-                } else if (WechatAPI.isTT) {
-                    tt.downloadFile(downloadCb);
                 } else if (WechatAPI.isApp) {
                     debug.log("不要这样使用jsb的下载 直接使用downloadAndSaveFile 或 loadRemoteTxtFile");
+                    // wx.downloadFile(downloadCb);
+                } else {
+                    cc.loader.load(downloadCb.url, function (err, content) {
+                        debug.log("web下载");
+                        debug.log(err);
+                        debug.log(content);
+                        if (err == null) {
+                            downloadCb.success(content);
+                        } else {
+                            downloadCb.fail(content);
+                        }
+                    });
                 }
 
             } else {
@@ -397,7 +418,7 @@ cc.Class({
 
     //保存文件，callback传递的参数如果保存成功就是保存后的文件路径，否则是tempFilePath
     //返回一个可能补充加了有效后缀的文件名
-    saveFile: function(url, tempFilePath, callback, caller) {
+    saveFile: function (url, tempFilePath, callback, caller) {
         if (!WechatAPI.isEnabled()) {
             return;
         }
@@ -432,15 +453,15 @@ cc.Class({
             //不需要回调，只是占个坑
             this.addSaveCallback(url, callback, caller);
 
-            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT) {
+            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu|| WechatAPI.isMZ) {
                 this._fs.saveFile({
                     tempFilePath: tempFilePath,
                     filePath: localPath,
-                    success: function(res) {
+                    success: function (res) {
                         debug.log('fm saveFile ' + localPath + ' ok ' + tempFilePath);
                         self.onSaveCallback(url, localPath);
                     },
-                    fail: function(res) {
+                    fail: function (res) {
                         debug.log('fm saveFile ' + localPath + ' fail ' + tempFilePath);
                         self.onSaveCallback(url, tempFilePath);
                     }
@@ -449,15 +470,18 @@ cc.Class({
                 qg.copyFile({
                     srcUri: tempFilePath,
                     dstUri: localPath,
-                    success: function(uri) {
+                    success: function (uri) {
                         console.log(`copy success: ${uri}`);
                         self.onSaveCallback(url, localPath);
                     },
-                    fail: function(data, code) {
+                    fail: function (data, code) {
                         console.log(`handling fail, code = ${code}`);
                         self.onSaveCallback(url, tempFilePath);
                     }
                 })
+            } else {
+                //|| WechatAPI.isUC??
+                self.onSaveCallback(url, tempFilePath);
             }
 
         }
@@ -466,14 +490,14 @@ cc.Class({
     },
 
     //优先使用保存后的文件 防止苹果报错
-    downloadAndSaveFile: function(url, callback, caller) {
+    downloadAndSaveFile: function (url, callback, caller) {
         if (WechatAPI.isApp) {
             let localPath = this.convertPathRemoveDirectory(url);
             var downloader = new jsb.Downloader();
-            downloader.setOnFileTaskSuccess(function() {
+            downloader.setOnFileTaskSuccess(function () {
                 callback && callback.call(caller, localPath);
             });
-            downloader.setOnTaskError(function() {
+            downloader.setOnTaskError(function () {
                 //文件下载失败
                 callback && callback.call(caller);
             });
@@ -481,7 +505,7 @@ cc.Class({
             return;
         }
 
-        this.downloadFile(url, function(res) {
+        this.downloadFile(url, function (res) {
             this.saveFile(url, res, callback, caller);
         }, this);
     },
@@ -496,7 +520,7 @@ cc.Class({
      * doneTraitment.failSpriteFrame: 失败时要显示的SpriteFrame
      * doneTraitment.param: doneTraitment.callback的第3个参数，第1个参数固定为loadedSpriteFrame 第2个参数固定为targetSprite
      */
-    applySpriteSafe: function(resUrl, targetSprite, doneTraitment, isSilent = true, timeout = 5) {
+    applySpriteSafe: function (resUrl, targetSprite, doneTraitment, isSilent = true, timeout = 5) {
         if (targetSprite == null) {
             return;
         }
@@ -506,7 +530,7 @@ cc.Class({
         if (doneTraitment.autoApply == null) {
             doneTraitment.autoApply = true;
         }
-        this.loadResourceSafe(resUrl, cc.SpriteFrame, function(loadedSpriteFrame) {
+        this.loadResourceSafe(resUrl, cc.SpriteFrame, function (loadedSpriteFrame) {
             if (targetSprite == null || targetSprite.node == null) {
                 return;
             }
@@ -533,7 +557,7 @@ cc.Class({
      * 加载成功，失败，超时，抛出异常都可以执行回调函数
      * 理论上也可以加载其他cocos类型，但不保证安全性
      */
-    loadResourceSafe: function(resUrl, ccType, callback, caller, isSilent = false, fixedTimeout) {
+    loadResourceSafe: function (resUrl, ccType, callback, caller, isSilent = false, fixedTimeout) {
         //debug.log("loadResourceSafe " + resUrl);
 
         let timeoutTime = 10;
@@ -552,7 +576,7 @@ cc.Class({
         let len = this._loadCache.length;
         this._loadCache[len] = false;
         try {
-            let cb = function(err, res) {
+            let cb = function (err, res) {
                 try {
                     if (!self._loadCache[len]) {
                         self._loadCache[len] = true;
@@ -604,7 +628,7 @@ cc.Class({
 
         if (isSilent === true) {
             appContext.getTaskManager().addTask(timeoutTime,
-                function() {
+                function () {
                     this._loadCache[len] = true;
                     if (callback != null) {
                         callback.call(caller);
@@ -613,13 +637,13 @@ cc.Class({
                     this.clearCocosCacheBrute();
                 },
                 this,
-                function() {
+                function () {
                     return this._loadCache[len];
                 },
                 this);
         } else {
             appContext.getTaskManager().addWaitingTask(timeoutTime,
-                function() {
+                function () {
                     this._loadCache[len] = true;
                     appContext.getDialogManager().hideWaitingCircle();
                     if (callback != null) {
@@ -629,7 +653,7 @@ cc.Class({
                     this.clearCocosCacheBrute();
                 },
                 this,
-                function() {
+                function () {
                     return this._loadCache[len];
                 },
                 this);
@@ -640,7 +664,7 @@ cc.Class({
      * 和loadResourceSafe相似，可以指定固定的超时时间，不显示等待转圈
      * 适用于一开始有进度条的加载，以及不应该让用户无法操作的下载
      */
-    loadResourceSafeSlient: function(resUrl, ccType, callback, caller, fixedTimeout = 12) {
+    loadResourceSafeSlient: function (resUrl, ccType, callback, caller, fixedTimeout = 12) {
         this.loadResourceSafe(resUrl, ccType, callback, caller, true, fixedTimeout);
     },
 
@@ -650,7 +674,7 @@ cc.Class({
             return;
         }
 
-        var saveFile = function() {};
+        var saveFile = function () { };
         if (window.jsb == null) {
             debug.log("加载远程图片，不是原生平台!!");
             callback(null);
@@ -686,7 +710,7 @@ cc.Class({
                 return;
             }
 
-            saveFile = function(data) {
+            saveFile = function (data) {
                 if (typeof data != 'null') {
                     if (!jsb.fileUtils.isDirectoryExist(dirpath)) {
 
@@ -709,7 +733,7 @@ cc.Class({
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
+        xhr.onreadystatechange = function () {
             debug.log("xhr.readyState  " + xhr.readyState);
             debug.log("xhr.status  " + xhr.status);
             if (xhr.readyState === 4) {
@@ -729,7 +753,7 @@ cc.Class({
         debug.log("xhr.send");
     },
 
-    isDownloading: function(url) {
+    isDownloading: function (url) {
         let pCallbacks = this._currentDownloadings[url];
         if (pCallbacks == null || pCallbacks.length == null || pCallbacks.length < 1) {
             return false;
@@ -738,7 +762,7 @@ cc.Class({
         return true;
     },
 
-    isSaving: function(url) {
+    isSaving: function (url) {
         let pCallbacks = this._currentSavings[url];
         if (pCallbacks == null || pCallbacks.length == null || pCallbacks.length < 1) {
             return false;
@@ -747,7 +771,7 @@ cc.Class({
         return true;
     },
 
-    addDownloadCallback: function(url, callback, caller) {
+    addDownloadCallback: function (url, callback, caller) {
         if (this._currentDownloadings[url] == null) {
             this._currentDownloadings[url] = [];
         }
@@ -758,7 +782,7 @@ cc.Class({
         this._currentDownloadings[url].push(pCallback);
     },
 
-    addSaveCallback: function(path, callback, caller) {
+    addSaveCallback: function (path, callback, caller) {
         if (this._currentSavings[path] == null) {
             this._currentSavings[path] = [];
         }
@@ -769,7 +793,7 @@ cc.Class({
         this._currentSavings[path].push(pCallback);
     },
 
-    onDownloadCallback: function(url, res) {
+    onDownloadCallback: function (url, res) {
         if (!this.isDownloading(url)) {
             return;
         }
@@ -801,13 +825,13 @@ cc.Class({
         this._currentSavings[url] = null;
     },
 
-    clearCocosCacheBrute: function() {
+    clearCocosCacheBrute: function () {
         if (cc.loader._cache != null) {
             cc.loader._cache = [];
         }
     },
 
-    releaseCocosCache: function(res, url) {
+    releaseCocosCache: function (res, url) {
         if (!res && !url) {
             return;
         }

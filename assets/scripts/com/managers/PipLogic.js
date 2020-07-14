@@ -123,47 +123,6 @@ cc.Class({
 
         //头条微信现在都不再下载推广配置，改为直接在代码中写
         return;
-
-        debug.log("download promo " + debug.promoDataDownloadUrl);
-        let lm = this.lm;
-
-        let self = this;
-        let promoPath;
-        // promoPath = debug.promoDataDownloadUrl + '?mcachenum=' + Date.parse(new Date());
-        promoPath = debug.promoDataDownloadUrl + '?mcachenum=' + Date.parse(new Date());
-        appContext.getFileManager().loadRemoteTxtFile(promoPath,
-            function (content) {
-                if (content == null) {
-                    debug.log("promo null");
-
-                    //self.exit();
-                    return;
-                }
-
-                try {
-                    debug.log("download promo ok");
-
-                    let json = JSON.parse(content);
-                    debug.log(json);
-                    if (json == null) {
-                        debug.log("promo parse error");
-                        //self.exit();
-                        return;
-                    }
-
-                    debug.promoInfo = json;
-                    if (WechatAPI.isTT) {
-                        WechatAPI.setTTAppLaunchOptions();
-                    }
-
-                    //self.exit();
-                } catch (e) {
-                    debug.log("promo exception");
-                    debug.log(e);
-                    // self.exit();
-                }
-            },
-        );
     },
 
     downloadCfg: function () {
