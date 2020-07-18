@@ -18,7 +18,7 @@ cc.Class({
         this._currentDownloadings = [];
         this._currentSavings = [];
 
-        if (typeof  wx.getFileSystemManager=="function") {
+        if (typeof wx.getFileSystemManager == "function") {
             //WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu  MZ
             this._fs = wx.getFileSystemManager();
         }
@@ -197,7 +197,7 @@ cc.Class({
                     callback.call(caller);
                 }
             };
-            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC|| WechatAPI.isMZ) {
+            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC || WechatAPI.isMZ) {
                 this._fs.access({
                     path: localPath,
                     success: sucCb,
@@ -254,7 +254,7 @@ cc.Class({
             let localPath = this.convertPathRemoveDirectory(url);
 
             let path = localPath;
-            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC|| WechatAPI.isMZ) {
+            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC || WechatAPI.isMZ) {
                 self._fs.access({
                     path: path,
                     success: function (res) {
@@ -386,7 +386,7 @@ cc.Class({
                     }
                 };
 
-                if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC|| WechatAPI.isMZ) {
+                if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC || WechatAPI.isMZ) {
                     wx.downloadFile(downloadCb);
                 } else if (WechatAPI.isVivo) {
                     qg.download(downloadCb);
@@ -453,7 +453,7 @@ cc.Class({
             //不需要回调，只是占个坑
             this.addSaveCallback(url, callback, caller);
 
-            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu|| WechatAPI.isMZ) {
+            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isMZ) {
                 this._fs.saveFile({
                     tempFilePath: tempFilePath,
                     filePath: localPath,

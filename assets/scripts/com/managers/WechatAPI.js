@@ -39,7 +39,7 @@ let WechatAPI = {
 
         if (window.qg) {
             window.wx = window.qg;
-
+            // mz?
             if (debug.platformOppo) {
                 console.log("isOppo");
                 this.initYXSDK();
@@ -72,7 +72,11 @@ let WechatAPI = {
 
                 let oppOpackageName = "submarine.xplay.kyx.nearme.gamecenter";
                 let oppAppid = "30154796";
-
+                // 炸潜艇H5-激励视频ID: 108240 
+                // 炸潜艇H5-原生ID: 108239
+                // 炸潜艇H5-开屏ID: 108237 
+                // 炸潜艇H5-插屏ID: 108236
+                // 炸潜艇H5-bannerID: 108235
                 //需要获取用户信息才登录
                 //YXSDK initAdService包含在里面，login是登陆的功能需要自己写 所以如果不需要用户信息就不用执行下面了
                 if (!this.isYX) {
@@ -138,22 +142,23 @@ let WechatAPI = {
                 console.log("isMeizu");
                 this.isMZ = true;
                 if (typeof (mz_jsb) != "undefined") {
-                    console.log("魅族有");
-                    this.hasMZ = true;
+                    console.log("魅族有mz");
+                    window.wx = window.qg;
+                    console.log(window.wx);
+                    console.log(window.mz);
                 } else {
-                    console.log("魅族无");
-                    this.hasMZ = false;
+                    console.log("魅族无mz");
+                    this.isMZ = false;
                 }
-                //window.wx = window.mz;
-                window.wx = window.qg;
+
                 //大坑爹：魅族的本地化字段是mz，广告的是qg 声音是qg
                 // packageName: "com.feilu.zqt",
                 let BannerAdUtil_mz = require("BannerAdUtil_mz");
                 this.bannerAdUtil = new BannerAdUtil_mz();
                 let VideoAdUtil_mz = require("VideoAdUtil_mz");
                 this.videoAdUtil = new VideoAdUtil_mz();
-                let InterstitialAdUtil_mz = require("InterstitialAdUtil_mz");
-                this.interstitialAdUtil = new InterstitialAdUtil_mz();
+                // let InterstitialAdUtil_mz = require("InterstitialAdUtil_mz");
+                // this.interstitialAdUtil = new InterstitialAdUtil_mz();
 
                 this.initAdUtils();
             } else {
@@ -204,7 +209,7 @@ let WechatAPI = {
                 let InterstitialAdUtil_tt = require("InterstitialAdUtil_tt");
                 this.interstitialAdUtil = new InterstitialAdUtil_tt();
 
-                tt.showShareMenu({
+                wx.showShareMenu({
                     withShareTicket: true,
                 });
                 this.shareUtil = require("TtShare");
@@ -226,6 +231,33 @@ let WechatAPI = {
                 });
 
                 this.shareUtil = require("WxShare");
+
+                WechatAPI.wxPromo = {};
+                WechatAPI.wxPromo.ready = false;
+                if (typeof wx.createGamePortal == "function") {
+                    WechatAPI.wxPromo.portal = wx.createGamePortal({
+                        adUnitId: "PBgAAeySGo7XS9rw",
+                        success: function (res) {
+                            console.log(res);
+                        },
+                        fail: function (res) {
+                            console.log(res);
+                        }
+                    });
+                    WechatAPI.wxPromo.portal.onLoad(
+                        function () {
+                            WechatAPI.wxPromo.ready = true;
+                        });
+                    WechatAPI.wxPromo.portal.onClose(
+                        function () {
+                            WechatAPI.wxPromo.ready = false;
+                            WechatAPI.wxPromo.portal.load();
+                        });
+
+                    WechatAPI.wxPromo.portal.load();
+
+                }
+
                 // if (typeof wx.onMemoryWarning == "function") {
                 //     wx.onMemoryWarning(function(res) {
                 //         WechatAPI.GC();
@@ -278,6 +310,98 @@ let WechatAPI = {
             } else {
                 console.log("不存在UpdateManager");
             }
+        } else if (debug.platformBaidu) {
+            console.log("isBaidu");
+            this.isBaidu = true;
+            window.wx = window.swan;
+            this.ttRecorder.setup();
+
+            let BannerAdUtil_baidu = require("BannerAdUtil_baidu");
+            this.bannerAdUtil = new BannerAdUtil_baidu();
+            let VideoAdUtil_baidu = require("VideoAdUtil_baidu");
+            this.videoAdUtil = new VideoAdUtil_baidu();
+            let InterstitialAdUtil_baidu = require("InterstitialAdUtil_baidu");
+            this.interstitialAdUtil = new InterstitialAdUtil_baidu();
+
+            this.initAdUtils();
+
+            this.showAnyPromotion = function (barOrTip = false) {
+                if (typeof swan.showFavoriteGuide == "function" && Math.random() < 0.5) {
+                    swan.showFavoriteGuide({
+                        type: barOrTip ? 'bar' : 'tip',
+                        content: '一键添加到我的小程序',
+                        success: res => {
+                            console.log('添加成功：', res);
+                        },
+                        fail: err => {
+                            console.log('添加失败：', err);
+                        }
+                    });
+                } else if (typeof swan.showAddToDesktopGuid == "function") {
+                    swan.showAddToDesktopGuide({
+                        type: barOrTip ? 'bar' : 'tip',
+                        content: '一键添加到我的桌面',
+                        success: res => {
+                            console.log('添加成功：', res);
+                        },
+                        fail: err => {
+                            console.log('添加失败：', err);
+                        }
+                    })
+                }
+
+            };
+
+            // let ratio = WechatAPI.deviceManager.getPixelRatio(); //0.33
+            // let gameSize = WechatAPI.deviceManager.getCanvasSize(); //w640 h 1386
+
+            // 创建按钮
+            // WechatAPI.recommendationButton = swan.createRecommendationButton({
+            //     type: 'list',
+            //     style: {
+            //         left: gameSize.width * ratio - 85 * ratio,
+            //         top: gameSize.height * 0.5 * ratio + 20 * ratio,
+            //     }
+            // });
+            this.enableShare = true;
+            this.shareUtil = require("TtShare");
+
+        } else if (debug.platformUC) {
+            console.log("isUC");
+
+            this.isUC = true;
+            window.wx = window.uc;
+            //console.log(uc);
+            // this.ttRecorder.setup();
+
+            let BannerAdUtil_uc = require("BannerAdUtil_uc");
+            this.bannerAdUtil = new BannerAdUtil_uc();
+            let VideoAdUtil_uc = require("VideoAdUtil_uc");
+            this.videoAdUtil = new VideoAdUtil_uc();
+            let InterstitialAdUtil_uc = require("InterstitialAdUtil_uc");
+            this.interstitialAdUtil = new InterstitialAdUtil_uc();
+
+            this.initAdUtils();
+
+            this.enableShare = true;
+            this.shareUtil = require("TtShare");
+
+            uc.getLaunchOptionsSync({
+                success: res => {
+                    console.log('getLaunchOptionsSync success', JSON.stringify(res));
+                    /**
+                     *	query存在的情况下为
+                     * {
+                     *		query: "key1%3Dval1%26key2%3Dval2"
+                     * }
+                     * 不存在为空字符串
+                     */
+                    WechatAPI.wxOnShow(res);
+                },
+                fail: err => {
+                    console.log('getLaunchOptionsSync fail', JSON.stringify(err));
+                },
+            });
         }
 
         if (this.isEnabled()) {
@@ -987,9 +1111,12 @@ let WechatAPI = {
         }
         //vibrateLong()
         if (typeof wx.vibrateShort == "function") {
-            wx.vibrateShort();
-        } if (this.hasMZ && typeof mz.vibrateShort == "function") {
-            mz.vibrateShort();
+            if (this.isMZ) {
+                wx.vibrateShort({});//效果特别差
+            } else {
+                wx.vibrateShort();
+            }
+
         } else if (window.navigator && typeof window.navigator.vibrate == "function") {
             window.navigator.vibrate(15);
         } else if (this.isApp) {

@@ -29,7 +29,7 @@ cc.Class({
         this._ad.onError(WechatAPI.videoAdUtil.onError);
         this._ad.onClose(function (res) {
             // debug.log("魅族貌似没有可能播放中途退出");
-            debug.log("点击关闭广告");
+            debug.log("mz 点击关闭广告");
             self.onFinish();
             self.updateCb();
         });
@@ -39,7 +39,7 @@ cc.Class({
             self.updateCb();
         });
         this._ad.onLoad(function () {
-            debug.log("拉取视频广告ok");
+            debug.log("mz拉取视频广告ok");
             self.onCanPlay();
             if (self.playAfterLoad) {
                 self.show();

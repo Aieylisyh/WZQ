@@ -28,10 +28,10 @@ cc.Class({
 
         this._ad.onError(this.onError);
         this._ad.onLoad(this.onLoad);
-        this._ad.onShow(function() {
-            //  WechatAPI.interstitialAdUtil.reload();
-            self._ad.load();
-        });
+        // this._ad.onShow(function() {
+        //     //  WechatAPI.interstitialAdUtil.reload();
+        //     self._ad.load();
+        // });
 
         this._ad.onClose(()=>{
             debug.log('mz int closed!');
