@@ -1,6 +1,7 @@
 let LoginState = require("LoginState");
 let SequenceStateMachine = require("SequenceStateMachine");
 let PipLogic = require('PipLogic');
+const WechatAPI = require("./WechatAPI");
 // let StorageKey = require("StorageKey");
 // let StringUtil = require("StringUtil");
 // let DialogTypes = require("DialogTypes");
@@ -89,8 +90,10 @@ cc.Class({
     },
 
     enterStateDownloadPip: function () {
-        this.pipLogic.startDownloadPip();
-        debug.log("startDownloadPip");
+        if(WechatAPI.isTT){
+            this.pipLogic.startDownloadPip();
+            debug.log("startDownloadPip");
+        }
         // this.switchToState(LoginState.WxWaitAuthorize);
     },
 

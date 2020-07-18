@@ -440,7 +440,7 @@ let WechatAPI = {
         }
 
         appContext.getSoundManager().onShow();
-        WechatAPI.shareUtil.onShow();
+        WechatAPI.shareUtil && WechatAPI.shareUtil.onShow();
     },
 
     setTTAppLaunchOptions() {
@@ -448,9 +448,9 @@ let WechatAPI = {
 
         this.hasTTRawMoreGame = false;
         this.hasTTNewMoreGame = false;
-        if (typeof tt.createMoreGamesButton == 'function') {
-            if (typeof tt.showMoreGamesModal !== 'function' || WechatAPI.systemInfo.platform == 'ios' || WechatAPI.systemInfo.platform == 'iOS') {
-                this.hasTTRawMoreGame = true;
+        if (typeof wx.createMoreGamesButton == 'function') {
+            if (typeof wx.showMoreGamesModal !== 'function' || WechatAPI.systemInfo.platform == 'ios' || WechatAPI.systemInfo.platform == 'iOS') {
+                //this.hasTTRawMoreGame = true;
             } else {
                 this.hasTTNewMoreGame = true;
             }
@@ -480,7 +480,7 @@ let WechatAPI = {
         debug.log("!!ttAppLaunchOptions");
         debug.log(this.ttAppLaunchOptions);
 
-        if (this.isTTPoor) {
+        if (this.hasTTRawMoreGame) {
             this.createTTPoorBtn();
         }
 
@@ -496,7 +496,7 @@ let WechatAPI = {
         let ratio = WechatAPI.deviceManager.getPixelRatio(); //0.33
         let gameSize = WechatAPI.deviceManager.getCanvasSize(); //w640 h 1386
 
-        WechatAPI.PoorTTBtn = tt.createMoreGamesButton({
+        WechatAPI.PoorTTBtn = wx.createMoreGamesButton({
             type: "image",
             image: "customRes/more.png",
             style: {//-320
@@ -528,26 +528,6 @@ let WechatAPI = {
         WechatAPI.PoorTTBtn.hide();
         debug.log("创建PoorTTBtn");
         debug.log(WechatAPI.PoorTTBtn);
-
-        // tt.createMoreGamesButton({
-        //     type: "image",
-        //     image: "customRes/more.png",
-        //     style: {
-        //         left: 20 * 0.33,
-        //         top: 1136 * 0.5 + 320 * 0.33,
-        //         width: 72 * 0.33,
-        //         height: 72 * 0.33,
-        //         lineHeight: 40,
-        //         backgroundColor: "#ff0000",
-        //         textColor: "#ffffff",
-        //         textAlign: "center",
-        //         fontSize: 16,
-        //         borderRadius: 0,
-        //         borderWidth: 0,
-        //         borderColor: '#ff0000'
-        //     },
-        //     appLaunchOptions: [],
-        // });
     },
 
     initCloudDev() {
@@ -641,34 +621,13 @@ let WechatAPI = {
         if (caller == null) {
             caller = this;
         }
-        if (this.getWx().setClipboardData == null) {
+        if (typeof wx.setClipboardData != "function") {
             failCallback && failCallback.call(caller);
         }
 
-        if (this.isWx) {
+        if (this.isVivo) {
             wx.setClipboardData({
-                data: content,
-                success: function (res) {
-                    sucCallback && sucCallback.call(caller);
-                },
-
-                fail: function (res) {
-                    failCallback && failCallback.call(caller);
-                },
-            });
-        } else if (this.isVivo) {
-            qg.setClipboardData({
                 text: content,
-                success: function () {
-                    sucCallback && sucCallback.call(caller);
-                },
-                fail: function (res) {
-                    failCallback && failCallback.call(caller);
-                },
-            })
-        } else if (this.isOppo) {
-            qg.setClipboardData({
-                data: content,
                 success: function () {
                     sucCallback && sucCallback.call(caller);
                 },
@@ -678,15 +637,16 @@ let WechatAPI = {
             })
         } else if (this.isApp) {
             console.warn("copyToClipboard not implemented");
-        } else if (this.isTT) {
-            tt.setClipboardData({
+        } else {
+            wx.setClipboardData({
                 data: content,
-                success(res) {
+                success: function (res) {
                     sucCallback && sucCallback.call(caller);
                 },
-                fail(res) {
+
+                fail: function (res) {
                     failCallback && failCallback.call(caller);
-                }
+                },
             });
         }
     },
@@ -714,7 +674,7 @@ let WechatAPI = {
             qg.showToast({
                 message: title
             })
-        } else if (this.isMZ && hasMZ) {
+        } else if (this.isMZ) {
             mz.showToast({
                 message: title//https://shimo.im/docs/enni3mhvNyo5fZOm/read
             })
@@ -728,7 +688,7 @@ let WechatAPI = {
             return;
         }
 
-        if (this.isWx || this.isTT) {
+        if (this.isWx || this.isTT || this.isBaidu) {
             wx.showModal({
                 title: title,
 
@@ -788,7 +748,7 @@ let WechatAPI = {
                     console.log(`handling fail, code = ${code}`)
                 }
             })
-        } else if (this.isOppo || this.isApp) {
+        } else {
             let info = {
                 content: title + "\n\n" + content,
                 btn1: {
@@ -837,14 +797,14 @@ let WechatAPI = {
             return;
         }
 
-        if (this.isWx || this.isTT) {
-            this.getWx().setStorage({
+        if (this.isWx || this.isTT || this.isBaidu) {
+            wx.setStorage({
                 key: storageKey,
 
                 data: storageData,
             });
         } else if (this.isVivo) {
-            this.getWx().setStorage({
+            wx.setStorage({
                 key: storageKey,
 
                 value: storageData,

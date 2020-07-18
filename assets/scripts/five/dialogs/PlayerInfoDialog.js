@@ -345,7 +345,7 @@ cc.Class({
     // 点击"分享"按钮
     onClickBtnShare: function () {
         appContext.getSoundManager().playBtn();
-        WechatAPI.shareUtil.share();
+        WechatAPI.shareUtil && WechatAPI.shareUtil.share();
     },
 
     onHideFunc() {

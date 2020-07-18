@@ -84,7 +84,7 @@ cc.Class({
         debug.log(info);
         this.hasShareReward = true;
         appContext.getSoundManager().playStartRound();
-        WechatAPI.shareUtil.setShareVideoCB();
+        WechatAPI.shareUtil && WechatAPI.shareUtil.setShareVideoCB();
         this.fadeInBackground();
         this.info = info;
         this.step = 1;
