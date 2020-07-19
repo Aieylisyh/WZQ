@@ -90,7 +90,7 @@ cc.Class({
         if (this.toSaveUserInfo) {
             this.toSaveUserInfo = false;
             if (this.userInfo) {
-                WechatAPI.setStorageSync(StorageKey.UserInfo, this.userInfo);
+                WechatAPI.setStorageSync(StorageKey.UserInfo, JSON.stringify(this.userInfo));
             }
         }
     },
@@ -257,7 +257,7 @@ cc.Class({
     createRawUserInfo() {
         return {
             basic: {
-                nickname: "我",
+                nickname: this.getRawNickname(),
                 sex: 1,//0 female, 1 male
                 headIconUrl: null,
                 headIconPath: null,//prior
@@ -275,11 +275,18 @@ cc.Class({
         };
     },
 
+    getRawNickname() {
+        let aPool = ["暖暖", "机智", "非凡", "酷酷"];
+        let bPool = ["战士", "隐士", "法师", "伯爵"];
+        let a = aPool[Math.floor(Math.random() * aPool.length)];
+        let b = bPool[Math.floor(Math.random() * bPool.length)];
+        return a + "的" + b;
+    },
+
     getUserInfo: function () {
         let userInfo = WechatAPI.getStorageSync(StorageKey.UserInfo);
-        debug.log("!!getUserInfo");
-        debug.log(userInfo);
-        if (userInfo == null || userInfo == "") {
+
+        if (userInfo == null || userInfo == "" || userInfo == {}) {
             userInfo = this.createRawUserInfo();
             this.saveUserInfo(userInfo);
         }

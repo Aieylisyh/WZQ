@@ -26,10 +26,10 @@ cc.Class({
     show: function () {
         this.setCharacterAttribute();
         this.playerinfo.setup(appContext.getUxManager().getUserInfo(), true);
-        if (!WechatAPI.enableShare) {
-            this.shareBtn.active = false;
+        if (WechatAPI.enableShare) {
+            this.shareBtn.active = true;
         }
-        
+
         this.fadeInBackground();
         this.fastShowAnim();
     },
@@ -292,14 +292,20 @@ cc.Class({
 
     uploadFile() {
         let self = this;
-        wx.chooseImage({
-            sourceType: ["album"],
-            count: 1,
+        if (typeof wx.chooseImage == "function") {
+            wx.chooseImage({
+                sourceType: ["album"],
+                count: 1,
 
-            success(res) {
-                self.onUploadFileOK(res.tempFilePaths[0]);
-            },
-        });
+                success(res) {
+                    self.onUploadFileOK(res.tempFilePaths[0]);
+                },
+            });
+        } else {
+            appContext.getDialogManager().showDialog(DialogTypes.Toast, "抱歉，您暂时不能上传头像");
+
+        }
+
     },
 
     onUploadFileOK(tempFilePath) {

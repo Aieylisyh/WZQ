@@ -58,9 +58,9 @@ cc.Class({
                 WechatAPI.PoorTTBtn.hide();
             }
 
-            
-        }else  if (WechatAPI.isMZ) {
-            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.hide();
+
+        } else if (WechatAPI.isMZ) {
+            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
         }
 
         this.resetRecordBtns();
@@ -74,7 +74,7 @@ cc.Class({
     },
 
     update(dt) {
-        if (WechatAPI.ttRecorder) {
+        if (WechatAPI.isTT && WechatAPI.ttRecorder) {
             let state = WechatAPI.ttRecorder.state;
 
             switch (state) {

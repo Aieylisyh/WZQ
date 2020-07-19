@@ -90,10 +90,10 @@ cc.Class({
     },
 
     enterStateDownloadPip: function () {
-        if(WechatAPI.isTT){
-            this.pipLogic.startDownloadPip();
-            debug.log("startDownloadPip");
-        }
+        this.pipLogic.startDownloadPip();
+        // if(WechatAPI.isTT){
+        //     this.pipLogic.startDownloadPip();
+        // }
         // this.switchToState(LoginState.WxWaitAuthorize);
     },
 
@@ -199,7 +199,7 @@ cc.Class({
         if (this.userInfoButton) {
             this.userInfoButton.destroy();
         }
-        debug.log("onLoginFinish");
+        debug.log("enterStateFinish onLoginFinish");
         appContext.getUxManager().onLoginFinish();
         appContext.getAppController().startListenWxOnShowParam(); //允许AppController自刷新启动参数
     },

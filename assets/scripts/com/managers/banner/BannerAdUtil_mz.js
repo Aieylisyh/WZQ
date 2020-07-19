@@ -1,4 +1,3 @@
-const WechatAPI = require("../../WechatAPI");
 
 cc.Class({
     extends: require("BannerAdUtil"),

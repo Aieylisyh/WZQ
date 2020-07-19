@@ -165,10 +165,15 @@ cc.Class({
         }
 
         if (s.length > 4) {
+            if (s !== ".jpeg") {
+                return false;
+            }
             return false;
         }
 
-        return true;
+        if (s.length < 3) {
+            return false;
+        }
     },
 
     getSuffixFromPath: function (path) {
@@ -439,11 +444,7 @@ cc.Class({
         let localPath = this.convertPathRemoveDirectory(url);
 
         //这里给图片加上了后缀名
-        if (!this.isValidCommonSuffix(this.getSuffixFromPath(localPath))) {
-            let suffix = this.getSuffixFromPath(tempFilePath);
-            //debug.log("fm getSuffixFromPath " + suffix);
-            localPath += suffix;
-        }
+        localPath = this.tryAddSuffix(localPath,".jpg");
 
         let self = this;
         if (this.isSaving(url)) {
@@ -458,11 +459,12 @@ cc.Class({
                     tempFilePath: tempFilePath,
                     filePath: localPath,
                     success: function (res) {
-                        debug.log('fm saveFile ' + localPath + ' ok ' + tempFilePath);
+                        debug.log('fm saveFile ' + localPath + '   ok   ' + tempFilePath);
                         self.onSaveCallback(url, localPath);
                     },
                     fail: function (res) {
-                        debug.log('fm saveFile ' + localPath + ' fail ' + tempFilePath);
+                        debug.log('fm saveFile ' + localPath + '   fail   ' + tempFilePath);
+                        debug.log(res);
                         self.onSaveCallback(url, tempFilePath);
                     }
                 });
@@ -668,6 +670,14 @@ cc.Class({
         this.loadResourceSafe(resUrl, ccType, callback, caller, true, fixedTimeout);
     },
 
+    tryAddSuffix(filepath, s = '.png') {
+        if (!this.isValidCommonSuffix(this.getSuffixFromPath(filepath))) {
+            filepath += s;
+        }
+        
+        return filepath;
+    },
+
     //暂时没有在用这个api
     loadRemoteImage(url, callback) {
         if (url == null || url == "") {
@@ -695,10 +705,7 @@ cc.Class({
                 return;
             }
             var filepath = dirpath + formatedFilename;
-
-            if (!this.isValidCommonSuffix(this.getSuffixFromPath(filepath))) {
-                filepath += '.png';
-            }
+            filepath = this.tryAddSuffix(filepath);
 
             debug.log("filepath ->" + filepath);
 

@@ -414,7 +414,7 @@ cc.Class({
             let gradeTo = this.gradeAndFillInfoTo.grade;
             if (gradeTo > 1 && gradeTo < 10) {
                 let deltaExp = this.gradeAndFillInfoTo.fillTop - this.info.toScore;
-                if (deltaExp < 200) {
+                if (deltaExp <= 200) {
                     let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
                     if (canWatchAd) {
                         this.btnFullfill.active = true;
