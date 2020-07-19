@@ -144,15 +144,12 @@ let WechatAPI = {
                 if (typeof (mz_jsb) != "undefined") {
                     console.log("魅族有mz");
                     window.wx = window.qg;
-                    console.log(window.wx);
-                    console.log(window.mz);
                 } else {
                     console.log("魅族无mz");
                     this.isMZ = false;
                 }
 
                 //大坑爹：魅族的本地化字段是mz，广告的是qg 声音是qg
-                // packageName: "com.feilu.zqt",
                 let BannerAdUtil_mz = require("BannerAdUtil_mz");
                 this.bannerAdUtil = new BannerAdUtil_mz();
                 let VideoAdUtil_mz = require("VideoAdUtil_mz");
@@ -192,9 +189,6 @@ let WechatAPI = {
             this.nativeAdUtil = wx.nativeAdUtil;
 
             this.initAdUtils();
-            debug.log(WechatAPI.videoAdUtil);
-            debug.log(WechatAPI.videoAdUtil.init);
-            debug.log("测试");
         } else if (debug.platformToutiao || window.wx) {
             if (debug.platformToutiao) {
                 this.isTT = true;
@@ -843,7 +837,7 @@ let WechatAPI = {
         }
     },
 
-    getStorageSync: function (storageKey, tryReadAsJSON = false, typeConvertRule) {
+    getStorageSync: function (storageKey, tryReadAsJSON = true, typeConvertRule) {
         if (!this.isEnabled()) {
             return null;
         }
@@ -884,8 +878,9 @@ let WechatAPI = {
         }
 
         try {
-            //debug.log(JSON.parse(info));
-            return JSON.parse(info);
+            if (tryReadAsJSON && typeof info == "string") {
+                return JSON.parse(info);
+            }
         } catch (e) {
             debug.log(e);
             return info;
