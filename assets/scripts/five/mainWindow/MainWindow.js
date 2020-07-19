@@ -22,8 +22,6 @@ cc.Class({
 
         promoPrefab: cc.Prefab,
 
-        btnPromo: cc.Node,
-
         house: cc.Sprite,
 
         housePuddingComp: require("Pudding"),
@@ -626,8 +624,6 @@ cc.Class({
             }
 
             if (WechatAPI.hasTTNewMoreGame && WechatAPI.systemInfo.platform != 'ios') {//ios不支持互跳
-                //this.btnPromo.active = false;
-
                 let hotObj = cc.instantiate(this.promoPrefab);
                 hotObj.parent = this.node;
                 hotObj.x = 265;

@@ -1,5 +1,6 @@
 let StringUtil = require("StringUtil");
 let LoginState = require("LoginState");
+let prefix = "images/smallModule/promott/";
 
 cc.Class({
     properties: {
@@ -28,6 +29,7 @@ cc.Class({
     startDownloadPip: function () {
         this.resetDownloadFinishTags();
         this.downloadPip(0);
+        this.downloadPromo();
     },
 
     next: function (index) {
@@ -108,7 +110,7 @@ cc.Class({
 
     downloadMisc() {
         try {
-            //this.downloadPromo();
+            this.downloadPromo();
             this.downloadCfg();
         } catch (e) {
             debug.warn("downloadPromo Cfg exception");
@@ -117,12 +119,41 @@ cc.Class({
     },
 
     downloadPromo: function () {
-        //if (WechatAPI.systemInfo.platform !== 'ios') {
-        //要测试ios是否支持 暂时对ios也采用这种方式
+        if (WechatAPI.isTT) {
+            debug.promoInfo = {
+                title: "时下热门",
+                list: [
+                    {
+                        name: "超级好玩",
+                        localImg: prefix + "ttae35d888311fdef4",
+                        appid: "ttae35d888311fdef4"
+                    },
+                    {
+                        name: "停不下来",
+                        localImg: prefix + "tta58bd3363aa1cb7f",
+                        appid: "tta58bd3363aa1cb7f"
+                    },
+                    {
+                        name: "休闲益智",
+                        localImg: prefix + "tt544422f9cb6e3a93",
+                        appid: "tt544422f9cb6e3a93"
+                    },
+                    {
+                        name: "她们在玩",
+                        localImg: prefix + "tt17ef615288c57025",
+                        appid: "tt17ef615288c57025"
+                    },
+                    {
+                        name: "帅哥都玩",
+                        localImg: prefix + "tt6d481bf5f2624129",
+                        appid: "tt6d481bf5f2624129"
+                    },
+                ]
+            };
 
+            WechatAPI.setTTAppLaunchOptions();
 
-        //头条微信现在都不再下载推广配置，改为直接在代码中写
-        return;
+        }
     },
 
     downloadCfg: function () {

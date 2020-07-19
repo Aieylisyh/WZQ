@@ -11,7 +11,7 @@ cc.Class({
         outLine: cc.LabelOutline,
     },
 
-    nav: function() {
+    nav: function () {
         if (WechatAPI.isTT) {
             debug.log(WechatAPI.ttAppLaunchOptions);
             if (WechatAPI.ttAppLaunchOptions != null) {
@@ -60,7 +60,7 @@ cc.Class({
         } else {
             let url = info.remoteImg;
             debug.log("!load remote promo img");
-            appContext.getFileManager().hasImageFile(url, function(res) {
+            appContext.getFileManager().hasImageFile(url, function (res) {
                 if (res) {
                     //console.log("!use existed img");
                     this.applyRemoteImg(res);
@@ -73,11 +73,7 @@ cc.Class({
 
         if (this.label) {
             if (this.isHot) {
-                if (this.isHotTT) {
-                    this.label.string = "更多游戏";
-                } else {
-                    this.label.string = "时下热门";
-                }
+                this.label.string = "时下热门";
 
                 this.label.node.scale = 0.65;
             }
@@ -93,11 +89,11 @@ cc.Class({
         this.navQuery = info.navQuery;
     },
 
-    downloadRemoteImg: function(url) {
+    downloadRemoteImg: function (url) {
         if (url == null || url == "") {
             return;
         } else {
-            appContext.getFileManager().downloadAndSaveFile(url, function(path) {
+            appContext.getFileManager().downloadAndSaveFile(url, function (path) {
                 if (path) {
                     this.applyRemoteImg(path, url);
                 }
@@ -105,10 +101,10 @@ cc.Class({
         }
     },
 
-    applyRemoteImg: function(path) {
+    applyRemoteImg: function (path) {
         let self = this;
 
-        cc.loader.load(path, function(err, tex) {
+        cc.loader.load(path, function (err, tex) {
             if (self.node == null || self.sprite == null) {
                 return;
             }
@@ -141,7 +137,6 @@ cc.Class({
     setHotStyleTT() {
         this.sequenceAutoChange();
         this.isHot = true;
-        this.isHotTT = true;
 
         if (this.outLine) {
             this.outLine.enabled = true;
@@ -155,7 +150,7 @@ cc.Class({
 
         let repeat = cc.repeatForever(
             cc.sequence(
-                cc.callFunc(function() {
+                cc.callFunc(function () {
                     this.change();
                 }, this),
                 cc.delayTime(t),
