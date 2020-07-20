@@ -102,6 +102,10 @@ cc.Class({
         this.giveReward();
         appContext.getUxManager().checkinProcess();
         this.refresh();
+
+        if (Math.random() > 0.25) {
+            WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.reload();
+        }
     },
 
     giveReward() {

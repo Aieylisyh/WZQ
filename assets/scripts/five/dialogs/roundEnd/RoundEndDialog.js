@@ -560,6 +560,9 @@ cc.Class({
         appContext.getSoundManager().playBtn();
         appContext.getAppController().clearGameData();
         appContext.getAppController().backToMain();
+        if (Math.random() > 0.25) {
+            WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.reload();
+        }
         this.hide();
     },
 
@@ -573,6 +576,9 @@ cc.Class({
         // gm.startGame();
         appContext.getAppController().backToMain();
         appContext.getDialogManager().showDialog(DialogTypes.Match);
+        if (Math.random() > 0.25) {
+            WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.reload();
+        }
     },
 
     getHasVideoToShare() {

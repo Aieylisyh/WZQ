@@ -5,19 +5,31 @@ cc.Class({
         id: "qbQElzIJ",
     },
 
-    isEnabled: function() {
-        if (!debug.extraSettings.hasIntAd) {
+    isEnabled: function () {
+        if (typeof wx.createInsertAd != "function") {
             return false;
         }
 
-        if (wx.getSystemInfoSync().platformVersionCode < 1064) {
+        if (WechatAPI.systemInfo.platformVersionCode < 1064) {
             return false;
         }
+
         return true;
     },
 
     customDestroy() {
         this._ad && this._ad.destroy && this._ad.destroy();
+    },
+
+    customReload() {
+        if (this._ad) {
+            debug.log('mz int reload!');
+            this._ad.load();
+            this._ad.show();
+        }else{
+            debug.log('mz int new!');
+            this.customCreate();
+        }
     },
 
     customCreate() {
@@ -29,13 +41,14 @@ cc.Class({
         this._ad.onError(this.onError);
         this._ad.onLoad(this.onLoad);
         // this._ad.onShow(function() {
-        //     //  WechatAPI.interstitialAdUtil.reload();
+        //     WechatAPI.interstitialAdUtil.reload();
         //     self._ad.load();
         // });
 
-        this._ad.onClose(()=>{
+        this._ad.onClose(() => {
             debug.log('mz int closed!');
         });
+        this._ad.show();
     },
 
     customShow() {
@@ -43,13 +56,11 @@ cc.Class({
     },
 
     onLoad() {
-        let self = WechatAPI.interstitialAdUtil;
-        debug.log('mz int loaded');
-        self._loaded = true;
-
-        if (self._ad && self._ad.offLoad) {
-            self._ad.offLoad(self.onLoad);
-        }
+        debug.log('mz int onloaded');
+        // if (self._ad && self._ad.offLoad) {
+        //     self._ad.offLoad(self.onLoad);
+        // }
+        //this._ad && this._ad.show();
     },
 
     customShowOnLoad() {
@@ -57,9 +68,8 @@ cc.Class({
         let self = WechatAPI.interstitialAdUtil;
         if (self._ad) {
             self._ad.offLoad(self.onLoadedDefault);
-            self._ad.onLoad(function() {
+            self._ad.onLoad(function () {
                 debug.log('mz customShowOnLoad onloadfunc');
-                self._loaded = true;
                 self._ad.show();
             });
         }

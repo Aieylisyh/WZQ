@@ -149,13 +149,12 @@ let WechatAPI = {
                     this.isMZ = false;
                 }
 
-                //大坑爹：魅族的本地化字段是mz，广告的是qg 声音是qg
                 let BannerAdUtil_mz = require("BannerAdUtil_mz");
                 this.bannerAdUtil = new BannerAdUtil_mz();
                 let VideoAdUtil_mz = require("VideoAdUtil_mz");
                 this.videoAdUtil = new VideoAdUtil_mz();
-                // let InterstitialAdUtil_mz = require("InterstitialAdUtil_mz");
-                // this.interstitialAdUtil = new InterstitialAdUtil_mz();
+                let InterstitialAdUtil_mz = require("InterstitialAdUtil_mz");
+                this.interstitialAdUtil = new InterstitialAdUtil_mz();
 
                 this.initAdUtils();
             } else {

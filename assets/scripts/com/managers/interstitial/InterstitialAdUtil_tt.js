@@ -7,9 +7,6 @@ cc.Class({
 
     isEnabled: function () {
         return false;
-        if (!debug.extraSettings.hasIntAd) {
-            return false;
-        }
         if (WechatAPI.systemInfo.appName == "Douyin") {
             return false;
         }

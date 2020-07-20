@@ -75,7 +75,6 @@ cc.Class({
                 fgRate: 25, //percentage chance to show fg(weapon)
                 lr: 0, //lureRate
                 nobanner: false,
-                hasIntAd: true,
                 protectionLevelLow: 2,
                 protectionLevelHigh: 4,
                 lureChestLevelTrigger1: 2,
