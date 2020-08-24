@@ -877,9 +877,8 @@ let WechatAPI = {
         }
 
         try {
-            if (tryReadAsJSON && typeof info == "string") {
-                return JSON.parse(info);
-            }
+            //debug.log(JSON.parse(info));
+            return JSON.parse(info);
         } catch (e) {
             debug.log(e);
             return info;

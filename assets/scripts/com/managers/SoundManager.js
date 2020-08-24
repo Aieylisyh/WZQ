@@ -17,7 +17,7 @@ cc.Class({
         appSoundManager: require("AppSoundManager"),
     },
 
-    start: function() {
+    start: function () {
         this.audioCache = [];
 
         this._isPlayBackgroundMusic = false;
@@ -28,18 +28,26 @@ cc.Class({
         }
     },
 
-    getSoundSFXFullPath: function(path) {
+    getSoundSFXFullPath: function (path) {
         // return debug.pureFileDownloadRoot + this.soundSfxUrl + path;
         return "customRes/sound/" + path;
     },
 
-    playSFX: function(path) {
+    checkMiniGameAPI() {
+        if (WechatAPI.isEnabled() && typeof window.wx.createInnerAudioContext == "function") {
+            return true;
+        }
+
+        return false;
+    },
+
+    playSFX: function (path) {
         if (!path) {
             debug.warn("playSFX bad path " + path);
             return;
         }
 
-        if (appContext.getGameSettingManager()._muteSound) {
+        if (appContext.getGameSettingManager().noSound) {
             return;
         }
 
@@ -48,7 +56,7 @@ cc.Class({
             return;
         }
 
-        if (WechatAPI.isEnabled() && wx.createInnerAudioContext != null) {
+        if (this.checkMiniGameAPI()) {
             if (this.audioCache[path] == null) {
                 this.audioCache[path] = [];
             }
@@ -75,11 +83,6 @@ cc.Class({
             if (!hasIdleAudio) {
                 //下载一次后不用再次下载
                 //debug.log("播放首次");
-                if (typeof window.wx.createInnerAudioContext != "function") {
-                    debug.log("!!createInnerAudioContext is not a function!!!");
-                    return;
-                }
-
                 let sfx = window.wx.createInnerAudioContext();
                 sfx.src = this.getSoundSFXFullPath(path);
                 sfx.loop = false;
@@ -91,10 +94,44 @@ cc.Class({
 
                 this.audioCache[path].push(sfx);
             }
+        } else {
+            this.playSFX_Cocos(path)
         }
     },
 
-    playExplode: function() {
+    playSFX_Cocos(path) {
+        if (this.audioCache[path] == null) {
+            this.audioCache[path] = [];
+        }
+
+        let hasIdleAudio = false;
+        for (let i in this.audioCache[path]) {
+            let audio = this.audioCache[path][i];
+            if (audio != null) {
+                if (!audio.isPlaying && audio.getDuration() > 0) {
+                    //audio.stop();
+                    audio.play();
+                    hasIdleAudio = true;
+                    break;
+                }
+            }
+        }
+
+        if (!hasIdleAudio) {
+            let self = this;
+
+            cc.loader.load(this.getSoundSFXFullPath(path), (err, audioClip) => {
+                var audioSource = self.addComponent(cc.AudioSource);
+                audioSource.clip = audioClip;
+                audioSource.play();
+
+                self.audioCache[path].push(audioSource);
+            });
+        }
+    },
+
+
+    playExplode: function () {
         let r = Math.random();
         if (r < 0.5) {
             this.playExplode1();
@@ -103,31 +140,31 @@ cc.Class({
         }
     },
 
-    playBtn: function() {
+    playBtn: function () {
         this.playSFX("ClickSimple" + this.soufix);
     },
 
-    playChess: function() {
+    playChess: function () {
         this.playSFX("clk" + this.soufix);
     },
 
-    playStartRound: function() {
+    playStartRound: function () {
         this.playSFX("ding" + this.soufix);
     },
 
-    playUseGold: function() {
+    playUseGold: function () {
         this.playSFX("use_gold" + this.soufix);
     },
 
     // 播放背景音乐
-    startBackgroundMusic: function() {
+    startBackgroundMusic: function () {
         if (WechatAPI.isApp && this.appSoundManager) {
             this.appSoundManager.startBackgroundMusic();
             return;
         }
 
         debug.log("start bg Music");
-        if (!WechatAPI.isEnabled() || appContext.getGameSettingManager()._muteMusic) {
+        if (appContext.getGameSettingManager().noSound) {
             this.stopBackgroundMusic();
             return;
         }
@@ -135,77 +172,96 @@ cc.Class({
         if (this._backgroundAudio == null) {
             debug.log("startBackgroundMusic createBackgroundAudio");
             this.createBackgroundAudio();
-        }
-
-        if (!this._backgroundAudio.paused) {
-            this._isPlayBackgroundMusic = true;
             return;
         }
 
-        if (this._isPlayBackgroundMusic) {
-            debug.log("startBackgroundMusic _isPlayBackgroundMusic");
-            this._backgroundAudio.stop();
-        }
+        if (this.checkMiniGameAPI()) {
+            if (!this._backgroundAudio.paused) {
+                this._isPlayBackgroundMusic = true;
+            }
 
-        this._isPlayBackgroundMusic = true;
-        this._backgroundAudio.src = this.backgroundMusicUrl;
-        this._backgroundAudio.loop = true;
-        this._backgroundAudio.autoplay = true;
-        this._backgroundAudio.play();
+            if (this._isPlayBackgroundMusic) {
+                debug.log("startBackgroundMusic _isPlayBackgroundMusic");
+                this._backgroundAudio.stop();
+            }
+
+            this._isPlayBackgroundMusic = true;
+
+            this._backgroundAudio.src = this.backgroundMusicUrl;
+            this._backgroundAudio.loop = true;
+            this._backgroundAudio.autoplay = true;
+            this._backgroundAudio.play();
+        } else {
+            this._isPlayBackgroundMusic = true;
+            this._backgroundAudio.play();
+        }
     },
 
     // 停止背景音乐
-    stopBackgroundMusic: function() {
+    stopBackgroundMusic: function () {
         if (WechatAPI.isApp && this.appSoundManager) {
             this.appSoundManager.stopBackgroundMusic();
             return;
         }
 
         debug.log("stop bgmusic");
-        if (!WechatAPI.isEnabled() || this._backgroundAudio == null) {
+        if (this.checkMiniGameAPI()) {
+            if (this._backgroundAudio) {
+                if (typeof this._backgroundAudio.pause == "function") {
+                    this._backgroundAudio.pause();
+                }
+            }
             this._isPlayBackgroundMusic = false;
-            return;
-        }
 
-        this._isPlayBackgroundMusic = false;
-        this._backgroundAudio.pause();
+        } else {
+            if (this._backgroundAudio) {
+                if (typeof this._backgroundAudio.pause == "function") {
+                    this._backgroundAudio.pause();
+                }
+            }
+            this._isPlayBackgroundMusic = false;
+        }
     },
 
     // 创建背景音乐的innerAudioContext
-    createBackgroundAudio: function() {
+    createBackgroundAudio: function () {
         if (WechatAPI.isApp && this.appSoundManager) {
             this.appSoundManager.createBackgroundAudio();
             return;
         }
 
         debug.log("createBackgroundAudio");
-        if (!WechatAPI.isEnabled()) {
-            return;
-        }
         if (this._backgroundAudio != null) {
             return;
         }
 
-        if (typeof window.wx.createInnerAudioContext != "function") {
-            debug.log("!!createInnerAudioContext is not a function!!!");
-            return;
-        }
+        if (this.checkMiniGameAPI()) {
+            this._backgroundAudio = window.wx.createInnerAudioContext();
+            this._backgroundAudio.src = this.backgroundMusicUrl;
+            this._backgroundAudio.loop = true;
 
-        this._backgroundAudio = window.wx.createInnerAudioContext();
-        this._backgroundAudio.src = this.backgroundMusicUrl;
-        this._backgroundAudio.loop = true;
-
-        if (this._backgroundAudio) {
-            this._backgroundAudio.autoplay = true;
-            if (typeof this._backgroundAudio.play == "function") {
-                this._backgroundAudio.play();
+            if (this._backgroundAudio) {
+                this._backgroundAudio.autoplay = true;
+                if (typeof this._backgroundAudio.play == "function") {
+                    this._backgroundAudio.play();
+                }
+            } else {
+                debug.log("!!createBackgroundAudio fail!!!");
             }
         } else {
-            debug.log("!!createBackgroundAudio fail!!!");
+            let self = this;
+
+            cc.loader.load(this.backgroundMusicUrl, (err, audioClip) => {
+                var audioSource = self.addComponent(cc.AudioSource);
+                audioSource.clip = audioClip;
+                audioSource.loop = true;
+                audioSource.play();
+                self._backgroundAudio = audioSource;
+            });
         }
     },
 
-    onShow: function() {
+    onShow: function () {
         if (WechatAPI.isApp && this.appSoundManager) {
             this.appSoundManager.onShow();
             return;

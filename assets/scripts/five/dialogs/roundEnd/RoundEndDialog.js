@@ -400,8 +400,6 @@ cc.Class({
                 this.btnKeepGrade.active = true;
                 this.keepGradeRewardTxt.node.active = true;
                 this.keepGradeRewardTxt.string = "恢复已损失积分" + toRestore;
-
-
                 this.keepGradeRewardAdIcon.active = appContext.getUxManager().gameInfo.keepGradeCardCount < 1;
             }
         }
@@ -409,12 +407,19 @@ cc.Class({
 
     setFullfillGradeBtns() {
         this.btnFullfill.active = false;
-        //如果胜利，且当前段位大于1小于10，且差200积分以内可以升段，就出现这个包含广告图标的“加满段位”按钮，点击效果是看广告，获得刚好的经验上一个段位
+        let delta = 200;
+        let gradeToMin = 1;
+        if (WechatAPI.isMZ) {
+            delta = 500;
+            gradeToMin = 0;
+        }
+
+        //如果胜利，且当前段位大于gradeToMin小于10，且差 delta 积分以内可以升段，就出现这个包含广告图标的“加满段位”按钮，点击效果是看广告，获得刚好的经验上一个段位
         if (this.info.win) {
             let gradeTo = this.gradeAndFillInfoTo.grade;
-            if (gradeTo > 1 && gradeTo < 10) {
+            if (gradeTo > gradeToMin && gradeTo < 10) {
                 let deltaExp = this.gradeAndFillInfoTo.fillTop - this.info.toScore;
-                if (deltaExp <= 200) {
+                if (deltaExp <= delta) {
                     let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
                     if (canWatchAd) {
                         this.btnFullfill.active = true;
@@ -560,9 +565,7 @@ cc.Class({
         appContext.getSoundManager().playBtn();
         appContext.getAppController().clearGameData();
         appContext.getAppController().backToMain();
-        if (Math.random() > 0.25) {
-            WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.reload();
-        }
+        WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.reload();
         this.hide();
     },
 
@@ -576,9 +579,7 @@ cc.Class({
         // gm.startGame();
         appContext.getAppController().backToMain();
         appContext.getDialogManager().showDialog(DialogTypes.Match);
-        if (Math.random() > 0.25) {
-            WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.reload();
-        }
+        WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.reload();
     },
 
     getHasVideoToShare() {
