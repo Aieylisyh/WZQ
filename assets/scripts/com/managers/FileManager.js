@@ -248,7 +248,7 @@ cc.Class({
                     callback.call(caller);
                 }
             };
-            if (isH5FS) {
+            if (this.isH5FS) {
                 this._fs.getFile(localPath, { create: false, exclusive: false }, sucCb, failCb);
             } else if (WechatAPI.isWx || WechatAPI.isYY || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC || WechatAPI.isMZ) {
                 this._fs.access({
@@ -298,7 +298,7 @@ cc.Class({
             }
         }
 
-        if (isH5FS) {
+        if (this.isH5FS) {
             this._fs.getFile(url, { create: false, exclusive: false },
                 () => {
                     sucCb(url);
