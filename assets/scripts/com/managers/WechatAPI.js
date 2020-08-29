@@ -376,8 +376,16 @@ let WechatAPI = {
 
             this.initAdUtils();
 
-            this.enableShare = true;
+            this.enableShare = false;
             this.shareUtil = require("TtShare");
+            if(debug.enableLog){
+                uc.setEnableDebug({
+                    enableDebug: true,
+                    complete: function(data) {
+                      console.log('uc.setEnableDebug openDebug. ');
+                    },
+                  });
+            }
 
             uc.getLaunchOptionsSync({
                 success: res => {
@@ -395,6 +403,49 @@ let WechatAPI = {
                     console.log('getLaunchOptionsSync fail', JSON.stringify(err));
                 },
             });
+        }else if (debug.platformYY) {
+            console.log("isYY");
+
+            this.isYY = true;
+            window.wx = window.WanGameH5sdk;
+            //console.log(WanGameH5sdk);
+            WanGameH5sdk.config({
+                share: {    // 邀请参数配置
+                    success: function () {
+                        console.log("邀请成功");
+                    },
+                    cancel: function () {
+                        console.log("取消邀请");
+                    }
+                },
+                focus: {   // 关注状态配置
+                    success: function () {
+                        console.log("异步通知关注成功");
+                    }
+                }
+            });
+            WanGameH5sdk.login({
+                success: function (data) {
+                    // 登录成功回调
+                    console.log(data);    // data: {"sid": "foo", "uid": 1140000000757060}，sid用于服务端对接参数,uid作为唯一用户标识
+                },
+                fail: function (data) {
+                    // 登录失败回调
+                    console.log(data.status); // 失败状态码
+                }
+            });
+
+            let BannerAdUtil_yy = require("BannerAdUtil_yy");
+            this.bannerAdUtil = new BannerAdUtil_yy();
+            let VideoAdUtil_yy = require("VideoAdUtil_yy");
+            this.videoAdUtil = new VideoAdUtil_yy();
+            let InterstitialAdUtil_yy = require("InterstitialAdUtil_yy");
+            this.interstitialAdUtil = new InterstitialAdUtil_yy();
+
+            this.initAdUtils();
+
+            this.enableShare = false;
+            this.shareUtil = require("TtShare");
         }
 
         if (this.isEnabled()) {
@@ -765,22 +816,15 @@ let WechatAPI = {
             return;
         }
 
-
-        if (this.isWx || this.isTT || this.isBaidu) {
+        if (typeof wx.setStorage == "function") {
             wx.setStorage({
                 key: storageKey,
-
+                value: storageData,//vivo
                 data: storageData,
             });
-        } else if (this.isVivo) {
-            wx.setStorage({
-                key: storageKey,
-
-                value: storageData,
-            });
-        } else if (this.isOppo || this.isMZ) {
-            window.localStorage && window.localStorage.setItem(storageKey, storageData);
-        } else if (this.isApp) {
+        } else if (window.localStorage && typeof window.localStorage.setItem == "function") {
+            window.localStorage.setItem(storageKey, storageData);
+        } else {
             this.setStorageSync(storageKey, storageData);
         }
     },
@@ -790,21 +834,15 @@ let WechatAPI = {
             return;
         }
 
-        if (this.isWx || this.isTT || this.isBaidu) {
+        if (typeof wx.setStorage == "function") {
             wx.setStorage({
                 key: storageKey,
-
+                value: storageData,//vivo
                 data: storageData,
             });
-        } else if (this.isVivo) {
-            wx.setStorage({
-                key: storageKey,
-
-                value: storageData,
-            });
-        } else if (this.isOppo || this.isUC || this.isMZ) {
-            window.localStorage && window.localStorage.setItem(storageKey, storageData);
-        } else if (this.isApp) {
+        } else if (window.localStorage && typeof window.localStorage.setItem == "function") {
+            window.localStorage.setItem(storageKey, storageData);
+        } else if (cc.sys && cc.sys.localStorage) {
             let dataStr = "";
             if (typeof storageData == "string") {
                 dataStr = storageData;
@@ -823,15 +861,15 @@ let WechatAPI = {
             return;
         }
 
-        if (this.isWx || this.isTT || this.isBaidu) {
+        if (typeof wx.removeStorageSync == "function") {
             wx.removeStorageSync(storageKey);
-        } else if (this.isVivo) {
+        } else if (typeof wx.deleteStorage == "function") {
             wx.deleteStorage({
                 key: storageKey
             })
-        } else if (this.isOppo || this.isUC || this.isMZ) {
-            window.localStorage && window.localStorage.removeItem(storageKey);
-        } else if (this.isApp) {
+        } else if (window.localStorage && typeof window.localStorage.removeItem == "function") {
+            window.localStorage.removeItem(storageKey);
+        } else if (cc.sys && cc.sys.localStorage) {
             cc.sys.localStorage.removeItem(storageKey)
         }
     },
@@ -842,17 +880,15 @@ let WechatAPI = {
         }
 
         let info;
-        if (this.isWx || this.isTT || this.isBaidu) {
+        if (!this.isVivo && typeof wx.getStorageSync == "function") {
             info = wx.getStorageSync(storageKey);
         } else if (this.isVivo) {
             info = wx.getStorageSync({
                 key: storageKey
             });
-        } else if (this.isOppo || this.isUC || this.isMZ) {
-            if (window.localStorage) {
-                info = window.localStorage.getItem(storageKey);
-            }
-        } else if (this.isApp) {
+        } else if (window.localStorage && typeof window.localStorage.getItem == "function") {
+            info = window.localStorage.getItem(storageKey);
+        } else if (cc.sys && cc.sys.localStorage) {
             info = cc.sys.localStorage.getItem(storageKey);
         }
 
@@ -890,7 +926,7 @@ let WechatAPI = {
             return;
         }
 
-        if (this.isWx || this.isVivo || this.isTT || this.isBaidu) {
+        if (typeof wx.getStorage == "function") {
             wx.getStorage({
                 key: storageKey,
 
@@ -902,7 +938,7 @@ let WechatAPI = {
                     callback.call(caller);
                 },
             });
-        } else if (this.isOppo || this.isApp || this.isUC || this.isMZ) {
+        } else {
             callback.call(caller, this.getStorageSync(storageKey));
         }
     },
@@ -1112,6 +1148,13 @@ let WechatAPI = {
             this.systemInfo.windowWidth = s.windowWidth;
             this.systemInfo.version = s.version;
             this.systemInfo.SDKVersion = s.SDKVersion;
+        } else if (this.isYY) {
+            this.systemInfo.platform = "YY";
+            this.systemInfo.model = cc.sys.os;
+            this.systemInfo.windowHeight = cc.view._frameSize.height;
+            this.systemInfo.windowWidth = cc.view._frameSize.width;
+            this.systemInfo.version = "yy";
+            this.systemInfo.SDKVersion = "yy";
         } else if (this.isUC) {
             //异常的特殊 返回的字符串！
             s = JSON.parse(s);

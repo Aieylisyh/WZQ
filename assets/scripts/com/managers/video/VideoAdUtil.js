@@ -31,6 +31,11 @@ cc.Class({
             return;
         }
 
+        if (WechatAPI.isYY) {
+            this.customShow();
+            return;
+        }
+
         if (this._loaded) {
             this.customShow();
         } else {
@@ -42,6 +47,12 @@ cc.Class({
         if (!this.isEnabled()) {
             return;
         }
+        
+        if (WechatAPI.isYY) {
+            this.customCreate();
+            return;
+        }
+
         if (this._ad) {
             console.log("already has video ad! abort create!");
             return;

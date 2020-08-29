@@ -45,11 +45,13 @@ cc.Class({
             this.exit();
             return;
         }
-        if (WechatAPI.isUC) {
+        if (WechatAPI.isUC|| WechatAPI.isYY) {
+            debug.log("isUC isYY");
             debug.extraSettings.global = false;
             this.exit();
             return;
         }
+        
         if (WechatAPI.isYX) {
             //使用益欣sdk 则不适用自己的配置
             debug.extraSettings.global = false;

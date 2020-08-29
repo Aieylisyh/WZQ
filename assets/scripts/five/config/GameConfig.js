@@ -40,6 +40,8 @@ cc.Class({
 
         platformMZ: false,
 
+        platformYY: false,
+
         remoteFileUrlSuffix_wx: "/wx",
 
         remoteFileUrlSuffix_vivo: "/vivo",
@@ -55,6 +57,8 @@ cc.Class({
         remoteFileUrlSuffix_uc: "/uc",
 
         remoteFileUrlSuffix_mz: "/mz",
+
+        remoteFileUrlSuffix_yy: "/yy",
     },
 
     init: function () {
@@ -67,7 +71,7 @@ cc.Class({
             platformBaidu: this.platformBaidu,
             platformUC: this.platformUC,
             platformMZ: this.platformMZ,
-            
+            platformYY: this.platformYY,
             extraSettings: {
                 fg: true,
                 fgCount: 5, //free gift count
@@ -185,6 +189,8 @@ cc.Class({
             debug.pureFileDownloadRoot += this.remoteFileUrlSuffix_baidu;
         } else if (WechatAPI.isUC) {
             debug.pureFileDownloadRoot += this.remoteFileUrlSuffix_uc;
+        }else if (WechatAPI.isYY) {
+            debug.pureFileDownloadRoot += this.remoteFileUrlSuffix_yy;
         }
 
         debug.pipDownloadUrl = debug.pureFileDownloadRoot + this.pipDownloadPath + this.clientVersion + ".txt";

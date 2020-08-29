@@ -36,6 +36,11 @@ cc.Class({
             return;
         }
 
+        if (WechatAPI.isYY) {
+            self.customShow();
+            return;
+        }
+
         if (self.has()) {
             self.customShow();
         } else {
@@ -54,6 +59,11 @@ cc.Class({
         if (WechatAPI.isYX) {
             debug.log("block banner ad create by yxsdk");
             WechatAPI.YXSDK.showBanner();
+            return;
+        }
+
+        if (WechatAPI.isYY) {
+            this.customCreate();
             return;
         }
 
@@ -81,6 +91,12 @@ cc.Class({
     },
 
     hide: function () {
+        if (WechatAPI.isYY) {
+            this.customHide();
+            return;
+        }
+
+
         if (this.has()) {
             this.customHide();
         }
@@ -88,6 +104,12 @@ cc.Class({
 
     reload: function () {
         if (!this.isEnabled()) {
+            return;
+        }
+
+        if (WechatAPI.isYY) {
+            this.destroy();
+            this.create();
             return;
         }
 
@@ -102,6 +124,11 @@ cc.Class({
     },
 
     destroy: function () {
+        if (WechatAPI.isYY) {
+            this.customDestroy();
+            return;
+        }
+
         if (this.has()) {
             this.customDestroy();
         }

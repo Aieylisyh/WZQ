@@ -60,7 +60,7 @@ let Grade = {
         {
             exist: 5,
             fail: 0,
-            bUser: 10,
+            bUser: 12,
         },
         {
             exist: 8,

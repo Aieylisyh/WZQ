@@ -21,8 +21,50 @@ cc.Class({
         if (typeof wx.getFileSystemManager == "function") {
             //WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu  MZ
             this._fs = wx.getFileSystemManager();
+        } else {
+            this.getH5FS();
         }
 
+    },
+
+    getH5FS() {
+        let self = this;
+        window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+        window.requestFileSystem(window.TEMPORARY, 10 * 1024 * 1024,
+            function (fs) {
+                console.log(fs);
+                self._fs = fs.root;
+                self.isH5FS = true;
+            },
+            self.errorHandler);
+    },
+
+    errorHandler(err) {
+        var msg = 'An error occured: ';
+
+        switch (err.code) {
+            case FileError.NOT_FOUND_ERR:
+                msg += 'File or directory not found';
+                break;
+
+            case FileError.NOT_READABLE_ERR:
+                msg += 'File or directory not readable';
+                break;
+
+            case FileError.PATH_EXISTS_ERR:
+                msg += 'File or directory already exists';
+                break;
+
+            case FileError.TYPE_MISMATCH_ERR:
+                msg += 'Invalid filetype';
+                break;
+
+            default:
+                msg += 'Unknown Error';
+                break;
+        };
+
+        console.log(msg);
     },
 
     //encoding默认为ArrayBuffer 
@@ -105,7 +147,7 @@ cc.Class({
             return;
         }
 
-        if (WechatAPI.isUC) {
+        if (WechatAPI.isUC || WechatAPI.isYY) {
             cc.loader.load(url, function (err, content) {
                 console.log("web下载文本");
                 console.log(arguments);
@@ -138,8 +180,12 @@ cc.Class({
         path = path.replace(/\//g, '__');
 
         let root = "customRoot";
-        if (WechatAPI.isWx || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isOppo || WechatAPI.isUC || WechatAPI.isMZ) {
-            root = wx.env.USER_DATA_PATH;
+        if (WechatAPI.isWx || WechatAPI.isYY || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isOppo || WechatAPI.isUC || WechatAPI.isMZ) {
+            if (wx.env) {
+                root = wx.env.USER_DATA_PATH;
+            } else if (this.isH5FS) {
+                root = this._fs.fullPath;
+            }
         } else if (WechatAPI.isVivo) {
             root = 'internal://files';
         } else if (WechatAPI.isApp) {
@@ -202,7 +248,9 @@ cc.Class({
                     callback.call(caller);
                 }
             };
-            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC || WechatAPI.isMZ) {
+            if (isH5FS) {
+                this._fs.getFile(localPath, { create: false, exclusive: false }, sucCb, failCb);
+            } else if (WechatAPI.isWx || WechatAPI.isYY || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC || WechatAPI.isMZ) {
                 this._fs.access({
                     path: localPath,
                     success: sucCb,
@@ -250,16 +298,25 @@ cc.Class({
             }
         }
 
-        if (WechatAPI.isUC) {
-            failCb(path);
-            return;
-        }
-
-        if (WechatAPI.isEnabled()) {
+        if (isH5FS) {
+            this._fs.getFile(url, { create: false, exclusive: false },
+                () => {
+                    sucCb(url);
+                    return;
+                },
+                () => {
+                    failCb(url);
+                    return;
+                });
+        } else if (WechatAPI.isEnabled()) {
+            if (WechatAPI.isUC || WechatAPI.isYY) {
+                failCb(url);
+                return;
+            }
             let localPath = this.convertPathRemoveDirectory(url);
 
             let path = localPath;
-            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC || WechatAPI.isMZ) {
+            if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isMZ) {
                 self._fs.access({
                     path: path,
                     success: function (res) {
@@ -391,10 +448,10 @@ cc.Class({
                     }
                 };
 
-                if (WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu || WechatAPI.isUC || WechatAPI.isMZ) {
+                if (typeof wx.downloadFile == "function") {
                     wx.downloadFile(downloadCb);
-                } else if (WechatAPI.isVivo) {
-                    qg.download(downloadCb);
+                } else if (typeof wx.download == "function") {
+                    wx.download(downloadCb);
                 } else if (WechatAPI.isApp) {
                     debug.log("不要这样使用jsb的下载 直接使用downloadAndSaveFile 或 loadRemoteTxtFile");
                     // wx.downloadFile(downloadCb);
@@ -444,10 +501,23 @@ cc.Class({
         let localPath = this.convertPathRemoveDirectory(url);
 
         //这里给图片加上了后缀名
-        localPath = this.tryAddSuffix(localPath,".jpg");
+        localPath = this.tryAddSuffix(localPath, ".jpg");
 
         let self = this;
-        if (this.isSaving(url)) {
+        if (this.isH5FS) {
+            currDir.getFile(tempFilePath, {}, function (fileEntry) {
+                currDir.getDirectory(localPath, {},
+                    function (dirEntry) {
+                        self._fs.copyTo(dirEntry);
+                        self.onSaveCallback(url, localPath);
+                    },
+                    () => { self.onSaveCallback(url, tempFilePath); }
+                );
+            },
+                () => { self.onSaveCallback(url, tempFilePath); }
+            );
+        }
+        else if (this.isSaving(url)) {
             //do nothing 暂时没有用到过缓存成功回调的地方
             this.addSaveCallback(url, callback, caller);
         } else {
@@ -482,10 +552,8 @@ cc.Class({
                     }
                 })
             } else {
-                //|| WechatAPI.isUC??
                 self.onSaveCallback(url, tempFilePath);
             }
-
         }
 
         return localPath
@@ -674,7 +742,7 @@ cc.Class({
         if (!this.isValidCommonSuffix(this.getSuffixFromPath(filepath))) {
             filepath += s;
         }
-        
+
         return filepath;
     },
 

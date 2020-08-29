@@ -53,6 +53,11 @@ cc.Class({
             return;
         }
 
+        if (WechatAPI.isYY) {
+            this.customCreate();
+            return;
+        }
+
         if (this.has()) {
             debug.log("已有int广告");
             return;
@@ -91,6 +96,11 @@ cc.Class({
             return;
         }
 
+        if (WechatAPI.isYY) {
+            this.customDestroy();
+            return;
+        }
+        
         if (this.has()) {
             this.customDestroy();
         }

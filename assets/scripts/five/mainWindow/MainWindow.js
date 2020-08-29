@@ -90,7 +90,7 @@ cc.Class({
         this.setHouse(userInfo);
         this.setRedDots();
         this.tickTime = 1;
-        if (this.node && WechatAPI.isWx || WechatAPI.isTT || WechatAPI.isMZ|| WechatAPI.isUC) {
+        if (this.node && WechatAPI.isWx || WechatAPI.isTT || WechatAPI.isMZ|| WechatAPI.isUC||WechatAPI.isYY) {
             WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
         }
     },

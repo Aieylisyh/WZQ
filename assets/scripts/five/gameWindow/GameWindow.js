@@ -59,7 +59,7 @@ cc.Class({
             }
 
 
-        } else if (WechatAPI.isMZ||WechatAPI.isUC) {
+        } else if (WechatAPI.isMZ||WechatAPI.isUC||WechatAPI.isYY) {
             WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
         }
 

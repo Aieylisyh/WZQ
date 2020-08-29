@@ -409,7 +409,7 @@ cc.Class({
         this.btnFullfill.active = false;
         let delta = 200;
         let gradeToMin = 1;
-        if (WechatAPI.isMZ) {
+        if (WechatAPI.isMZ||WechatAPI.isUc) {
             delta = 500;
             gradeToMin = 0;
         }
