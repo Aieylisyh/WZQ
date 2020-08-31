@@ -409,7 +409,7 @@ cc.Class({
         this.btnFullfill.active = false;
         let delta = 200;
         let gradeToMin = 1;
-        if (WechatAPI.isMZ||WechatAPI.isUc) {
+        if (WechatAPI.isMZ || WechatAPI.isUc) {
             delta = 500;
             gradeToMin = 0;
         }
@@ -565,8 +565,15 @@ cc.Class({
         appContext.getSoundManager().playBtn();
         appContext.getAppController().clearGameData();
         appContext.getAppController().backToMain();
-        WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.reload();
+        this.showIntAd();
         this.hide();
+    },
+
+    showIntAd() {
+        if (Math.random() > 0.8) {
+            return;
+        }
+        WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.reload();
     },
 
     // 点击"再来一局"按钮
@@ -579,7 +586,7 @@ cc.Class({
         // gm.startGame();
         appContext.getAppController().backToMain();
         appContext.getDialogManager().showDialog(DialogTypes.Match);
-        WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.reload();
+        this.showIntAd();
     },
 
     getHasVideoToShare() {

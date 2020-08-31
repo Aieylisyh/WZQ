@@ -21,6 +21,8 @@ cc.Class({
         triangle04: cc.Node,// 右段位h上连胜w
 
         shareBtn: cc.Node,
+
+        uploadImageBtn: cc.Node,
     },
 
     show: function () {
@@ -32,6 +34,10 @@ cc.Class({
 
         this.fadeInBackground();
         this.fastShowAnim();
+
+        if (!appContext.getFileManager()._fs && !appContext.getFileManager().isH5FS) {
+            uploadImageBtn.active = false;
+        }
     },
 
     // 设置人物属性图

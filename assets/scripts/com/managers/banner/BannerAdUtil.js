@@ -108,8 +108,7 @@ cc.Class({
         }
 
         if (WechatAPI.isYY) {
-            this.destroy();
-            this.create();
+            this.customShow();
             return;
         }
 

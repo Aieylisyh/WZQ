@@ -20,6 +20,7 @@ cc.Class({
     },
 
     customShow() {
+        debug.log("yy showImageInteractionAd");
         WanGameH5sdk.placeAds({
             method: 'showImageInteractionAd', // 方法名 //showVideoInteractionAd
             success: function(data) {
@@ -36,6 +37,6 @@ cc.Class({
     },
 
     customShowOnLoad() {
-        this.customShow();
+        //this.customShow();
     },
 });

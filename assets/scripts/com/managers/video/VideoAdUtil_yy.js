@@ -17,6 +17,7 @@ cc.Class({
     },
 
     customShow() {
+        debug.log("yy showRewardVideoAd");
         let self = this;
         WanGameH5sdk.placeAds({
             method: 'showRewardVideoAd', // 方法名

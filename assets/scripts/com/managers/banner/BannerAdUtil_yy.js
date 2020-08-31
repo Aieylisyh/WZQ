@@ -39,7 +39,8 @@ cc.Class({
         if(this._hasAd){
             return;
         }
-
+        
+        debug.log("yy showBannerAd");
         let self = this;
         WanGameH5sdk.placeAds({
             method: 'showBannerAd', // 方法名

@@ -214,7 +214,7 @@ cc.Class({
 
         let action1 = cc.fadeTo(0.6, 0);
         let action2 = cc.callFunc(function () {
-            this.hide();
+            //this.hide();
         }, this);
         let seq = cc.sequence(action1, action2);
         this.node.runAction(seq);

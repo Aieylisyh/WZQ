@@ -59,11 +59,16 @@ cc.Class({
             }
 
 
-        } else if (WechatAPI.isMZ||WechatAPI.isUC||WechatAPI.isYY) {
+        } else {
             WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
         }
 
         this.resetRecordBtns();
+
+        let matchDialog = appContext.getDialogManager().getCachedDialog(DialogTypes.Match);
+        if(matchDialog){
+            matchDialog.hide();
+        }
     },
 
     onClickRecord() {
