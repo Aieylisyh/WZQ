@@ -10,9 +10,14 @@ cc.Class({
 
 
     customCreate() {
+       
+    },
+
+    customLoad() {
+    },
+
+    customShow() {
         let self = this;
-
-
         WanGameH5sdk.placeAds({
             method: 'showRewardVideoAd', // 方法名
             params: {
@@ -38,12 +43,5 @@ cc.Class({
                 self.onError();
             }
         });
-    },
-
-    customLoad() {
-    },
-
-    customShow() {
-        this.customCreate();
     },
 });

@@ -620,9 +620,7 @@ let WechatAPI = {
     initAdUtils: function () {
         debug.log("!initAdUtils");
         appContext.scheduleOnce(function () {
-            debug.log("!initAdUtils done!!");
             WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.init();
-
             WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.init();
             WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.init();
             WechatAPI.nativeAdUtil && WechatAPI.nativeAdUtil.init();
