@@ -49,63 +49,23 @@ cc.Class({
             type: require("GameConfig"),
         },
     },
-
-    start: function () {
+    onLoad: function () {
+        console.log("appContext onLoad");
         window.WechatAPI = WechatAPI;
         window.appContext = this;
-
+    },
+    start: function () {
+        console.log("appContext start20210104");
         //初始化实例，注意顺序
         //程序配置
-        this.cfg.init();
-        // try {
-        //     WechatAPI.init();
-        // } catch (e) {
-        //     debug.log(e);
-        // }
-        WechatAPI.init();
-        this.cfg.setUrl();
-
-        //数据仓库
-        if (this._dataRepository == null) {
-            this._dataRepository = new DataRepository();
+        try {
+            this.cfg.init();
+            WechatAPI.init();
+            this.cfg.setUrl();
+            this.initEssentials();
+        } catch (e) {
+            console.log(e);
         }
-
-        //负责接收消息，并且将消息分发给Handler处理
-        if (this._messageRouter == null) {
-            this._messageRouter = new MessageRouter();
-        }
-
-        //负责对外发送消息
-        if (this._remoteAPI == null) {
-            this._remoteAPI = new RemoteAPI();
-        }
-
-        //负责延时任务
-        if (this._taskManager == null) {
-            this._taskManager = new TaskManager();
-        }
-
-        //负责登录微信小游戏和登录游戏服务器
-        if (this._loginManager == null) {
-            this._loginManager = new LoginManager();
-            this._loginManager.init();
-        }
-
-        //负责文件下载缓存等
-        if (this._fileManager == null) {
-            this._fileManager = new FileManager();
-        }
-
-        //游戏设置保存区
-        if (this._gameSettingManager == null) {
-            this._gameSettingManager = new GameSettingManager();
-        }
-
-        //用户体验
-        if (this._uxManager == null) {
-            this._uxManager = new UserExperienceManager();
-        }
-
 
         if (WechatAPI.isEnabled()) {
             // if (WechatAPI.isWx) {
@@ -127,10 +87,56 @@ cc.Class({
         }, 0.1);
     },
 
+    initEssentials() {
+      //数据仓库
+      if (this._dataRepository == null) {
+        this._dataRepository = new DataRepository();
+    }
+
+    //负责接收消息，并且将消息分发给Handler处理
+    if (this._messageRouter == null) {
+        this._messageRouter = new MessageRouter();
+    }
+
+    //负责对外发送消息
+    if (this._remoteAPI == null) {
+        this._remoteAPI = new RemoteAPI();
+    }
+
+    //负责延时任务
+    if (this._taskManager == null) {
+        this._taskManager = new TaskManager();
+    }
+
+    //负责登录微信小游戏和登录游戏服务器
+    if (this._loginManager == null) {
+        this._loginManager = new LoginManager();
+        this._loginManager.init();
+    }
+
+    //负责文件下载缓存等
+    if (this._fileManager == null) {
+        this._fileManager = new FileManager();
+    }
+
+    //游戏设置保存区
+    if (this._gameSettingManager == null) {
+        this._gameSettingManager = new GameSettingManager();
+    }
+
+    //用户体验
+    if (this._uxManager == null) {
+        this._uxManager = new UserExperienceManager();
+    }
+    },
     update: function (dt) {
         //对没有必要继承cc.Component的实例调用onUpdate方法
-        this._taskManager.onUpdate(dt);
-        this._uxManager.onUpdate(dt);
+        if (this._taskManager) {
+            this._taskManager.onUpdate(dt);
+        }
+        if (this._uxManager) {
+            this._uxManager.onUpdate(dt);
+        }
     },
 
     lateUpdate: function (dt) {

@@ -35,8 +35,8 @@ cc.Class({
         this.fadeInBackground();
         this.fastShowAnim();
 
-        if (!appContext.getFileManager()._fs && !appContext.getFileManager().isH5FS) {
-            uploadImageBtn.active = false;
+        if ((WechatAPI.isUC || WechatAPI.isYY) && !appContext.getFileManager().isH5FS) {
+            this.uploadImageBtn.active = false;
         }
     },
 

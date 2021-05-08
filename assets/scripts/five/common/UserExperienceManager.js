@@ -2,6 +2,7 @@ let StorageKey = require("StorageKey");
 // let VitaSystem = require("VitaSystem");
 // let DialogTypes = require("DialogTypes");
 let Grade = require('Grade');
+const WechatAPI = require("../../com/managers/WechatAPI");
 // let Item = require('Item');
 
 
@@ -77,20 +78,20 @@ cc.Class({
         if (this.toSaveGameInfo) {
             this.toSaveGameInfo = false;
             //this.gameInfo.vitaSystem = this.vitaSystem.getSaveData();
-            WechatAPI.setStorageSync(StorageKey.GameInfo, JSON.stringify(this.gameInfo));
+            WechatAPI.setStorageSync(StorageKey.uniqueKey.GameInfo, JSON.stringify(this.gameInfo));
 
             appContext.getDialogManager().updateDataBasedDialogs();
         }
 
         if (this.toSaveUxData) {
             this.toSaveUxData = false;
-            WechatAPI.setStorageSync(StorageKey.uxData, JSON.stringify(this.uxData));
+            WechatAPI.setStorageSync(StorageKey.uniqueKey.uxData, JSON.stringify(this.uxData));
         }
 
         if (this.toSaveUserInfo) {
             this.toSaveUserInfo = false;
             if (this.userInfo) {
-                WechatAPI.setStorageSync(StorageKey.UserInfo, JSON.stringify(this.userInfo));
+                WechatAPI.setStorageSync(StorageKey.uniqueKey.UserInfo, JSON.stringify(this.userInfo));
             }
         }
     },
@@ -100,8 +101,38 @@ cc.Class({
         this.userScoreDic = {};
         //this.saveByMinorChangeCounter = this.saveByMinorChangeCount;
         debug.log("UserExperienceManager 进入游戏");
-        this.uxData = WechatAPI.getStorageSync(StorageKey.uxData, true);
 
+        this.initUxData();
+        this.setDayInfo();
+        this._data = {};
+        this._data.timeSinceFirst = Date.now() - this.uxData.firstDate;
+        this._data.timeSinceLast = Date.now() - this.uxData.lastestDate;
+        this.uxData.lastestDate = Date.now();
+
+        if (this.isFirst) {
+            if (WechatAPI.isWx) {
+                let sceneId = cc.enterAppSceneId || appContext.getUxManager().cache.enterAppSceneId || 0;
+                let promoteChannel = appContext.getUxManager().cache.promoteChannel;
+                appContext.getAnalyticManager().addEvent("newUser_scene__" + sceneId);
+                if (promoteChannel) {
+                    appContext.getAnalyticManager().addEvent("newUser_promote__" + promoteChannel);
+                    appContext.getAnalyticManager().sendALD("newUser_promote__" + promoteChannel);
+                } else {
+                    promoteChannel = "default";
+                }
+                debug.log("首次进入游戏promoteChannel " + promoteChannel);
+            }
+        }
+
+        this.initGameInfo();
+        this.toSaveUxData = true;
+        this.toSaveUserInfo = true;
+        this.toSaveGameInfo = true;
+        appContext.getAnalyticManager().accelerateUpload(0);
+    },
+
+    initUxData() {
+        this.uxData = WechatAPI.getStorageSync(StorageKey.uniqueKey.uxData, true);
         if (this.uxData == null || typeof this.uxData !== "object" ||
             typeof this.uxData.firstDate !== "number" || typeof this.uxData.lastestDate !== "number" ||
             typeof this.uxData.counts !== "number") {
@@ -129,52 +160,40 @@ cc.Class({
                 // console.log("whlist " + this.uxData.safeEntry);
             }
         }
-
-        this.setDayInfo();
-        this._data = {};
-        this._data.timeSinceFirst = Date.now() - this.uxData.firstDate;
-        this._data.timeSinceLast = Date.now() - this.uxData.lastestDate;
-        this.uxData.lastestDate = Date.now();
-
-        this.toSaveUxData = true;
-
-        if (this.isFirst) {
-            if (WechatAPI.isWx) {
-                let sceneId = cc.enterAppSceneId || appContext.getUxManager().cache.enterAppSceneId || 0;
-                let promoteChannel = appContext.getUxManager().cache.promoteChannel;
-                appContext.getAnalyticManager().addEvent("newUser_scene__" + sceneId);
-                if (promoteChannel) {
-                    appContext.getAnalyticManager().addEvent("newUser_promote__" + promoteChannel);
-                    appContext.getAnalyticManager().sendALD("newUser_promote__" + promoteChannel);
-                } else {
-                    promoteChannel = "default";
-                }
-
-                debug.log("首次进入游戏promoteChannel " + promoteChannel);
-            }
-        }
-
-        this.initGameInfo();
-        this.saveGameInfo();
-        appContext.getAnalyticManager().accelerateUpload(0);
     },
 
-    onLoginFinish: function () {
+    onLoginFinish: function (id = null) {
         debug.log("登陆完成");
+        let userId = id != null ? id : WechatAPI.getStorageSync(StorageKey.UserKey);
+        StorageKey.SetUserId(userId, false);
+
+        if (WechatAPI.isYY) {
+            let userBasic = appContext.getUxManager().getUserInfo().basic;
+            WanGameH5sdk.log({
+                action: 'access',
+                gser: '1',
+                servername: 'WZQ1',
+                roleid: userId,
+                rolename: userBasic.nickname,
+                rolelevel: '1',
+                power: '0'
+            });
+        }
+
         this.init();
         WechatAPI.setTTAppLaunchOptions();
         this.loginFinished = true;
 
-        let cwn = appContext.getWindowManager().getCurrentWindowNode();
-        if (cwn) {
-            debug.log("cwn");
-            let mw = cwn.getComponent("MainWindow");
-            if (mw) {
-                debug.log("onLoginFinish");
-                mw.onLoginFinish();
+        //call mainwindow to react login result
+        appContext.scheduleOnce(function () {
+            let cwn = appContext.getWindowManager().getCurrentWindowNode();
+            if (cwn) {
+                let mw = cwn.getComponent("MainWindow");
+                if (mw) {
+                    mw.onLoginFinish();
+                }
             }
-        }
-
+        }, 0.1);
     },
 
     setDayInfo: function () {
@@ -222,14 +241,14 @@ cc.Class({
             return;
         }
 
-        let codeList = WechatAPI.getStorageSync(StorageKey.WxShareCardEntryInfo, true);
+        let codeList = WechatAPI.getStorageSync(StorageKey.uniqueKey.WxShareCardEntryInfo, true);
 
         if (codeList == null || typeof codeList !== "object") {
             codeList = [];
         }
 
         codeList.push(code);
-        WechatAPI.setStorage(StorageKey.WxShareCardEntryInfo, codeList);
+        WechatAPI.setStorage(StorageKey.uniqueKey.WxShareCardEntryInfo, codeList);
     },
 
     isGiftCodeUsed: function (code) {
@@ -249,7 +268,7 @@ cc.Class({
 
     saveUserInfo: function (userInfo) {
         debug.log("!!saveUserInfo");
-        debug.log(userInfo);
+        //debug.log(userInfo);
         this.userInfo = userInfo;
         this.toSaveUserInfo = true;
     },
@@ -284,7 +303,7 @@ cc.Class({
     },
 
     getUserInfo: function () {
-        let userInfo = WechatAPI.getStorageSync(StorageKey.UserInfo);
+        let userInfo = WechatAPI.getStorageSync(StorageKey.uniqueKey.UserInfo);
 
         if (userInfo == null || userInfo == "" || userInfo == {}) {
             userInfo = this.createRawUserInfo();
@@ -322,9 +341,9 @@ cc.Class({
     },
 
     resetGameInfo() {
-        WechatAPI.setStorageSync(StorageKey.UserInfo, null);
-        WechatAPI.setStorageSync(StorageKey.uxData, null);
-        WechatAPI.setStorageSync(StorageKey.GameInfo, null);
+        WechatAPI.setStorageSync(StorageKey.uniqueKey.UserInfo, null);
+        WechatAPI.setStorageSync(StorageKey.uniqueKey.uxData, null);
+        WechatAPI.setStorageSync(StorageKey.uniqueKey.GameInfo, null);
 
         this.init();
         this.getUserInfo();
@@ -338,7 +357,7 @@ cc.Class({
     },
 
     initGameInfo: function () {
-        let info = WechatAPI.getStorageSync(StorageKey.GameInfo, true);
+        let info = WechatAPI.getStorageSync(StorageKey.uniqueKey.GameInfo, true);
 
         if (info == null || info == "" || typeof info != "object") {
             this.gameInfo = {};
@@ -353,6 +372,8 @@ cc.Class({
             this.gameInfo.checkinLastDay = 0;
             this.gameInfo.checkinValidDayCount = 0;
             this.gameInfo.checkinTodayTimes = 0;
+
+            this.toSaveGameInfo = true;
         } else {
             debug.log("load existing game info");
             //debug.log(info);
@@ -591,6 +612,18 @@ cc.Class({
         this.addFatigue();
         this.saveUserInfo(userInfo);
 
+        if (WechatAPI.isYY) {
+            let userBasic = appContext.getUxManager().getUserInfo().basic;
+            let userId = WechatAPI.getStorageSync(StorageKey.UserKey);
+            WanGameH5sdk.log({
+                action: 'score',
+                actionvalue: (info.toScore + ""), // 游戏为关卡模式：每通过一关上报关卡（或用户A通过第一关传 10，通过第二关 20……以此类推）；游戏为分数模式，则直接传分数即可
+                gser: '1',
+                servername: 'WZQ1',
+                roleid: userId,
+                rolename: userBasic.nickname,
+            });
+        }
         return info;
     },
 

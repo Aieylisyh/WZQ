@@ -134,8 +134,8 @@ let GameUtil = {
         WechatAPI.uxData = {};
         debug.log("setUX");
 
-        let lastEnterGameTimestamp = WechatAPI.getStorageSync(StorageKey.LastEnterGameTimestamp);
-        let firstEnterGameTimestamp = WechatAPI.getStorageSync(StorageKey.FirstEnterGameTimestamp);
+        let lastEnterGameTimestamp = WechatAPI.getStorageSync(StorageKey.uniqueKey.LastEnterGameTimestamp);
+        let firstEnterGameTimestamp = WechatAPI.getStorageSync(StorageKey.uniqueKey.FirstEnterGameTimestamp);
 
         let playedDays = 0;
         let isFirstTime = firstEnterGameTimestamp == null || firstEnterGameTimestamp == "";
@@ -199,18 +199,18 @@ let GameUtil = {
                 appContext.getAnalyticManager().addEvent("play_sceneId__1__" + sceneId);
             }
 
-            WechatAPI.setStorage(StorageKey.LastEnterGameTimestamp, Date.now());
-            WechatAPI.setStorage(StorageKey.FirstEnterGameTimestamp, Date.now());
-            WechatAPI.setStorage(StorageKey.FirstEnterGameInfo, firstEnterGameInfo);
+            WechatAPI.setStorage(StorageKey.uniqueKey.LastEnterGameTimestamp, Date.now());
+            WechatAPI.setStorage(StorageKey.uniqueKey.FirstEnterGameTimestamp, Date.now());
+            WechatAPI.setStorage(StorageKey.uniqueKey.FirstEnterGameInfo, firstEnterGameInfo);
 
             WechatAPI.uxData.firstEnterGameInfo = firstEnterGameInfo;
         } else {
             if (lastEnterGameTimestamp == null || lastEnterGameTimestamp == "") {
-                WechatAPI.setStorage(StorageKey.LastEnterGameTimestamp, Date.now());
+                WechatAPI.setStorage(StorageKey.uniqueKey.LastEnterGameTimestamp, Date.now());
             } else {
                 let delta = GameUtil.getAheadDays(Date.now(), lastEnterGameTimestamp);
                 if (delta > 0) {
-                    WechatAPI.setStorage(StorageKey.LastEnterGameTimestamp, Date.now());
+                    WechatAPI.setStorage(StorageKey.uniqueKey.LastEnterGameTimestamp, Date.now());
 
                     if (delta >= 4) {
                         //停玩3天以上后重新进入游戏
@@ -224,7 +224,7 @@ let GameUtil = {
             if (playedDays > 0 && playedDays < 8) {
                 appContext.getAnalyticManager().addEvent("play_model__" + playedDays + "__" + WechatAPI.systemInfo.model);
 
-                let firstEnterGameInfo = WechatAPI.getStorageSync(StorageKey.FirstEnterGameInfo);
+                let firstEnterGameInfo = WechatAPI.getStorageSync(StorageKey.uniqueKey.FirstEnterGameInfo);
                 if (firstEnterGameInfo != null) {
                     if (firstEnterGameInfo.titleId != null && firstEnterGameInfo.titleId > -1) {
                         appContext.getAnalyticManager().addEvent("play_title__" + playedDays + "__" + firstEnterGameInfo.titleId);

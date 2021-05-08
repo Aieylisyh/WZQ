@@ -175,9 +175,9 @@ cc.Class({
             appContext.getAnalyticManager().addEvent("enterAppSceneId__" + cc.enterAppSceneId);
             /*if (cc.enterAppSceneId == 1103 || cc.enterAppSceneId == 1104) {
                 //如果从我的小程序进入
-                let b = WechatAPI.getStorageSync(StorageKey.hasEnterFromMiniProg);
+                let b = WechatAPI.getStorageSync(StorageKey.uniqueKey.hasEnterFromMiniProg);
                 if (b == "" || b == null || b == false) {
-                    WechatAPI.setStorage(StorageKey.hasEnterFromMiniProg, "done"); 
+                    WechatAPI.setStorage(StorageKey.uniqueKey.hasEnterFromMiniProg, "done"); 
                       appContext.getUxManager().getMyMiniProgPrize();
                 }
             }*/
@@ -232,12 +232,12 @@ cc.Class({
             return false;
         }
 
-        let codeList = WechatAPI.getStorageSync(StorageKey.WxShareCardEntryInfo, true);
+        let codeList = WechatAPI.getStorageSync(StorageKey.uniqueKey.WxShareCardEntryInfo, true);
 
         if (codeList == null || typeof codeList !== "object") {
             codeList = [];
             codeList.push(code);
-            WechatAPI.setStorage(StorageKey.WxShareCardEntryInfo, codeList);
+            WechatAPI.setStorage(StorageKey.uniqueKey.WxShareCardEntryInfo, codeList);
             return true;
         }
 
@@ -251,7 +251,7 @@ cc.Class({
         codeList.push(code);
         debug.log("new codeList is ");
         debug.log(codeList);
-        WechatAPI.setStorage(StorageKey.WxShareCardEntryInfo, codeList);
+        WechatAPI.setStorage(StorageKey.uniqueKey.WxShareCardEntryInfo, codeList);
         return true;
     },
 

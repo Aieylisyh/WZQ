@@ -62,7 +62,6 @@ cc.Class({
     },
 
     checkLoginFinish() {
-        //如果pip完成，会调用OnLoginFinish 才能显示广告和小红点
         //debug.log("mw自主初始化 checkLoginFinish");
         if (appContext.getUxManager().loginFinished) {
             //debug.log("ok");
@@ -72,6 +71,9 @@ cc.Class({
 
     onLoginFinish() {
         if (this.setupLoginFinish) {
+            let userInfo = appContext.getUxManager().getUserInfo();
+            this.playerInfoBoard.setup(userInfo, true);
+            this.setHouse(userInfo);
             return;
         }
 

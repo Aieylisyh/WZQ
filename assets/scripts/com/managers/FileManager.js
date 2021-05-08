@@ -596,7 +596,7 @@ cc.Class({
      * doneTraitment.failSpriteFrame: 失败时要显示的SpriteFrame
      * doneTraitment.param: doneTraitment.callback的第3个参数，第1个参数固定为loadedSpriteFrame 第2个参数固定为targetSprite
      */
-    applySpriteSafe: function (resUrl, targetSprite, doneTraitment, isSilent = true, timeout = 5) {
+    applySpriteSafe: function (resUrl, targetSprite, doneTraitment, isSilent = true, timeout = 15) {
         if (targetSprite == null) {
             return;
         }
@@ -636,13 +636,13 @@ cc.Class({
     loadResourceSafe: function (resUrl, ccType, callback, caller, isSilent = false, fixedTimeout) {
         //debug.log("loadResourceSafe " + resUrl);
 
-        let timeoutTime = 10;
+        let timeoutTime = 30;
         let typeChecker = "object";
 
         if (ccType == cc.SpriteFrame) {
-            timeoutTime = 5;
+            timeoutTime = 30;
         } else if (ccType == cc.Prefab) {
-            timeoutTime = 10;
+            timeoutTime = 30;
         }
 
         if (fixedTimeout != null && fixedTimeout > 0) {
@@ -740,7 +740,7 @@ cc.Class({
      * 和loadResourceSafe相似，可以指定固定的超时时间，不显示等待转圈
      * 适用于一开始有进度条的加载，以及不应该让用户无法操作的下载
      */
-    loadResourceSafeSlient: function (resUrl, ccType, callback, caller, fixedTimeout = 12) {
+    loadResourceSafeSlient: function (resUrl, ccType, callback, caller, fixedTimeout = 30) {
         this.loadResourceSafe(resUrl, ccType, callback, caller, true, fixedTimeout);
     },
 

@@ -2,7 +2,6 @@ let LoginState = require("LoginState");
 let SequenceStateMachine = require("SequenceStateMachine");
 let PipLogic = require('PipLogic');
 const WechatAPI = require("./WechatAPI");
-// let StorageKey = require("StorageKey");
 // let StringUtil = require("StringUtil");
 // let DialogTypes = require("DialogTypes");
 // let DataKey = require('DataKey');
@@ -200,7 +199,10 @@ cc.Class({
             this.userInfoButton.destroy();
         }
         debug.log("enterStateFinish onLoginFinish");
-        appContext.getUxManager().onLoginFinish();
+        if(!WechatAPI.isYY){
+            appContext.getUxManager().onLoginFinish();
+        }
+     
         appContext.getAppController().startListenWxOnShowParam(); //允许AppController自刷新启动参数
     },
 });

@@ -1,7 +1,7 @@
 //let DataKey = require("DataKey");
 //let StringUtil = require("StringUtil");
 let DialogTypes = require("DialogTypes");
-// let StorageKey = require("StorageKey");
+let StorageKey = require("StorageKey");
 // let DataUtil = require("DataUtil");
 
 let WechatAPI = {
@@ -378,13 +378,13 @@ let WechatAPI = {
 
             this.enableShare = false;
             this.shareUtil = require("TtShare");
-            if(debug.enableLog){
+            if (debug.enableLog) {
                 uc.setEnableDebug({
                     enableDebug: true,
-                    complete: function(data) {
-                      console.log('uc.setEnableDebug openDebug. ');
+                    complete: function (data) {
+                        console.log('uc.setEnableDebug openDebug. ');
                     },
-                  });
+                });
             }
 
             uc.getLaunchOptionsSync({
@@ -403,7 +403,7 @@ let WechatAPI = {
                     console.log('getLaunchOptionsSync fail', JSON.stringify(err));
                 },
             });
-        }else if (debug.platformYY) {
+        } else if (debug.platformYY) {
             console.log("isYY");
 
             this.isYY = true;
@@ -424,14 +424,38 @@ let WechatAPI = {
                     }
                 }
             });
+            console.log("yy登录");
             WanGameH5sdk.login({
                 success: function (data) {
                     // 登录成功回调
+                    console.log("登录成功");
                     console.log(data);    // data: {"sid": "foo", "uid": 1140000000757060}，sid用于服务端对接参数,uid作为唯一用户标识
+                    let userId = WechatAPI.getStorageSync(StorageKey.UserKey);
+                    let isNewUser = false;
+                    if (data.uid != userId) {
+                        isNewUser = true;
+                        userId = data.uid;
+                        WechatAPI.setStorageSync(StorageKey.UserKey, userId);
+                    }
+
+                    appContext.getUxManager().onLoginFinish(userId);
+                    let userBasic = appContext.getUxManager().getUserInfo().basic;
+                    if (isNewUser) {
+                        WanGameH5sdk.log({
+                            action: 'createrole',
+                            gser: '1',
+                            servername: 'WZQ1',
+                            roleid: userId,
+                            rolename: userBasic.nickname,
+                        });
+                    }
                 },
+
                 fail: function (data) {
                     // 登录失败回调
+                    console.log("登录失败");
                     console.log(data.status); // 失败状态码
+                    appContext.getUxManager().onLoginFinish();
                 }
             });
 
@@ -815,11 +839,19 @@ let WechatAPI = {
         }
 
         if (typeof wx.setStorage == "function") {
-            wx.setStorage({
-                key: storageKey,
-                value: storageData,//vivo
-                data: storageData,
-            });
+            if (this.isYY) {
+                wx.setStorage(storageKey,storageData);
+            }else  if (this.isVivo) {
+                wx.setStorage({
+                    key: storageKey,
+                    value: storageData,//vivo
+                });
+            } else  if (typeof wx.setStorage == "function") {
+                wx.setStorage({
+                    key: storageKey,
+                    data: storageData,
+                });
+            } 
         } else if (window.localStorage && typeof window.localStorage.setItem == "function") {
             window.localStorage.setItem(storageKey, storageData);
         } else {
@@ -833,11 +865,19 @@ let WechatAPI = {
         }
 
         if (typeof wx.setStorage == "function") {
-            wx.setStorage({
-                key: storageKey,
-                value: storageData,//vivo
-                data: storageData,
-            });
+            if (this.isYY) {
+                wx.setStorage(storageKey,storageData);
+            }else  if (this.isVivo) {
+                wx.setStorage({
+                    key: storageKey,
+                    value: storageData,//vivo
+                });
+            } else  if (typeof wx.setStorage == "function") {
+                wx.setStorage({
+                    key: storageKey,
+                    data: storageData,
+                });
+            } 
         } else if (window.localStorage && typeof window.localStorage.setItem == "function") {
             window.localStorage.setItem(storageKey, storageData);
         } else if (cc.sys && cc.sys.localStorage) {
@@ -859,6 +899,10 @@ let WechatAPI = {
             return;
         }
 
+        if(this.isYY){
+            WanGameH5sdk.removeStorage(storageKey);
+            return;
+        }
         if (typeof wx.removeStorageSync == "function") {
             wx.removeStorageSync(storageKey);
         } else if (typeof wx.deleteStorage == "function") {
@@ -925,6 +969,11 @@ let WechatAPI = {
         }
 
         if (typeof wx.getStorage == "function") {
+          if(this.isYY){
+            wx.getStorage(storageKey, function(value){
+                callback.call(caller,value);
+            });
+          }else{
             wx.getStorage({
                 key: storageKey,
 
@@ -936,10 +985,12 @@ let WechatAPI = {
                     callback.call(caller);
                 },
             });
+          }
         } else {
             callback.call(caller, this.getStorageSync(storageKey));
         }
     },
+
 
     GC() {
         if (this.isEnabled() && typeof wx.triggerGC == "function") {
