@@ -41,7 +41,7 @@ cc.Class({
                 this.text.string = "已签到，明日可再次签到";
             }
         } else {
-            this.text.string = "今天可领签到奖励！";
+            this.text.string = "可领签到奖励！";
         }
     },
 
@@ -49,7 +49,6 @@ cc.Class({
         appContext.getSoundManager().playBtn();
         if (!appContext.getUxManager().todayCheckedin()) {
             this.checkinSuc();
-
         } else {
             let canDoubleCheckin = appContext.getUxManager().gameInfo.checkinTodayTimes == 1;
             if (canDoubleCheckin) {

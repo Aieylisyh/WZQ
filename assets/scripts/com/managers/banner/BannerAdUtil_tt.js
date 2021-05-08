@@ -6,6 +6,7 @@ cc.Class({
     },
 
     isEnabled: function () {
+        return false;
         if (debug.extraSettings.nobanner) {
             return false;
         }

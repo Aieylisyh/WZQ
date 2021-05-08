@@ -298,6 +298,7 @@ cc.Class({
                 let self = this;
 
                 let info = {
+                    adIcon:true,
                     content: "看一个视频即可永久解锁【巅峰对决】模式",
                 };
                 info.btn1 = {
@@ -361,6 +362,7 @@ cc.Class({
 
             if (canLure) {
                 let info = {
+                    adIcon:true,
                     content: "金币不足\n看个广告即可获得大量金币",
                     btn1: {
                         name: "好 的",

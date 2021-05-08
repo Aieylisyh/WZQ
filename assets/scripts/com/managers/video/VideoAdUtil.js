@@ -27,6 +27,7 @@ cc.Class({
     },
 
     show() {
+        console.log("show video ad");
         if (!this.isEnabled()) {
             return;
         }

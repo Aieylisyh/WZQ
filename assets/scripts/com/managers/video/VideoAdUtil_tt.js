@@ -10,7 +10,7 @@
      },
 
      customCreate() {
-         debug.log("Create视频广告");
+         //debug.log("Create视频广告");
          this._ad = wx.createRewardedVideoAd({
              adUnitId: this.id,
          });

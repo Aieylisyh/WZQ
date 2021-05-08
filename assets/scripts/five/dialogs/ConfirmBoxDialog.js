@@ -9,6 +9,8 @@ cc.Class({
         btn2Sprite: cc.Sprite,
 
         closeBtn: cc.Node,
+
+        adIcon: cc.Node,
     },
 
     show: function (info) {
@@ -27,7 +29,11 @@ cc.Class({
 
         this.label.string = info.content;
         this.clickFunction = null
-
+        if (info.adIcon) {
+            this.adIcon.active=true;
+        }else{
+            this.adIcon.active=false;
+        }
         if (info.btn1 != null) {
 
             if (info.btn1.clickFunction != null) {
