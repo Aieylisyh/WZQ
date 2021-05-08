@@ -384,7 +384,10 @@ cc.Class({
         let action = cc.moveTo(0.5, 0, -40).easing(cc.easeCubicActionOut());
         this.buttons.runAction(action);
 
-        this.buttonDaily.active = (Math.random() > 0.6);
+        this.buttonDaily.active = (
+            Math.random() > 0.25
+            && appContext.getUxManager().getEndGameCounts()> 2
+            );
 
         this.scheduleOnce(function () {
             this.processStep();

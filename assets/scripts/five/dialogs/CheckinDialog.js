@@ -33,7 +33,7 @@ cc.Class({
             let canDoubleCheckin = appContext.getUxManager().gameInfo.checkinTodayTimes == 1;
             if (canDoubleCheckin) {
                 //看广告可领第二次
-                this.text.string = "看个广告，可再领取一次签到奖励！";
+                this.text.string = "观看【广告】，可再次领取签到奖励！";
                 if (debug.extraSettings.global) {
                     this.adIcon.active = true;
                 }

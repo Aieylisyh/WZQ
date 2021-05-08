@@ -582,8 +582,8 @@
         0,
         0,
         1,
-        1,
-        1,
+        0.75,
+        0.75,
         1
       ]
     },
@@ -1347,7 +1347,7 @@
     "asset": {
       "__uuid__": "85fe9e6a-0e60-4952-92b6-b215e3d8581a"
     },
-    "fileId": "e7Rgr0U8BJzrtMVOqYACrN",
+    "fileId": "72VzXI8vxLkoSMZzIK9Hjn",
     "sync": false
   },
   {
@@ -1389,7 +1389,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -202.64999999999998,
+        -240,
         -126.55999999999999,
         0,
         0,
@@ -1454,7 +1454,7 @@
     "asset": {
       "__uuid__": "85fe9e6a-0e60-4952-92b6-b215e3d8581a"
     },
-    "fileId": "d1L19k8qBMILtRQRHGRFkD",
+    "fileId": "35B4h7qrFNSKyKLOVB+qe/",
     "sync": false
   },
   {
@@ -1468,7 +1468,7 @@
     "_fontFamily": "Arial",
     "_isSystemFontUsed": true,
     "_N$string": "【4倍金币】的机会来啦！\n分享录屏成功将获得：",
-    "_N$horizontalAlign": 2,
+    "_N$horizontalAlign": 1,
     "_N$fontSize": 48,
     "_N$font": null,
     "_N$maxWidth": 0,
@@ -1515,7 +1515,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 840,
+      "width": 560,
       "height": 60.48
     },
     "_anchorPoint": {
@@ -1528,7 +1528,7 @@
       "ctor": "Float64Array",
       "array": [
         36,
-        -125,
+        -124,
         0,
         0,
         0,
@@ -1566,8 +1566,8 @@
       }
     ],
     "_useOriginalSize": false,
-    "_string": "您和其他小伙伴都能从分享出去的录屏进入游戏",
-    "_N$string": "您和其他小伙伴都能从分享出去的录屏进入游戏",
+    "_string": "小伙伴们都能通过录屏进入游戏",
+    "_N$string": "小伙伴们都能通过录屏进入游戏",
     "_fontSize": 40,
     "_lineHeight": 48,
     "_enableWrapText": true,
