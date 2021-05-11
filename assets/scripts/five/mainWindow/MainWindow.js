@@ -92,7 +92,7 @@ cc.Class({
         this.setHouse(userInfo);
         this.setRedDots();
         this.tickTime = 1;
-        if (this.node && WechatAPI.isWx || WechatAPI.isTT || WechatAPI.isMZ|| WechatAPI.isUC||WechatAPI.isYY) {
+        if (this.node && WechatAPI.isWx || WechatAPI.isTT || WechatAPI.isMZ || WechatAPI.isUC || WechatAPI.isYY) {
             WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
         }
     },
@@ -196,8 +196,14 @@ cc.Class({
         // 如果有需要在动画完毕后的执行某些操作，可以放在这里
         this.playUserInfoAction();
         this.showPromo();
-        
-        this.btnDaily.active =  appContext.getUxManager().isValidDailyRewardClaimedDay();
+
+        if (!debug.extraSettings.global) {
+            //this.btnDaily.active = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+            this.btnDaily.active = false;
+        } else {
+            this.btnDaily.active = false;
+        }
+        //this.btnDaily.active =  appContext.getUxManager().isValidDailyRewardClaimedDay();
     },
 
     // 播放用户信息栏动画
@@ -298,7 +304,7 @@ cc.Class({
                 let self = this;
 
                 let info = {
-                    adIcon:true,
+                    adIcon: true,
                     content: "看一个视频即可永久解锁【巅峰对决】模式",
                 };
                 info.btn1 = {
@@ -362,7 +368,7 @@ cc.Class({
 
             if (canLure) {
                 let info = {
-                    adIcon:true,
+                    adIcon: true,
                     content: "金币不足\n看个广告即可获得大量金币",
                     btn1: {
                         name: "好 的",

@@ -147,6 +147,7 @@ cc.Class({
                 appContext.getAnalyticManager().sendTT('videoAd_shop', {
                     res: 0,
                 });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "成功获得奖励");
                 funcSuc.call(caller);
             },
             ceaseCb: function () {

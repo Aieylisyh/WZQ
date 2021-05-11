@@ -1,3 +1,6 @@
+
+let DialogTypes = require("DialogTypes");
+
 cc.Class({
     properties: {
         _ad: null,
@@ -29,6 +32,8 @@ cc.Class({
     show() {
         console.log("show video ad");
         if (!this.isEnabled()) {
+            //this.onFail();
+            appContext.getDialogManager().showDialog(DialogTypes.Toast, "不能播放视频广告");
             return;
         }
 
@@ -96,7 +101,7 @@ cc.Class({
     },
 
     onCanPlay: function () {
-        debug.log("onCanPlay!!");
+        debug.log("!!!!!onCanPlay!!");
         this.cb && this.cb.canPlayCb && this.cb.canPlayCb.call(this.cb.caller);
         this._loaded = true;
         this._isLoading = false;

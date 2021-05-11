@@ -47,7 +47,7 @@ cc.Class({
             return;
         }
 
-        if (appContext.getGameSettingManager().noSound) {
+        if (appContext.getGameSettingManager()._muteSound) {
             return;
         }
 
@@ -164,7 +164,7 @@ cc.Class({
         }
 
         debug.log("start bg Music");
-        if (appContext.getGameSettingManager().noSound) {
+        if (appContext.getGameSettingManager()._muteMusic) {
             this.stopBackgroundMusic();
             return;
         }
