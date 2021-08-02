@@ -35,12 +35,14 @@ cc.Class({
         this.demoChess.active = isActive;
     },
 
-    setDemoChess: function (type, cacheType = false) {
-        if (cacheType) {
-            this.demoType = type;
+    setDemoChess: function (type) {
+        if (type==null) {
+            if(appContext.getGameManager().game.currentChessType== 1){
+                type = ChessType.Black;
+            }else{
+                type = ChessType.White;
+            }
         }
-
-        type = type || this.demoType;
 
         if (type == ChessType.Black) {
             this.demoSprite.spriteFrame = this.blackChessSpriteFrame;

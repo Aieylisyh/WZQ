@@ -259,6 +259,7 @@ cc.Class({
         return sf;
     },
 
+    //点击白棋盒子
     onClickSelfChess() {
         if (debug.enableLog) {
             let firstIsSelfPlayer = appContext.getGameManager().game.firstIsSelfPlayer;
@@ -272,12 +273,17 @@ cc.Class({
         }
     },
 
+     //点击黑棋盒子
     onClickOppoChess() {
         if (debug.enableLog) {
             appContext.getGameManager().showChat(false, "happy");
         } else {
             this.cheatCode += 100;
         }
+    },
+
+    ToggleSoloPlay(b){
+        appContext.getGameManager().soloPlay = b;
     },
 
     onClickProfil() {

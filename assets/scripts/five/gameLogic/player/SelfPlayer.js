@@ -66,8 +66,12 @@ let SelfPlayer = cc.Class({
         }
 
         if (appContext.getGameManager().game.currentChessType != this.chessType) {
-            debug.log("currentChessType is not match!");
-            return;
+            if(appContext.getGameManager().soloPlay){
+                debug.log("soloPlay opponent chess");
+            }else{
+                debug.log("currentChessType is not match!");
+                return;
+            }
         }
 
         cbm.commitChessAt(x, y, t);

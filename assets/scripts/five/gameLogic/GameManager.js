@@ -9,6 +9,8 @@ cc.Class({
         game: {
             default: null,
         },
+
+        soloPlay:false,
     },
 
     update: function (dt) {
@@ -156,12 +158,6 @@ cc.Class({
 
         this.setupFirstPlay();
         this.getGameWindow().onStartGame(this.game.firstIsSelfPlayer);
-        if (this.game.firstIsSelfPlayer) {
-            this.chessboardManager.setMyChessType(true);
-        } else {
-            this.chessboardManager.setMyChessType(false);
-        }
-
         this.game.currentTurn = 0;
         this.startNextTurn(2);
         return true;

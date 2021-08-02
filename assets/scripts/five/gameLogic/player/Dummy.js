@@ -88,9 +88,12 @@ let Dummy = cc.Class({
 
     notifyPlay: function () {
         //debug.log("dummy notifyPlay");
-        appContext.getGameManager().chessboardManager.setLocked(true);
-
-        this.addTask(Dummy.getPlayChessTask(this.status));
+        if( appContext.getGameManager().soloPlay){
+            appContext.getGameManager().chessboardManager.setLocked(false);
+        }else{
+            appContext.getGameManager().chessboardManager.setLocked(true);
+            this.addTask(Dummy.getPlayChessTask(this.status));
+        }
     },
 
     //执行一个task

@@ -118,7 +118,7 @@ cc.Class({
         this.chessChecker.node.active = isActive;
     },
 
-    placeChessChecker(touchPos, type) {
+    placeChessChecker(touchPos) {
         //这里的来回转化是必须的
         let point = this.positionToChessPoint(touchPos);
         if (this.chessChecker.node.x == point.x && this.chessChecker.node.y == point.y) {

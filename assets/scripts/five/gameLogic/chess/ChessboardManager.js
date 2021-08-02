@@ -10,7 +10,7 @@ cc.Class({
 
         myChessType: {
             get: function () {
-                return this._myChessType;
+                return appContext.getGameManager().game.currentChessType;
             },
             visible: false,
         },
@@ -23,16 +23,6 @@ cc.Class({
 
     setState(s) {
         this._state = s;
-    },
-
-    setMyChessType: function (isBlack = true) {
-        if (isBlack) {
-            this._myChessType = 1;
-        } else {
-            this._myChessType = 2;
-        }
-
-        this.chessboard.chessChecker.setDemoChess(this._myChessType, true);
     },
 
     onTouchStart: function (touchPos) {
@@ -72,7 +62,7 @@ cc.Class({
         this._locked = locked;
     },
 
-    playWinEffect(){
+    playWinEffect() {
         this.chessboard.playWinEffect();
     },
 
