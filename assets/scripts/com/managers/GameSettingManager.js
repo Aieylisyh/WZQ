@@ -5,9 +5,13 @@ cc.Class({
 
         _muteMusic: false,
 
+        _muteChat: false,
+
         _muteSoundKey: "muteSoundKey",
 
         _muteMusicKey: "muteMusicKey",
+
+        _muteChatKey: "muteChatKey",
     },
 
     ctor: function () {
@@ -30,6 +34,14 @@ cc.Class({
                 this._muteMusic = false;
             }
         }, this);
+
+        WechatAPI.getStorage(this._muteChatKey, function (data) {
+            if (data === "true") {
+                this._muteChat = true;
+            } else {
+                this._muteChat = false;
+            }
+        }, this);
     },
 
     getMuteSound: function () {
@@ -38,6 +50,20 @@ cc.Class({
 
     getMuteMusic: function () {
         return this._muteMusic;
+    },
+
+    getMuteChat: function () {
+        return this._muteChat;
+    },
+
+    muteChat: function () {
+        this._muteChat = true;
+        WechatAPI.setStorage(this._muteChatKey, "true");
+    },
+
+    unmuteChat: function () {
+        this._muteChat = false;
+        WechatAPI.setStorage(this._muteChatKey, "false");
     },
 
     muteSound: function () {

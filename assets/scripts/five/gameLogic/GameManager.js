@@ -166,7 +166,7 @@ cc.Class({
     //提交当前的场面
     commitBoard: function (chessMap, lastChessType) {
         this.game.chessMap = chessMap;
-
+        appContext.getSoundManager().playChess();
         let winRes = Ai.checkWin(lastChessType);
         // debug.log("winRes");
         // debug.log(winRes);
@@ -174,7 +174,6 @@ cc.Class({
         if (winRes && winRes.win) {
             this.delayedPlayerWin(lastChessType);
         } else {
-            appContext.getSoundManager().playChess();
             if (this.getCurrentPlayerIsSelf()) {
                 this.getGameWindow().onPlayerCommitChess();
             }

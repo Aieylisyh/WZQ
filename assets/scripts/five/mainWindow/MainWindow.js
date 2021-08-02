@@ -521,7 +521,7 @@ cc.Class({
         //看广告，说明5倍积分
         appContext.getSoundManager().playBtn();
         let info = {
-            content: "在【巅峰对决】模式\n您可以匹配到段位最高的对手\n获胜得到积分较多\n失败损失积分较少\n\n每匹配一次\n需要休息较长的时间",
+            content: "在【巅峰对决】模式\n可以匹配到高段位的对手\n获胜得到积分较多\n失败损失积分较少\n\n每次匹配后\n要休息较长的时间",
         };
         info.hideCloseBtn = true;
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);

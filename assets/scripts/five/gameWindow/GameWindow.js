@@ -66,7 +66,7 @@ cc.Class({
         this.resetRecordBtns();
 
         let matchDialog = appContext.getDialogManager().getCachedDialog(DialogTypes.Match);
-        if(matchDialog){
+        if (matchDialog) {
             matchDialog.hide();
         }
     },
@@ -221,6 +221,10 @@ cc.Class({
     },
 
     playChat(isSelf, content) {
+        if (appContext.getGameSettingManager().getMuteChat()) {
+            return;
+        }
+
         if (content == "" || content == null) {
             return;
         }
@@ -262,6 +266,7 @@ cc.Class({
     //点击白棋盒子
     onClickSelfChess() {
         this.ToggleSoloPlay(true);
+        appContext.getDialogManager().showDialog(DialogTypes.Toast, "摆棋已开启");
         return;
         if (debug.enableLog) {
             let firstIsSelfPlayer = appContext.getGameManager().game.firstIsSelfPlayer;
@@ -275,9 +280,10 @@ cc.Class({
         }
     },
 
-     //点击黑棋盒子
+    //点击黑棋盒子
     onClickOppoChess() {
         this.ToggleSoloPlay(false);
+        appContext.getDialogManager().showDialog(DialogTypes.Toast, "摆棋已关闭");
         return;
         if (debug.enableLog) {
             appContext.getGameManager().showChat(false, "happy");
@@ -286,7 +292,7 @@ cc.Class({
         }
     },
 
-    ToggleSoloPlay(b){
+    ToggleSoloPlay(b) {
         appContext.getGameManager().soloPlay = b;
     },
 

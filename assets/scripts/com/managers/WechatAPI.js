@@ -516,10 +516,10 @@ let WechatAPI = {
 
         this.hasTTRawMoreGame = false;
         this.hasTTNewMoreGame = false;
-        if(!WechatAPI.isEnabled()){
+        if (!WechatAPI.isEnabled()) {
             return;
         }
-        
+
         if (typeof wx.createMoreGamesButton == 'function') {
             if (typeof wx.showMoreGamesModal !== 'function' || WechatAPI.systemInfo.platform == 'ios' || WechatAPI.systemInfo.platform == 'iOS') {
                 //this.hasTTRawMoreGame = true;
@@ -838,23 +838,24 @@ let WechatAPI = {
 
     setStorage: function (storageKey, storageData) {
         if (!this.isEnabled()) {
+            cc.sys.localStorage.setItem(storageKey, storageData)
             return;
         }
 
         if (typeof wx.setStorage == "function") {
             if (this.isYY) {
-                wx.setStorage(storageKey,storageData);
-            }else  if (this.isVivo) {
+                wx.setStorage(storageKey, storageData);
+            } else if (this.isVivo) {
                 wx.setStorage({
                     key: storageKey,
                     value: storageData,//vivo
                 });
-            } else  if (typeof wx.setStorage == "function") {
+            } else if (typeof wx.setStorage == "function") {
                 wx.setStorage({
                     key: storageKey,
                     data: storageData,
                 });
-            } 
+            }
         } else if (window.localStorage && typeof window.localStorage.setItem == "function") {
             window.localStorage.setItem(storageKey, storageData);
         } else {
@@ -864,23 +865,24 @@ let WechatAPI = {
 
     setStorageSync: function (storageKey, storageData) {
         if (!this.isEnabled()) {
+            cc.sys.localStorage.setItem(storageKey, storageData)
             return;
         }
 
         if (typeof wx.setStorage == "function") {
             if (this.isYY) {
-                wx.setStorage(storageKey,storageData);
-            }else  if (this.isVivo) {
+                wx.setStorage(storageKey, storageData);
+            } else if (this.isVivo) {
                 wx.setStorage({
                     key: storageKey,
                     value: storageData,//vivo
                 });
-            } else  if (typeof wx.setStorage == "function") {
+            } else if (typeof wx.setStorage == "function") {
                 wx.setStorage({
                     key: storageKey,
                     data: storageData,
                 });
-            } 
+            }
         } else if (window.localStorage && typeof window.localStorage.setItem == "function") {
             window.localStorage.setItem(storageKey, storageData);
         } else if (cc.sys && cc.sys.localStorage) {
@@ -899,10 +901,11 @@ let WechatAPI = {
 
     removeStorageSync: function (storageKey) {
         if (!this.isEnabled()) {
+            cc.sys.localStorage.removeItem(storageKey)
             return;
         }
 
-        if(this.isYY){
+        if (this.isYY) {
             WanGameH5sdk.removeStorage(storageKey);
             return;
         }
@@ -920,22 +923,23 @@ let WechatAPI = {
     },
 
     getStorageSync: function (storageKey, tryReadAsJSON = true, typeConvertRule) {
+        let info;
         if (!this.isEnabled()) {
-            return null;
+            info = cc.sys.localStorage.getItem(storageKey);
+        } else {
+            if (!this.isVivo && typeof wx.getStorageSync == "function") {
+                info = wx.getStorageSync(storageKey);
+            } else if (this.isVivo) {
+                info = wx.getStorageSync({
+                    key: storageKey
+                });
+            } else if (window.localStorage && typeof window.localStorage.getItem == "function") {
+                info = window.localStorage.getItem(storageKey);
+            } else if (cc.sys && cc.sys.localStorage) {
+                info = cc.sys.localStorage.getItem(storageKey);
+            }
         }
 
-        let info;
-        if (!this.isVivo && typeof wx.getStorageSync == "function") {
-            info = wx.getStorageSync(storageKey);
-        } else if (this.isVivo) {
-            info = wx.getStorageSync({
-                key: storageKey
-            });
-        } else if (window.localStorage && typeof window.localStorage.getItem == "function") {
-            info = window.localStorage.getItem(storageKey);
-        } else if (cc.sys && cc.sys.localStorage) {
-            info = cc.sys.localStorage.getItem(storageKey);
-        }
 
         //debug.log("!getStorageSync " + storageKey);
         //debug.log(info);
@@ -968,27 +972,28 @@ let WechatAPI = {
 
     getStorage: function (storageKey, callback, caller) {
         if (!this.isEnabled()) {
+            callback.call(caller, this.getStorageSync(storageKey));
             return;
         }
 
         if (typeof wx.getStorage == "function") {
-          if(this.isYY){
-            wx.getStorage(storageKey, function(value){
-                callback.call(caller,value);
-            });
-          }else{
-            wx.getStorage({
-                key: storageKey,
+            if (this.isYY) {
+                wx.getStorage(storageKey, function (value) {
+                    callback.call(caller, value);
+                });
+            } else {
+                wx.getStorage({
+                    key: storageKey,
 
-                success: function (res) {
-                    callback.call(caller, res.data);
-                },
+                    success: function (res) {
+                        callback.call(caller, res.data);
+                    },
 
-                fail: function (res) {
-                    callback.call(caller);
-                },
-            });
-          }
+                    fail: function (res) {
+                        callback.call(caller);
+                    },
+                });
+            }
         } else {
             callback.call(caller, this.getStorageSync(storageKey));
         }

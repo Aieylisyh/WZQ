@@ -5,6 +5,8 @@ cc.Class({
         bgMusicCheck: cc.Toggle,
 
         soundEffectCheck: cc.Toggle,
+
+        chatCheck: cc.Toggle,
     },
 
     show: function (info) {
@@ -37,6 +39,18 @@ cc.Class({
         }
     },
 
+     // 点击"文字吐槽"
+     onClickBtnMuteChat: function () {
+        appContext.getSoundManager().playBtn();
+        let gameSettingManager = appContext.getGameSettingManager();
+
+        if (this.chatCheck.isChecked) {
+            gameSettingManager.unmuteChat();
+        } else {
+            gameSettingManager.muteChat();
+        }
+    },
+
     onClickBtnClose: function () {
         this.hide();
     },
@@ -46,5 +60,6 @@ cc.Class({
 
         this.bgMusicCheck.isChecked = !gsm.getMuteMusic();
         this.soundEffectCheck.isChecked = !gsm.getMuteSound();
+        this.chatCheck.isChecked = !gsm.getMuteChat();
     },
 });

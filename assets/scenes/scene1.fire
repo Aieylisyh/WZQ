@@ -198,7 +198,7 @@
       "array": [
         0,
         0,
-        419.0865393913782,
+        419.9524206711125,
         0,
         0,
         0,
@@ -327,7 +327,7 @@
       "__id__": 5
     },
     "_enabled": true,
-    "enableLog": true,
+    "enableLog": false,
     "useDevFileDownloadRoot": false,
     "attachVersionToFileDownloadRoot": false,
     "useDevLocalServerIp": false,
@@ -1162,6 +1162,7 @@
     },
     "_enabled": true,
     "game": null,
+    "soloPlay": false,
     "_id": "98YGGf9CRGm5u6JEcTzBy7"
   },
   {
