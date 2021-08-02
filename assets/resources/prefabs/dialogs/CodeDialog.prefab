@@ -781,7 +781,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 832.17,
+      "width": 672,
       "height": 70.56
     },
     "_anchorPoint": {
@@ -832,8 +832,8 @@
       }
     ],
     "_useOriginalSize": true,
-    "_string": "关注XXXXXXXXXXX，立即获得活动码",
-    "_N$string": "关注XXXXXXXXXXX，立即获得活动码",
+    "_string": "【五子棋对战】活动码长期有效",
+    "_N$string": "【五子棋对战】活动码长期有效",
     "_fontSize": 48,
     "_lineHeight": 56,
     "_enableWrapText": true,

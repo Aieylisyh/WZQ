@@ -28,7 +28,7 @@ cc.Class({
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "请输入活动码");
         } else {
             if (s == "reset") {
-                appContext.getDialogManager().showDialog(DialogTypes.Toast, "已重置数据");
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "数据已重置");
                 appContext.getUxManager().resetGameInfo();
                 return;
             }
@@ -44,11 +44,11 @@ cc.Class({
             debug.log("22 " + s);
             let reward;
             if (s == "wzqdz") {
-                reward = [{ type: "GrabFirstCard", count: 2 }, { type: "Gold", count: 188 }];
+                reward = [{ type: "GrabFirstCard", count: 1 }, { type: "Gold", count: 288 }];
             } else if (s == "woshidaren") {
-                reward = [{ type: "GrabFirstCard", count: 5 }, { type: "KeepGradeCard", count: 3 }, { type: "Gold", count: 688 }];
+                reward = [{ type: "GrabFirstCard", count: 5 }, { type: "KeepGradeCard", count: 1 }, { type: "Gold", count: 588 }];
             } else if (s == "wzqdzdr") {
-                reward = [{ type: "GrabFirstCard", count: 6 }, { type: "KeepGradeCard", count: 6 }, { type: "Gold", count: 1000 }];
+                reward = [{ type: "GrabFirstCard", count: 6 }, { type: "KeepGradeCard", count: 6 }, { type: "Gold", count: 988 }];
             }
             this.recodeCode(s);
             appContext.getUxManager().rewardItems(reward);
