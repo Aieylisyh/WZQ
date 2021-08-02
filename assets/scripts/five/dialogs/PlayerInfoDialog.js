@@ -189,6 +189,16 @@ cc.Class({
         }
     },
 
+    onClickBtnNewNickname: function () {
+        let userInfo = appContext.getUxManager().getUserInfo();
+
+        appContext.getSoundManager().playBtn();
+        let s =appContext.getUxManager().getRawNickname();
+        userInfo.basic.nickname = s;
+        appContext.getUxManager().saveUserInfo(userInfo);
+        this.playerinfo.setup(userInfo);
+        appContext.getDialogManager().showDialog(DialogTypes.Toast, "昵称已变更！");
+    },
 
     onClickBtnProfile: function () {
         appContext.getSoundManager().playBtn();

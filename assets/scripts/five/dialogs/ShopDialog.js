@@ -37,14 +37,16 @@ cc.Class({
         if (appContext.getUxManager().canUseRandomGold()) {
             let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
             if (canWatchAd) {
-                canLure = true;
+                if (!debug.extraSettings.global) {
+                    canLure = true;
+                }
             }
         }
 
         if (canLure) {
             let info = {
                 content: "金币不足\n看个广告即可获得大量金币",
-                adIcon:true,
+                adIcon: true,
                 //  content: "金币不足\n有未使用的免费金币次数\n看个广告即可获得大量金币",
                 btn1: {
                     name: "好 的",
@@ -61,7 +63,7 @@ cc.Class({
 
         appContext.getDialogManager().showDialog(DialogTypes.Toast, "金币不足");
     },
-    
+
     onClickBtnGrabFirstCard: function () {
         if (appContext.getUxManager().useGold(Item.GrabFirstCard.price)) {
             appContext.getSoundManager().playUseGold();

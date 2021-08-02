@@ -516,6 +516,10 @@ let WechatAPI = {
 
         this.hasTTRawMoreGame = false;
         this.hasTTNewMoreGame = false;
+        if(!WechatAPI.isEnabled()){
+            return;
+        }
+        
         if (typeof wx.createMoreGamesButton == 'function') {
             if (typeof wx.showMoreGamesModal !== 'function' || WechatAPI.systemInfo.platform == 'ios' || WechatAPI.systemInfo.platform == 'iOS') {
                 //this.hasTTRawMoreGame = true;
@@ -523,7 +527,6 @@ let WechatAPI = {
                 this.hasTTNewMoreGame = true;
             }
         } else {
-            //什么都没有
             return;
         }
 

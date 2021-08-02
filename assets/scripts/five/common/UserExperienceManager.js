@@ -295,11 +295,13 @@ cc.Class({
     },
 
     getRawNickname() {
-        let aPool = ["暖暖", "机智", "非凡", "酷酷"];
-        let bPool = ["战士", "隐士", "法师", "伯爵"];
+        let aPool = ["暖暖", "机智", "非凡", "酷", "风", "水", "炎", "林", "神奇", "沉默", "暗影", "无敌"];
+        let bPool = ["智者", "隐士", "法师", "伯爵", "棋手", "棋圣", "王者", "精英", "侠客", "王", "诗人", "游侠", "行者", "舞者"];
+        let cPool = ["的", "之", "-", "·"];
         let a = aPool[Math.floor(Math.random() * aPool.length)];
         let b = bPool[Math.floor(Math.random() * bPool.length)];
-        return a + "的" + b;
+        let c = cPool[Math.floor(Math.random() * cPool.length)];
+        return a + c + b;
     },
 
     getUserInfo: function () {

@@ -55,7 +55,7 @@ cc.Class({
         window.appContext = this;
     },
     start: function () {
-        console.log("appContext start20210104");
+        //console.log("appContext start20210722");
         //初始化实例，注意顺序
         //程序配置
         try {
@@ -80,8 +80,6 @@ cc.Class({
         this.appController.startListenWxOnShowEarlyParam();
 
         //切换到首场景
-
-
         this.scheduleOnce(function () {
             this.windowManager.switchToLoadingWindow();
         }, 0.1);

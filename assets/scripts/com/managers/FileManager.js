@@ -1,3 +1,5 @@
+const WechatAPI = require("./WechatAPI");
+
 cc.Class({
     properties: {
         _pathPrefix: "res/raw-assets/resources/",
@@ -18,7 +20,7 @@ cc.Class({
         this._currentDownloadings = [];
         this._currentSavings = [];
 
-        if (typeof wx.getFileSystemManager == "function") {
+        if (WechatAPI.isEnabled()&& typeof wx.getFileSystemManager == "function") {
             //WechatAPI.isWx || WechatAPI.isOppo || WechatAPI.isTT || WechatAPI.isBaidu  MZ
             this._fs = wx.getFileSystemManager();
         } else {

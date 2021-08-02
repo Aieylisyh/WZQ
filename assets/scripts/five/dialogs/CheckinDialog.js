@@ -34,9 +34,7 @@ cc.Class({
             if (canDoubleCheckin) {
                 //看广告可领第二次
                 this.text.string = "观看【广告】，可再次领取签到奖励！";
-                if (debug.extraSettings.global) {
-                    this.adIcon.active = true;
-                }
+                this.adIcon.active = true;
             } else {
                 this.text.string = "已签到，明日可再次签到";
             }
