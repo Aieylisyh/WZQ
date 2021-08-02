@@ -261,6 +261,8 @@ cc.Class({
 
     //点击白棋盒子
     onClickSelfChess() {
+        this.ToggleSoloPlay(true);
+        return;
         if (debug.enableLog) {
             let firstIsSelfPlayer = appContext.getGameManager().game.firstIsSelfPlayer;
             if (firstIsSelfPlayer) {
@@ -275,6 +277,8 @@ cc.Class({
 
      //点击黑棋盒子
     onClickOppoChess() {
+        this.ToggleSoloPlay(false);
+        return;
         if (debug.enableLog) {
             appContext.getGameManager().showChat(false, "happy");
         } else {
