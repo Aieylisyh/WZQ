@@ -55,7 +55,11 @@ cc.Class({
                 if (canWatchAd) {
                     this.showVideo();
                 } else {
-                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "签到失败，请稍后重试");
+                    if(debug.freeAdReward){
+                        this.checkinSuc();
+                    }else{
+                        appContext.getDialogManager().showDialog(DialogTypes.Toast, "签到失败，请稍后重试");
+                    }
                 }
             } else {
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "今天已签到过了");

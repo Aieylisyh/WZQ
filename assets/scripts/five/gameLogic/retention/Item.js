@@ -51,7 +51,7 @@ let item = {
             }
 
             if (!isFirst) {
-                res += " ";
+                res += "  ";
             }
             res += item.name + itemInfo.count + item.unit;
             if (isFirst) {

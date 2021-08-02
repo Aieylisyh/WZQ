@@ -4,7 +4,9 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        checkCross: cc.Node,//十字准星
+        checkCross:  require("ChessCheckerCross"),//十字准星
+
+        //checkCross: cc.Node,//十字准星
 
         commitBtn: cc.Node, //打钩按钮
 
@@ -23,8 +25,11 @@ cc.Class({
         commitBtnSprite: cc.Sprite,
     },
 
-    toggleCheckCross: function (isActive = true) {
-        this.checkCross.active = isActive;
+    toggleCheckCross: function (isActive = true, isBlack) {
+        this.checkCross.node.active = isActive;
+        if(isActive){
+            this.checkCross.SetBlack(isBlack);
+        }
     },
 
     toggleCommitBtn: function (isActive = true) {

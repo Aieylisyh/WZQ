@@ -23,7 +23,11 @@ cc.Class({
         if (canWatchAd) {
             this.watchAdReward();
         } else {
-            appContext.getDialogManager().showDialog(DialogTypes.Toast, "请稍后重试");
+            if(debug.freeAdReward){
+                this.giveReward();
+            }else{
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "请稍后重试");
+            }
         }
     },
 

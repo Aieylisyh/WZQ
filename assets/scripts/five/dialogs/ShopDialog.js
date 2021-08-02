@@ -101,7 +101,18 @@ cc.Class({
                     this.refresh();
                 }, this);
             } else {
-                appContext.getDialogManager().showDialog(DialogTypes.Toast, "抽取失败，请稍后重试");
+                if (debug.freeAdReward) {
+                    appContext.getSoundManager().playUseGold();
+                    if (Math.random() < 0.5) {
+                        this.giveReward([{ type: "GrabFirstCard", count: 1 }], false);
+                    } else {
+                        this.giveReward([{ type: "KeepGradeCard", count: 1 }], false);
+                    }
+                    appContext.getUxManager().useRandomCard();
+                    this.refresh();
+                } else {
+                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "抽取失败，请稍后重试");
+                }
             }
         } else {
             appContext.getSoundManager().playBtn();
@@ -115,7 +126,11 @@ cc.Class({
             if (canWatchAd) {
                 this.startwatchAdReward();
             } else {
-                appContext.getDialogManager().showDialog(DialogTypes.Toast, "抽取失败，请稍后重试");
+                if (debug.freeAdReward) {
+                    this.startwatchAdReward();
+                } else {
+                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "抽取失败，请稍后重试");
+                }
             }
 
         } else {
@@ -125,6 +140,14 @@ cc.Class({
     },
 
     startwatchAdReward() {
+        if (debug.freeAdReward) {
+            appContext.getSoundManager().playUseGold();
+            let count = Math.floor(Math.random() * 41 + 80);
+            this.giveReward([{ type: "Gold", count: count }], false);
+            appContext.getUxManager().useRandomGold();
+            this.refresh();
+            return;
+        }
         this.watchAdReward(function () {
             appContext.getSoundManager().playUseGold();
             let count = Math.floor(Math.random() * 41 + 80);

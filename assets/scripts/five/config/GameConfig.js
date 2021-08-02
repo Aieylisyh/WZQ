@@ -42,6 +42,10 @@ cc.Class({
 
         platformYY: false,
 
+        freeAdReward: false,
+
+        giftCode:false,
+
         remoteFileUrlSuffix_wx: "/wx",
 
         remoteFileUrlSuffix_vivo: "/vivo",
@@ -64,6 +68,8 @@ cc.Class({
     init: function () {
         let debug = window.debug = debug = {
             appId: this.appId,
+            freeAdReward: this.freeAdReward,
+            giftCode: this.giftCode,
             platformOppo: this.platformOppo,
             platformVivo: this.platformVivo,
             platformApp: this.platformApp,

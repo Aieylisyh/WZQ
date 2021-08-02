@@ -41,6 +41,8 @@ cc.Class({
 
         shopDialogPrefabPath: "",
 
+        codePrefabPath: "",
+
         shareVideoDialogPrefabPath: "",
     },
 
@@ -296,6 +298,9 @@ cc.Class({
                 prefabPath = this.shareVideoDialogPrefabPath;
                 break;
 
+            case DialogTypes.Code:
+                prefabPath = this.codePrefabPath;
+                break;
             default:
                 break;
         }

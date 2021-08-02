@@ -3990,7 +3990,7 @@
     },
     "_enabled": true,
     "checkCross": {
-      "__id__": 113
+      "__id__": 174
     },
     "commitBtn": {
       "__id__": 176
@@ -4214,7 +4214,7 @@
         "__id__": 159
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 174
@@ -6478,7 +6478,7 @@
     "downWing": {
       "__id__": 172
     },
-    "updateTime": 0.25,
+    "updateTime": 0.15,
     "_id": ""
   },
   {

@@ -363,7 +363,7 @@ cc.Class({
 
         if (info == null || info == "" || typeof info != "object") {
             this.gameInfo = {};
-            this.gameInfo.gold = 1000;
+            this.gameInfo.gold = 500;
             this.gameInfo.grabFirstCardCount = 2;
             this.gameInfo.keepGradeCardCount = 0;
             this.gameInfo.bonusScoreDay = 0;
@@ -374,7 +374,7 @@ cc.Class({
             this.gameInfo.checkinLastDay = 0;
             this.gameInfo.checkinValidDayCount = 0;
             this.gameInfo.checkinTodayTimes = 0;
-
+            this.gameInfo.usedCode = [];
             this.toSaveGameInfo = true;
         } else {
             debug.log("load existing game info");

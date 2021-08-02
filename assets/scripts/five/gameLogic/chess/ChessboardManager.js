@@ -7,14 +7,8 @@ cc.Class({
         chessboard: require("Chessboard"),
 
         touchOffset: 84,
-
-        myChessType: {
-            get: function () {
-                return appContext.getGameManager().game.currentChessType;
-            },
-            visible: false,
-        },
     },
+
 
     start() {
         appContext.getGameManager().chessboardManager = this;
@@ -31,9 +25,13 @@ cc.Class({
         }
 
         touchPos.y += this.touchOffset;
-
+        let game = appContext.getGameManager().game;
         this.chessboard.placeChessChecker(touchPos);
-        this.chessboard.setChessChecker(true, true, false);
+        if(appContext.getGameManager().game.currentChessType == game.selfPlayer.chessType){
+            this.chessboard.setChessChecker(true, true, false);
+        }else{
+            this.chessboard.setChessChecker(false, true, false);
+        }
     },
 
     onTouchMove: function (touchPos) {
@@ -51,7 +49,13 @@ cc.Class({
             return;
         }
 
-        this.chessboard.setChessChecker(false, true, true);
+        let game = appContext.getGameManager().game;
+        if(game.currentChessType == game.selfPlayer.chessType){
+            this.chessboard.setChessChecker(false, true, true);
+        }else{
+          
+            game.selfPlayer.makeDecision(this.chessboard.chessChecker.x, this.chessboard.chessChecker.y, appContext.getGameManager().game.currentChessType);
+        }
     },
 
     clearBoard: function () {
@@ -84,7 +88,7 @@ cc.Class({
             let game = appContext.getGameManager().game;
 
             if (game && game.selfPlayer) {
-                game.selfPlayer.makeDecision(this.chessboard.chessChecker.x, this.chessboard.chessChecker.y, this.myChessType);
+                game.selfPlayer.makeDecision(this.chessboard.chessChecker.x, this.chessboard.chessChecker.y, appContext.getGameManager().game.currentChessType);
             }
         } else {
             debug.log("不能在这里落子哦！");

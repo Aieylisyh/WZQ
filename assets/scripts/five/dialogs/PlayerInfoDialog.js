@@ -1,4 +1,6 @@
+
 let DialogTypes = require("DialogTypes");
+let Item = require("Item");
 let Grade = require("Grade");
 let PlayerInfo = require("PlayerInfo");
 let StringUtil = require("StringUtil");

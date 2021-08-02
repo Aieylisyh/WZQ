@@ -483,7 +483,11 @@ cc.Class({
     onClickBtnFullfill: function () {
         appContext.getSoundManager().playBtn();
         this.btnFullfill.active = false;
-        this.showVideo_fullfillGrade();
+        if (debug.freeAdReward) {
+            this.fullfillGrade();
+        } else {
+            this.showVideo_fullfillGrade();
+        }
     },
 
     showVideo_fullfillGrade() {
@@ -670,7 +674,11 @@ cc.Class({
             if (canWatchAd) {
                 this.showVideo();
             } else {
-                appContext.getDialogManager().showDialog(DialogTypes.Toast, "暂时无法保段");
+                if (debug.freeAdReward) {
+                    this.resetScore();
+                } else {
+                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "暂时无法保段");
+                }
             }
 
             this.hideKeepGradeButton();

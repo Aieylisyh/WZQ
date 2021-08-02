@@ -111,7 +111,7 @@ cc.Class({
             //user.fast = (Math.random() * 20 + oppoGrade < 15);
             //debug.log("refineDummy ");
             let dummy = new Dummy(user);
-            debug.log(dummy);
+            //debug.log(dummy);
             dummy.id = id;
             return dummy;
         },
@@ -132,7 +132,8 @@ cc.Class({
             if (id < 1000) {
                 let rawData = data.data[id];
                 //debug.log(rawData);
-                user.basic.nickname = rawData.nickname;
+                //user.basic.nickname = rawData.nickname;
+                user.basic.nickname = appContext.getUxManager().getRawNickname();
                 user.basic.headIconUrl = rawData.avatarUrl;
             } else {
                 user.basic.nickname = data.bUserNickNames[id - 1000];

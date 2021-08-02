@@ -144,7 +144,8 @@ cc.Class({
     },
 
     setChessChecker(cross, demo, commit) {
-        this.chessChecker.toggleCheckCross(cross);
+        let game = appContext.getGameManager().game;
+        this.chessChecker.toggleCheckCross(cross,game.currentChessType == 1);
         this.chessChecker.toggleDemoChess(demo);
         this.chessChecker.toggleCommitBtn(commit);
     },

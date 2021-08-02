@@ -19,10 +19,10 @@
   "excludeScenes": [],
   "fb-instant-games": {},
   "includeSDKBox": false,
-  "inlineSpriteFrames": false,
+  "inlineSpriteFrames": true,
   "inlineSpriteFrames_native": true,
-  "md5Cache": false,
-  "mergeStartScene": false,
+  "md5Cache": true,
+  "mergeStartScene": true,
   "optimizeHotUpdate": false,
   "orientation": {
     "landscapeLeft": true,
@@ -36,7 +36,7 @@
     "orientation": "portrait"
   },
   "startScene": "da2b3d08-6cec-4447-8639-a506ea83ae86",
-  "title": "wuziqi",
+  "title": "wzq",
   "webOrientation": "portrait",
   "wechatgame": {
     "REMOTE_SERVER_ROOT": "",

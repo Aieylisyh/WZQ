@@ -24,6 +24,8 @@ let DialogTypes = {
     Shop: "Shop",
 
     ShareVideo: "ShareVideo",
+
+    Code: "Code",
 }
 
 

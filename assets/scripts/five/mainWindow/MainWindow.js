@@ -49,6 +49,8 @@ cc.Class({
         bottomBtns: cc.Node,
 
         btnDaily: cc.Node,
+
+        btnCode: cc.Node,
     },
 
     start: function () {
@@ -59,6 +61,7 @@ cc.Class({
         this.setupLoginFinish = false;
         //debug.log("mw自主初始化 来自mw");
         this.checkLoginFinish();
+        this.btnCode.active = debug.giftCode;
     },
 
     checkLoginFinish() {
@@ -532,6 +535,12 @@ cc.Class({
     onClickBtnRank: function () {
         appContext.getSoundManager().playBtn();
         appContext.getDialogManager().showDialog(DialogTypes.Rank);
+    },
+
+    //点击 福利
+    onClickBtnCode: function () {
+        appContext.getSoundManager().playBtn();
+        appContext.getDialogManager().showDialog(DialogTypes.Code);
     },
 
     // 点击"设置"

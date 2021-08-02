@@ -23,6 +23,22 @@ cc.Class({
         this.rightWing.reset();
     },
 
+    SetBlack(b) {
+        let col = b ? new cc.Color(0, 0, 0) :  new cc.Color(255, 255, 255);
+        this.upWing.nodes.forEach(element => {
+            element.color = col;
+        });
+        this.downWing.nodes.forEach(element => {
+            element.color = col;
+        });
+        this.leftWing.nodes.forEach(element => {
+            element.color = col;
+        });
+        this.rightWing.nodes.forEach(element => {
+            element.color = col;
+        });
+    },
+
     update(dt) {
         this.updateTimer -= dt;
         if (this.updateTimer < 0) {
