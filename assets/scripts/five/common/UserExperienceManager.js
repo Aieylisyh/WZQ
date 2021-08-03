@@ -363,7 +363,7 @@ cc.Class({
 
         if (info == null || info == "" || typeof info != "object") {
             this.gameInfo = {};
-            this.gameInfo.gold = 500;
+            this.gameInfo.gold = 0;
             this.gameInfo.grabFirstCardCount = 2;
             this.gameInfo.keepGradeCardCount = 0;
             this.gameInfo.bonusScoreDay = 0;

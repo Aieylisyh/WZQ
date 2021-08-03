@@ -67,9 +67,9 @@ let SelfPlayer = cc.Class({
 
         if (appContext.getGameManager().game.currentChessType != this.chessType) {
             if(appContext.getGameManager().soloPlay){
-                debug.log("soloPlay opponent chess");
+                //debug.log("solo Play opponent chess");
             }else{
-                debug.log("currentChessType is not match!");
+                debug.log("currentChessType not match self!");
                 return;
             }
         }

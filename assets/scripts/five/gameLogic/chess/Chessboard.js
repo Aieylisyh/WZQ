@@ -41,6 +41,18 @@ cc.Class({
         }
     },
 
+    findChessByIndex(index) {
+        for (let x = 0; x < this.div; x++) {
+            for (let y = 0; y < this.div; y++) {
+                let c = this.chessMap[x][y];
+                if (c != null && c.index == index) {
+                    return c;
+                }
+            }
+        }
+        return null;
+    },
+
     //根据横纵路数获取坐标
     chessPointToPosition(x, y) {
         if (x < 0 || y < 0) {
@@ -74,7 +86,7 @@ cc.Class({
         return Math.round(v / this.divSize);
     },
 
-    setChessAt(x, y, type) {
+    setChessAt(x, y, type, index = 0) {
         let current = this.chessMap[x][y];
         if (current != null) {
             if (current.type === ChessType.White) {
@@ -94,6 +106,7 @@ cc.Class({
             return;
         }
 
+        c.index = index;
         c.x = x;
         c.y = y;
         c.type = type;
@@ -118,7 +131,7 @@ cc.Class({
         this.chessChecker.node.active = isActive;
     },
 
-    getCurrentChessByPos(touchPos){
+    getCurrentChessByPos(touchPos) {
         let point = this.positionToChessPoint(touchPos);
         let current = this.chessMap[point.x][point.y];
         return current;
@@ -132,12 +145,19 @@ cc.Class({
         }
 
         let current = this.getCurrentChessByPos(touchPos);
-        if (current != null) {
-            this.chessChecker.setDemoChess(ChessType.Forbidden);//落子在已有的棋子 显示禁止
-            this.chessChecker.setCommitBtn(false);
-        } else {
-            this.chessChecker.setDemoChess();//传空的参数，恢复demo棋子
-            this.chessChecker.setCommitBtn();
+        let cbm = appContext.getGameManager().chessboardManager;
+        if (!cbm.deplacing) {
+            if (current != null) {
+                this.chessChecker.setDemoChess(ChessType.Forbidden);//落子在已有的棋子 显示禁止
+                this.chessChecker.setCommitBtn(false);
+            } else {
+                this.chessChecker.setDemoChess();//传空的参数，恢复demo棋子
+                this.chessChecker.setCommitBtn();
+            }
+        }else{
+            //移动棋子
+            this.chessChecker.toggleDeplacement(true);
+            this.chessChecker.toggleCheckCross(false);
         }
 
         this.toggleChessChecker();
@@ -149,9 +169,13 @@ cc.Class({
         this.chessChecker.node.y = pos.y;
     },
 
-    setChessChecker(cross, demo, commit) {
+    setChessChecker(cross, demo, commit, type = -1) {
         let game = appContext.getGameManager().game;
-        this.chessChecker.toggleCheckCross(cross,game.currentChessType == 1);
+        if (type == -1) {
+            type = game.currentChessType;
+        }
+
+        this.chessChecker.toggleCheckCross(cross, type == 1);
         this.chessChecker.toggleDemoChess(demo);
         this.chessChecker.toggleCommitBtn(commit);
     },

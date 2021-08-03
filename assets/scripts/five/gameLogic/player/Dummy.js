@@ -37,7 +37,7 @@ let Dummy = cc.Class({
         debug.log("dummy init");
         debug.log(param);
 
-        this.tasks = [];
+        this.clearTask();
         this.taskProcessTimer = this.taskProcessTime;
 
         //为本质属性，个人资料赋值，并由此计算出其外在属性
@@ -71,7 +71,7 @@ let Dummy = cc.Class({
     },
 
     addTask: function (task) {
-        debug.log("假人任务");
+        debug.log("+dummy task");
         debug.log(task);
         this.tasks.push(task);
     },
@@ -89,11 +89,16 @@ let Dummy = cc.Class({
     notifyPlay: function () {
         //debug.log("dummy notifyPlay");
         if( appContext.getGameManager().soloPlay){
+            //摆棋模式
             appContext.getGameManager().chessboardManager.setLocked(false);
         }else{
             appContext.getGameManager().chessboardManager.setLocked(true);
             this.addTask(Dummy.getPlayChessTask(this.status));
         }
+    },
+
+    clearTask(){
+        this.tasks = [];
     },
 
     //执行一个task
@@ -123,6 +128,7 @@ let Dummy = cc.Class({
                     break;
 
                 case 4:
+                    //认输
                     this.surrender();
                     break;
 
@@ -143,6 +149,11 @@ let Dummy = cc.Class({
     playChess: function () {
         let game = appContext.getGameManager().game;
         if (game == null) {
+            return;
+        }
+        let cbm = appContext.getGameManager().chessboardManager;
+        //正在移动棋子，等玩家
+        if (cbm.deplacing) {
             return;
         }
 
@@ -277,7 +288,7 @@ let Dummy = cc.Class({
         }
 
         if (appContext.getGameManager().game.currentChessType != this.chessType) {
-            debug.log("currentChessType is not match!");
+            debug.log("currentChessType not match dummy!");
             return;
         }
 
@@ -401,7 +412,7 @@ let Dummy = cc.Class({
     },
 
     destroy: function () {
-        this.tasks = [];
+        this.clearTask();
     },
 
     statics: {

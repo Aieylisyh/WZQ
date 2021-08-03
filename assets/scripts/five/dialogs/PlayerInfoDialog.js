@@ -24,7 +24,9 @@ cc.Class({
 
         shareBtn: cc.Node,
 
-        uploadImageBtn: cc.Node,
+        freeRenamePart: cc.Node,
+
+        autoRenamePart: cc.Node,
     },
 
     show: function () {
@@ -37,8 +39,17 @@ cc.Class({
         this.fadeInBackground();
         this.fastShowAnim();
 
+        let freeRename = debug.freeRename;
         if ((WechatAPI.isUC || WechatAPI.isYY) && !appContext.getFileManager().isH5FS) {
-            this.uploadImageBtn.active = false;
+            freeRename = false;
+        }
+
+        if (freeRename) {
+            this.freeRenamePart.active = true;
+            this.autoRenamePart.active = false;
+        } else {
+            this.autoRenamePart.active = true;
+            this.freeRenamePart.active = false;
         }
     },
 
@@ -171,9 +182,10 @@ cc.Class({
 
     onClickBtnNickname: function () {
         appContext.getSoundManager().playBtn();
+        
         let s = this.nicknameEB.string;
         s = StringUtil.trimSpace(s);
-        debug.log("onClickBtnNickname " + s);
+        console.log(s);
         if (StringUtil.isEmpty(s)) {
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "请输入昵称");
         } else {
@@ -185,7 +197,7 @@ cc.Class({
                 userInfo.basic.nickname = s;
                 appContext.getUxManager().saveUserInfo(userInfo);
 
-                appContext.getDialogManager().showDialog(DialogTypes.Toast, "昵称修改并上传成功！");
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "昵称修改成功！");
                 this.playerinfo.setup(userInfo);
             }
         }

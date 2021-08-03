@@ -13,6 +13,8 @@ cc.Class({
 
         btnSurrender: cc.Node,
 
+        btnRevert: cc.Node,
+
         selfEmoji: require("EmojiDisplayer"),
 
         opponentEmoji: require("EmojiDisplayer"),
@@ -132,6 +134,8 @@ cc.Class({
     reset: function () {
         this.selfPlayer.reset();
         this.opponentPlayer.reset();
+        this.btnRevert.active = false;
+        this.btnSurrender.active = false;
     },
 
     // 显示倒计时
@@ -166,6 +170,9 @@ cc.Class({
             hideCloseBtn: true,
         };
 
+        if (debug.enableRevert && debug.enablePromoRevert && !appContext.getGameManager().promoRevertUnlocked) {
+            info.isPromoSurrender = true;
+        }
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
     },
 
@@ -263,10 +270,25 @@ cc.Class({
         return sf;
     },
 
-    //点击白棋盒子
+    //点击左棋盒子
     onClickSelfChess() {
-        this.ToggleSoloPlay(true);
-        appContext.getDialogManager().showDialog(DialogTypes.Toast, "摆棋已开启");
+        if (!debug.unlimitedRoundTimingAndPromoFeature) {
+            return;
+        }
+
+        let solo = appContext.getGameManager().soloPlay;
+        this.ToggleSoloPlay(!solo);
+        if (solo) {
+            appContext.getDialogManager().showDialog(DialogTypes.Toast, "摆棋已关闭");
+        } else {
+            let info = {
+                content: "摆棋已开启\n\n将轮流为双方落子\n\n再次点击左棋盒关闭摆棋",
+                hideCloseBtn: true,
+            };
+
+            appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+        }
+
         return;
         if (debug.enableLog) {
             let firstIsSelfPlayer = appContext.getGameManager().game.firstIsSelfPlayer;
@@ -280,10 +302,123 @@ cc.Class({
         }
     },
 
-    //点击黑棋盒子
+    //点击悔棋
+
+    // 如果在自己的回合悔棋，但是对方没有上一个棋子，则无法悔棋
+    // 如果在自己的回合悔棋，但是自己没有上一个棋子，则无法悔棋
+    // 如果在自己的回合悔棋，则回退对方的上一个棋子和自己的上一个棋子，继续自己的回合，不重置回合时间
+
+    // 如果在对方的回合悔棋，自己没有上一个棋子，则无法悔棋
+    // 如果在对方的回合悔棋，则回退自己的上一个棋子，立即结束对方当前的回合，并开始自己的回合
+    // 	如果对方是ai下棋，则需要打断ai的计时器
+    // 	如果对方是摆棋，则无法额外操作
+    // 如果在非回合阶段悔棋，包括开始准备阶段和胜利结算阶段，则无法悔棋
+    onClickRevert() {
+        //debug.log("悔棋");
+        let game = appContext.getGameManager().game;
+
+        //commitBoard后轮到我的type game.opponentPlayer.chessType/game.selfPlayer.chessType
+        let commitBoardChessType = game.opponentPlayer.chessType;
+
+        let cbm = appContext.getGameManager().chessboardManager;
+        let index = game.currentTurn - 1;
+
+        cbm.chessboard.toggleChessChecker(false);
+        let chess1, chess2;
+
+        if (game.currentChessType == game.selfPlayer.chessType) {
+            //自己的回合
+            if (index < 2) {
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "没有可以悔的棋");
+                return;
+            }
+            chess1 = cbm.chessboard.findChessByIndex(index);
+            //debug.log("悔棋1:" + index);
+            //debug.log(chess1);
+            cbm.chessboard.setChessAt(chess1.x, chess1.y, null, 0);
+
+            if (!appContext.getGameManager().soloPlay) {
+                //非摆棋模式
+                chess2 = cbm.chessboard.findChessByIndex(index - 1);
+                cbm.chessboard.setChessAt(chess2.x, chess2.y, null, 0);
+                game.currentTurn = index - 2;
+            } else {
+                game.currentTurn = index - 1;
+                commitBoardChessType = game.selfPlayer.chessType;
+            }
+            this.revertChat();
+
+        } else {
+            //对方的回合
+            if (!appContext.getGameManager().soloPlay) {
+                //摆棋模式
+                game.opponentPlayer.clearTask();//如果对方是ai下棋，则需要打断ai的计时器
+            }
+
+            if (index < 1) {
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "没有可以悔的棋");
+                return;
+            }
+            chess1 = cbm.chessboard.findChessByIndex(index);
+            //debug.log("悔棋1:" + index);
+            //debug.log(chess1);
+            cbm.chessboard.setChessAt(chess1.x, chess1.y, null, 0);
+            this.revertChat();
+            game.currentTurn = index - 1;
+        }
+
+        appContext.getGameManager().commitBoard(cbm.chessboard.chessMap, commitBoardChessType);
+        cbm.chessboard.toggleNewChessEffect(false);
+        if (index > 1) {
+            let lastChess = cbm.chessboard.findChessByIndex(index - 1);
+            if (lastChess != null) {
+                cbm.chessboard.placeNewChessEffect(lastChess.x, lastChess.y);
+                cbm.chessboard.toggleNewChessEffect(true);
+            }
+        }
+    },
+
+    revertChat() {
+        if (Math.random() > 0.5) {
+            this.playChat(true, "我悔棋了");
+        } else {
+            this.playChat(true, "悔棋了，见谅");
+        }
+        if (Math.random() > 0.5) {
+            this.playChat(false, "...");
+        }
+    },
+
+    deplaceChat() {
+        if (Math.random() > 0.5) {
+            this.playChat(true, "我想移个棋");
+        } else {
+            this.playChat(true, "这棋下歪了");
+        }
+        if (Math.random() > 0.5) {
+            this.playChat(false, "...");
+        }
+    },
+
+    //点击右边盒子
     onClickOppoChess() {
-        this.ToggleSoloPlay(false);
-        appContext.getDialogManager().showDialog(DialogTypes.Toast, "摆棋已关闭");
+        if (!debug.unlimitedRoundTimingAndPromoFeature) {
+            return;
+        }
+
+        let moveChessPlay = appContext.getGameManager().moveChessPlay;
+        this.ToggleMoveChessPlay(!moveChessPlay);
+        if (moveChessPlay) {
+            appContext.getDialogManager().showDialog(DialogTypes.Toast, "移棋已关闭");
+        } else {
+            let info = {
+                content: "移棋已开启\n\n把正在下的棋\n对准棋盘上【任意棋子】\n就可以移动此棋子\n\n再次点击右棋盒关闭移棋",
+                hideCloseBtn: true,
+            };
+
+            appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+        }
+
         return;
         if (debug.enableLog) {
             appContext.getGameManager().showChat(false, "happy");
@@ -296,13 +431,17 @@ cc.Class({
         appContext.getGameManager().soloPlay = b;
     },
 
+    ToggleMoveChessPlay(b) {
+        appContext.getGameManager().moveChessPlay = b;
+    },
+
     onClickProfil() {
         appContext.getSoundManager().playBtn();
         appContext.getDialogManager().showDialog(DialogTypes.PlayerInfo);
-        console.log("cheatCode" + this.cheatCode);
-        if (this.cheatCode == 306) {
-            appContext.getUxManager().resetGameInfo();
-        }
+        //console.log("cheatCode" + this.cheatCode);
+        //if (this.cheatCode == 306) {
+        //  appContext.getUxManager().resetGameInfo();
+        //}
     },
 
     onPlayerInfoDialogHide() {
@@ -313,5 +452,22 @@ cc.Class({
         this.tip.active = false;
         //show surrender
         this.btnSurrender.active = true;
+
+        if (debug.enableRevert && !debug.enablePromoRevert) {
+            this.showBtnRevert();
+        } else if (debug.enableRevert && debug.enablePromoRevert) {
+            if (appContext.getGameManager().promoRevertUnlocked) {
+                this.showBtnRevert();
+            } else {
+                this.showBtnRevert(false);
+            }
+        } else {
+            this.showBtnRevert(false);
+        }
     },
+
+    showBtnRevert(b = true) {
+        this.btnRevert.active = b;
+    },
+
 });

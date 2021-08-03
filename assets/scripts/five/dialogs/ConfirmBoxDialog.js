@@ -11,6 +11,8 @@ cc.Class({
         closeBtn: cc.Node,
 
         adIcon: cc.Node,
+
+        questionMark: cc.Node,
     },
 
     show: function (info) {
@@ -27,12 +29,18 @@ cc.Class({
             return;
         }
 
+        this.questionMark.active = false;
+        if (info.isPromoSurrender) {
+            this.questionMark.active = true;
+            this.promoSurrenderIndex = 0;
+        }
+
         this.label.string = info.content;
         this.clickFunction = null
         if (info.adIcon) {
-            this.adIcon.active=true;
-        }else{
-            this.adIcon.active=false;
+            this.adIcon.active = true;
+        } else {
+            this.adIcon.active = false;
         }
         if (info.btn1 != null) {
 
@@ -82,6 +90,30 @@ cc.Class({
         this.resizeFrame();
         this.fadeInBackground();
         this.fastShowAnim();
+    },
+
+    onClickPromoSurrender() {
+        this.promoSurrenderIndex++;
+        if (this.promoSurrenderIndex == 1) {
+            this.label.string = "真想认输么？";
+        } else if (this.promoSurrenderIndex == 2) {
+            this.label.string = "你真的真的想认输么？";
+        } else if (this.promoSurrenderIndex == 2) {
+            this.label.string = "真的真的真的想认输么";
+        } else if (this.promoSurrenderIndex == 3) {
+            this.label.string = "现在反悔还来得及\n确定要认输么？";
+        } else if (this.promoSurrenderIndex == 4) {
+            this.label.string = "你认输的态度很好！\n感动了策划\n他给您开通了【悔棋】功能！\n\n还有，记得点取消";
+            this.questionMark.active = false;
+            //悔棋解锁状态记录在程序的运行时，不保存本地数据，用户重新启动游戏后悔棋按钮解锁状态将被重置
+            appContext.getGameManager().promoRevertUnlocked = true;
+            let w = appContext.getWindowManager().currentWindowNode;
+            let gw = w.getComponent("GameWindow");
+            if (gw != null) {
+                gw.showBtnRevert();
+            }
+        }
+        this.resizeFrame();
     },
 
     onClickClose: function () {

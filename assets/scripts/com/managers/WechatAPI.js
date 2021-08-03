@@ -941,7 +941,7 @@ let WechatAPI = {
         }
 
 
-        //debug.log("!getStorageSync " + storageKey);
+        // debug.log("!getStorageSync " + storageKey);
         //debug.log(info);
         if (!tryReadAsJSON) {
             if (typeConvertRule == "number") {

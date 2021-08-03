@@ -42,9 +42,18 @@ cc.Class({
 
         platformYY: false,
 
+
         freeAdReward: false,
 
         giftCode:false,
+
+        unlimitedRoundTimingAndPromoFeature:false,
+
+        enableRevert:false,
+
+        enablePromoRevert:false,
+
+        freeRename:false,
 
         remoteFileUrlSuffix_wx: "/wx",
 
@@ -70,8 +79,12 @@ cc.Class({
             appId: this.appId,
             freeAdReward: this.freeAdReward,
             giftCode: this.giftCode,
-            platformOppo: this.platformOppo,
-            platformVivo: this.platformVivo,
+            unlimitedRoundTimingAndPromoFeature: this.unlimitedRoundTimingAndPromoFeature,
+            enableRevert: this.enableRevert,
+            enablePromoRevert: this.enablePromoRevert,
+            freeRename: this.freeRename,
+
+            platformVivo: this.unlimitedRoundTimingAndPromoFeature,
             platformApp: this.platformApp,
             platformToutiao: this.platformToutiao,
             platformBaidu: this.platformBaidu,

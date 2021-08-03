@@ -7,6 +7,10 @@ cc.Class({
         soundEffectCheck: cc.Toggle,
 
         chatCheck: cc.Toggle,
+
+        crossCheck: cc.Toggle,
+
+        confirmChessCheck: cc.Toggle,
     },
 
     show: function (info) {
@@ -39,8 +43,8 @@ cc.Class({
         }
     },
 
-     // 点击"文字吐槽"
-     onClickBtnMuteChat: function () {
+    // 点击"文字吐槽"
+    onClickBtnMuteChat: function () {
         appContext.getSoundManager().playBtn();
         let gameSettingManager = appContext.getGameSettingManager();
 
@@ -51,15 +55,48 @@ cc.Class({
         }
     },
 
+    // 点击"十字准星"
+    onClickBtnMuteCross: function () {
+        appContext.getSoundManager().playBtn();
+        let gameSettingManager = appContext.getGameSettingManager();
+
+        if (this.crossCheck.isChecked) {
+            gameSettingManager.unmuteCross();
+        } else {
+            gameSettingManager.muteCross();
+        }
+    },
+
+    // 点击"落子确认"
+    onClickBtnConfirmChess: function () {
+        appContext.getSoundManager().playBtn();
+        let gameSettingManager = appContext.getGameSettingManager();
+
+        if (this.confirmChessCheck.isChecked) {
+            gameSettingManager.unmuteConfirmChess();
+        } else {
+            gameSettingManager.muteConfirmChess();
+        }
+    },
+
     onClickBtnClose: function () {
         this.hide();
     },
 
     refreshByGameSetting: function () {
         let gsm = appContext.getGameSettingManager();
+        //debug.log("refreshByGameSetting");
 
         this.bgMusicCheck.isChecked = !gsm.getMuteMusic();
         this.soundEffectCheck.isChecked = !gsm.getMuteSound();
         this.chatCheck.isChecked = !gsm.getMuteChat();
+        this.crossCheck.isChecked = !gsm.getMuteCross();
+        this.confirmChessCheck.isChecked = !gsm.getMuteConfirmChess();
+
+        // debug.log(this.bgMusicCheck.isChecked);
+        // debug.log(this.soundEffectCheck.isChecked);
+        // debug.log(this.chatCheck.isChecked);
+        // debug.log(this.crossCheck.isChecked);
+        // debug.log(this.confirmChessCheck.isChecked);
     },
 });

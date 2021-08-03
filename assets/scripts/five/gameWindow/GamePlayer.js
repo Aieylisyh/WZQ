@@ -38,7 +38,13 @@ cc.Class({
                     appContext.getGameManager().playChat("hurry");
                 }
             }
-            this.timerLabel.string = ceilChessTimer;
+
+            if (debug.unlimitedRoundTimingAndPromoFeature) {
+                this.timerLabel.string = "--";
+            }else{
+                this.timerLabel.string = ceilChessTimer;
+            }
+           
         }
     },
 
@@ -90,6 +96,10 @@ cc.Class({
     },
 
     onPlayChessTimeOut: function () {
+        if (debug.unlimitedRoundTimingAndPromoFeature) {
+            return;
+        }
+
         this.startTimer = false;
         debug.log("下棋倒计时超时");
         let firstIsSelfPlayer = appContext.getGameManager().game.firstIsSelfPlayer;
