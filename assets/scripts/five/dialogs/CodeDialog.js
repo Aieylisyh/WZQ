@@ -36,12 +36,10 @@ cc.Class({
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "不是有效的活动码");
                 return;
             }
-            debug.log("11 " + s);
             if (this.isCodeUsed(s)) {
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "活动码已使用过");
                 return;
             }
-            debug.log("22 " + s);
             let reward;
             if (s == "wzqdz") {
                 reward = [{ type: "GrabFirstCard", count: 1 }, { type: "Gold", count: 288 }];
@@ -83,8 +81,6 @@ cc.Class({
 
         //注意这样写，里面的return不是return当前的域！
         codes.forEach(element => {
-            //debug.log(element + " " + s);
-            //debug.log(s == element);
             if (s == element) {
                 res = true;
             }

@@ -118,6 +118,12 @@ cc.Class({
         this.chessChecker.node.active = isActive;
     },
 
+    getCurrentChessByPos(touchPos){
+        let point = this.positionToChessPoint(touchPos);
+        let current = this.chessMap[point.x][point.y];
+        return current;
+    },
+
     placeChessChecker(touchPos) {
         //这里的来回转化是必须的
         let point = this.positionToChessPoint(touchPos);
@@ -125,9 +131,9 @@ cc.Class({
             return;
         }
 
-        let current = this.chessMap[point.x][point.y];//落子在已有的棋子 显示禁止
+        let current = this.getCurrentChessByPos(touchPos);
         if (current != null) {
-            this.chessChecker.setDemoChess(ChessType.Forbidden);
+            this.chessChecker.setDemoChess(ChessType.Forbidden);//落子在已有的棋子 显示禁止
             this.chessChecker.setCommitBtn(false);
         } else {
             this.chessChecker.setDemoChess();//传空的参数，恢复demo棋子

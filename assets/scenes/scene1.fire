@@ -327,7 +327,7 @@
       "__id__": 5
     },
     "_enabled": true,
-    "enableLog": false,
+    "enableLog": true,
     "useDevFileDownloadRoot": false,
     "attachVersionToFileDownloadRoot": false,
     "useDevLocalServerIp": false,

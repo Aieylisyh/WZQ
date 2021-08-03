@@ -27,9 +27,10 @@ cc.Class({
         touchPos.y += this.touchOffset;
         let game = appContext.getGameManager().game;
         this.chessboard.placeChessChecker(touchPos);
-        if(appContext.getGameManager().game.currentChessType == game.selfPlayer.chessType){
-            this.chessboard.setChessChecker(true, true, false);
-        }else{
+        if (appContext.getGameManager().game.currentChessType == game.selfPlayer.chessType) {
+            //this.chessboard.setChessChecker(true, true, false);
+            this.chessboard.setChessChecker(false, true, false);
+        } else {
             this.chessboard.setChessChecker(false, true, false);
         }
     },
@@ -44,18 +45,27 @@ cc.Class({
         this.chessboard.placeChessChecker(touchPos);
     },
 
-    onTouchEnd: function (pos) {
+    onTouchEnd: function (touchPos) {
         if (this._locked) {
             return;
         }
 
+        touchPos.y += this.touchOffset;
         let game = appContext.getGameManager().game;
-        if(game.currentChessType == game.selfPlayer.chessType){
-            this.chessboard.setChessChecker(false, true, true);
-        }else{
-          
+        //推广需要版 不显示chess checker直接下
+        debug.log("!!!onTouchEnd " + touchPos);
+        let current = this.chessboard.getCurrentChessByPos(touchPos);
+        debug.log(current);
+        if (current == null) {
+            debug.log("current == null");
             game.selfPlayer.makeDecision(this.chessboard.chessChecker.x, this.chessboard.chessChecker.y, appContext.getGameManager().game.currentChessType);
         }
+        //显示chess checker
+        //if(game.currentChessType == game.selfPlayer.chessType){
+        //this.chessboard.setChessChecker(false, true, true);
+        //}else{
+        //game.selfPlayer.makeDecision(this.chessboard.chessChecker.x, this.chessboard.chessChecker.y, appContext.getGameManager().game.currentChessType);
+        //}
     },
 
     clearBoard: function () {
