@@ -182,7 +182,7 @@ cc.Class({
 
     onClickBtnNickname: function () {
         appContext.getSoundManager().playBtn();
-        
+
         let s = this.nicknameEB.string;
         s = StringUtil.trimSpace(s);
         console.log(s);
@@ -197,7 +197,7 @@ cc.Class({
                 userInfo.basic.nickname = s;
                 appContext.getUxManager().saveUserInfo(userInfo);
 
-                appContext.getDialogManager().showDialog(DialogTypes.Toast, "昵称修改成功！");
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "修改成功！");
                 this.playerinfo.setup(userInfo);
             }
         }
