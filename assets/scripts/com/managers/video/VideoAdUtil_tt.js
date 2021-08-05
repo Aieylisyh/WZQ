@@ -33,7 +33,7 @@ cc.Class({
 
         });
         this._ad.onLoad(function () {
-            debug.log("拉取视频广告ok");
+            console.log("-------- tt v load ok");
             self.onCanPlay();
             if (self.playAfterLoad) {
                 self.show();
@@ -60,12 +60,12 @@ cc.Class({
     },
 
     customShow() {
-        debug.log("ttv customShow");
+        debug.log("tt v customShow");
 
         let self = this;
 
         self._ad.show().then(() => {
-            debug.log("ttv show");
+            console.log("-------- tt v show ok");
             self.playAfterLoad = false;
             appContext.getSoundManager().stopBackgroundMusic();
         }).catch(err => {

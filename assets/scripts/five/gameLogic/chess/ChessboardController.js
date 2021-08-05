@@ -4,7 +4,7 @@ cc.Class({
     properties: {
         chessboardManager: require("ChessboardManager"),
 
-        targetNode:cc.Node,
+        targetNode: cc.Node,
     },
 
     // 注册触摸监听事件
@@ -23,18 +23,27 @@ cc.Class({
         this.node.off(cc.Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
     },
 
-    onTouchStart: function () {
-        let pos = this.targetNode.convertToNodeSpaceAR(arguments[0].touch.getLocation());
+    onTouchStart: function (arg) {
+        if (arg==null) {
+            return;
+        }
+        let pos = this.targetNode.convertToNodeSpaceAR(arg.touch.getLocation());
         this.chessboardManager.onTouchStart(pos);
     },
 
-    onTouchMove: function () {
-        let pos = this.targetNode.convertToNodeSpaceAR(arguments[0].touch.getLocation());
+    onTouchMove: function (arg) {
+        if (arg==null) {
+            return;
+        }
+        let pos = this.targetNode.convertToNodeSpaceAR(arg.touch.getLocation());
         this.chessboardManager.onTouchMove(pos);
     },
 
-    onTouchEnd: function () {
-        let pos = this.targetNode.convertToNodeSpaceAR(arguments[0].touch.getLocation());
+    onTouchEnd: function (arg) {
+        if (arg==null) {
+            return;
+        }
+        let pos = this.targetNode.convertToNodeSpaceAR(arg.touch.getLocation());
         this.chessboardManager.onTouchEnd(pos);
     },
 });
