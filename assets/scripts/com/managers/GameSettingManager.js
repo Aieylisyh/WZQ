@@ -50,10 +50,17 @@ cc.Class({
         }, this);
 
         WechatAPI.getStorage(this._muteCrossKey, function (data) {
+            //set default value to true and enable this to change the default settings
+            // if (data == null) {
+            //     return;
+            // }
             this._muteCross = this.storageDataToBool(data);
         }, this);
 
         WechatAPI.getStorage(this._muteConfirmChessKey, function (data) {
+            // if (data == null) {
+            //     return;
+            // }
             this._muteConfirmChess = this.storageDataToBool(data);
         }, this);
     },

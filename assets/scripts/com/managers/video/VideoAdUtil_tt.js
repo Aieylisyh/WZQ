@@ -32,26 +32,28 @@ cc.Class({
             self.updateCb();
 
         });
-        this._ad.onLoad(function () {
-            console.log("-------- tt v load ok");
-            self.onCanPlay();
-            if (self.playAfterLoad) {
-                self.show();
-            }
+        // this._ad.onLoad(function () {
+        //     console.log("-------- tt v load ok");
+        //     self.onCanPlay();
+        //     if (self.playAfterLoad) {
+        //         self.show();
+        //     }
+        // });
+        this._ad.onLoad(() => {
+            console.log("-------- tt v load simply ok");
         });
-
-        this.playAfterLoad = false;
         this._ad.load();
+        //this.customLoad();
     },
 
     customLoad() {
+        debug.log("tt v load");
         this.playAfterLoad = false;
-        this._loaded = false;
         this._ad.load();
     },
 
     customShowOnLoad() {
-        debug.log("ttv customShowOnLoad");
+        debug.log("tt v customShowOnLoad");
 
         this.customLoad();
         this.playAfterLoad = true;
@@ -61,15 +63,26 @@ cc.Class({
 
     customShow() {
         debug.log("tt v customShow");
-
         let self = this;
-
-        self._ad.show().then(() => {
-            console.log("-------- tt v show ok");
-            self.playAfterLoad = false;
-            appContext.getSoundManager().stopBackgroundMusic();
-        }).catch(err => {
-            self.onError(err);
+        this._ad.show().then(() => {
+            console.log("广告显示成功");
+        }).catch((err) => {
+            console.log("广告组件出现问题", err);
+            // 可以手动加载一次
+            self._ad.load().then(() => {
+                console.log("手动加载成功");
+                // 加载成功后需要再显示广告
+                self._ad.show();
+            });
         });
+        // let self = this;
+
+        // self._ad.show().then(() => {
+        //     console.log("-------- tt v show ok");
+        //     self.playAfterLoad = false;
+        //     appContext.getSoundManager().stopBackgroundMusic();
+        // }).catch(err => {
+        //     self.onError(err);
+        // });
     },
 });

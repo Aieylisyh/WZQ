@@ -6,10 +6,6 @@ cc.Class({
         _ad: null,
 
         _cb: null,
-
-        _isLoading: false,
-
-        _loaded: false,
     },
 
     isEnabled: function () {
@@ -37,16 +33,7 @@ cc.Class({
             return;
         }
 
-        if (WechatAPI.isYY) {
-            this.customShow();
-            return;
-        }
-
-        if (this._loaded) {
-            this.customShow();
-        } else {
-            this.customShowOnLoad();
-        }
+        this.customShow();
     },
 
     create: function () {
@@ -64,8 +51,6 @@ cc.Class({
             return;
         }
 
-        this._isLoading = false;
-        this._loaded = false;
         this.customCreate();
 
         if (this._ad == null) {
@@ -96,33 +81,23 @@ cc.Class({
     onFail: function () {
         debug.log("onFail");
         this.cb && this.cb.failCb && this.cb.failCb.call(this.cb.caller);
-        this._loaded = false;
-        this._isLoading = false;
     },
 
     onCanPlay: function () {
         debug.log("!!!!!onCanPlay!!");
         this.cb && this.cb.canPlayCb && this.cb.canPlayCb.call(this.cb.caller);
-        this._loaded = true;
-        this._isLoading = false;
     },
 
     onCease: function () {
         this.cb && this.cb.ceaseCb && this.cb.ceaseCb.call(this.cb.caller);
         // appContext.getSoundManager,
-        //     this._loaded = false;
         // this.customLoad();
-        this._isLoading = false;
         this.onBackFromVideoAd();
         //debug.log("onCease!!");
-        this._loaded = true;
-        this._isLoading = false;
     },
 
     onFinish: function () {
         this.cb && this.cb.finishCb && this.cb.finishCb.call(this.cb.caller);
-        this._loaded = false;
-        this._isLoading = false;
         this.customLoad();
 
         this.onBackFromVideoAd();

@@ -642,7 +642,7 @@ cc.Class({
                 }
             }
 
-            if (WechatAPI.hasTTNewMoreGame && WechatAPI.systemInfo.platform != 'ios') {//ios不支持互跳
+            if (false && WechatAPI.hasTTNewMoreGame && WechatAPI.systemInfo.platform != 'ios') {//ios不支持互跳
                 let hotObj = cc.instantiate(this.promoPrefab);
                 hotObj.parent = this.node;
                 hotObj.x = 265;

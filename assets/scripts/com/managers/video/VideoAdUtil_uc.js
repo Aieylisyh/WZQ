@@ -48,7 +48,6 @@ cc.Class({
 
     customLoad() {
         this.playAfterLoad = false;
-        this._loaded = false;
         this._ad.load();
     },
 

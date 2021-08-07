@@ -781,8 +781,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 672,
-      "height": 70.56
+      "width": 720,
+      "height": 126.56
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -832,8 +832,8 @@
       }
     ],
     "_useOriginalSize": true,
-    "_string": "【五子棋对战】活动码长期有效",
-    "_N$string": "【五子棋对战】活动码长期有效",
+    "_string": "关注抖音【五子棋对战】相关讯息\n不定期推出活动码",
+    "_N$string": "关注抖音【五子棋对战】相关讯息\n不定期推出活动码",
     "_fontSize": 48,
     "_lineHeight": 56,
     "_enableWrapText": true,

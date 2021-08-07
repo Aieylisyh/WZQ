@@ -43,8 +43,6 @@ cc.Class({
     onLoad() {
         let self = WechatAPI.interstitialAdUtil;
         debug.log('wx int loaded');
-        self._loaded = true;
-
         if (self._ad && self._ad.offLoad) {
             self._ad.offLoad(self.onLoad);
         }
@@ -53,15 +51,9 @@ cc.Class({
     customShow() {
         let self = WechatAPI.interstitialAdUtil;
         if (self._ad) {
-            if (self._loaded) {
-                self._ad.show().catch((err) => {
-                    console.error(err)
-                });
-            } else {
-                if (self._ad.load) {
-                    self._ad.load();
-                }
-            }
+            self._ad.show().catch((err) => {
+                console.error(err)
+            });
         }
     },
     customShowOnLoad() {
