@@ -65,12 +65,12 @@ cc.Class({
         debug.log("tt v customShow");
         let self = this;
         this._ad.show().then(() => {
-            console.log("广告显示成功");
+            console.log("tt video ad ok");
         }).catch((err) => {
-            console.log("广告组件出现问题", err);
+            console.log("tt video ad err", err);
             // 可以手动加载一次
             self._ad.load().then(() => {
-                console.log("手动加载成功");
+                console.log("tt video ad reload ok");
                 // 加载成功后需要再显示广告
                 self._ad.show();
             });

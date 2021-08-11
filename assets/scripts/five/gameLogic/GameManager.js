@@ -486,6 +486,8 @@ cc.Class({
     },
 
     notifyReplyChat(type) {
-        this.game.opponentPlayer.replyChat(type);
+        if(this.game&&this.game.opponentPlayer){
+            this.game.opponentPlayer.replyChat(type);
+        }
     }
 });

@@ -642,7 +642,7 @@ cc.Class({
                 }
             }
 
-            if (false && WechatAPI.hasTTNewMoreGame && WechatAPI.systemInfo.platform != 'ios') {//ios不支持互跳
+            if (WechatAPI.hasTTNewMoreGame && WechatAPI.systemInfo.platform != 'ios') {//ios不支持互跳
                 let hotObj = cc.instantiate(this.promoPrefab);
                 hotObj.parent = this.node;
                 hotObj.x = 265;
@@ -712,6 +712,10 @@ cc.Class({
 
     onClickHouse() {
         this.redDot_house.active = false;
+        if (appContext.getUxManager().gameInfo == null) {
+            return;
+        }
+
         if (!appContext.getUxManager().gameInfo.hasClickedHouse) {
             this.house.node.scaleX = 0.5;
             this.house.node.scaleX = 0.5;

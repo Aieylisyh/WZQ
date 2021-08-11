@@ -16,13 +16,15 @@ cc.Class({
     },
 
     onCommitCode() {
+        if (appContext.getUxManager().gameInfo == null) {
+            return;
+        }
+        if (appContext.getUxManager().gameInfo.usedCode == null) {
+            appContext.getUxManager().gameInfo.usedCode = [];
+        }
         appContext.getSoundManager().playBtn();
         let s = this.eB.string;
         s = StringUtil.trimSpace(s);
-        let codes = appContext.getUxManager().gameInfo.usedCode;
-        if (codes == null) {
-            appContext.getUxManager().gameInfo.usedCode = [];
-        }
 
         if (StringUtil.isEmpty(s)) {
             appContext.getDialogManager().showDialog(DialogTypes.Toast, "请输入活动码");

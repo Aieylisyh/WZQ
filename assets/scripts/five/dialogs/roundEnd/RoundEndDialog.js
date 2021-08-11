@@ -724,6 +724,10 @@ cc.Class({
     },
 
     resetScore() {
+        if (this == null) {
+            return;
+        }
+        
         let score = Math.abs(this.info.gradeScoreAdd);
         appContext.getDialogManager().showDialog(DialogTypes.Toast, "段位保护成功！\n回复积分" + score);
 
