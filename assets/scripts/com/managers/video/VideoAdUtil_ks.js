@@ -2,30 +2,39 @@ cc.Class({
     extends: require("VideoAdUtil"),
 
     properties: {
-        id: "5824e7h0e6ef55rm57",
+        id: "2300001541_01",
     },
 
     isEnabled: function () {
-        return typeof kwaigame.createRewardedVideoAd == "function";
+        return typeof ks.createRewardedVideoAd == "function";
+        //?kwaigame
     },
 
     customCreate() {
         debug.log("ks createRewardedVideoAd");
-        this._ad = kwaigame.createRewardedVideoAd({
+        this._ad = ks.createRewardedVideoAd({
             adUnitId: this.id,
         });
 
         let self = this;
         this._ad.onClose(function (res) {
-            debug.log("播放中途退出");
-            self.onCease();
+            debug.log("ks v ad end");
+            debug.log(res);
+            if (res && res.isEnded) {
+                debug.log("can have reward");
+                self.onFinish();
+            }
+            else {
+                debug.log("no reward");
+                self.onCease();
+            }
+
             self.updateCb();
 
         });
-        this._ad.onReward(function (res) {
-            debug.log("正常播放结束");
-            self.onFinish();
-            self.updateCb();
+        this._ad.onError(function (res) {
+            debug.log("ks ad onError");
+            debug.log(res);
 
         });
     },

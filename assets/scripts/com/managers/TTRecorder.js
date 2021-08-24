@@ -136,7 +136,7 @@ let TTRecorder = {
                 break;
 
             case "wait":
-                debug.log("什么都不做");
+                debug.log("wait 不做什么");
                 break;
         }
     },

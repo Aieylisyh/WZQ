@@ -19,13 +19,13 @@ cc.Class({
 
         this._ad.onError(WechatAPI.videoAdUtil.onError);
         this._ad.onClose(function (res) {
-            debug.log("点击关闭广告");
+            debug.log("tt vad finish");
             // 小于 2.1.0 的基础库版本，res 是一个 undefined
             if ((res && res.isEnded) || res === undefined) {
-                debug.log("正常播放结束");
+                debug.log("tt vad can have reward");
                 self.onFinish();
             } else {
-                debug.log("播放中途退出");
+                debug.log("tt vad no reward");
                 self.onCease();
             }
 

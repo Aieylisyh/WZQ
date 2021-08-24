@@ -26,7 +26,7 @@ let KsRecorder = {
     },
 
     stop() {
-        debug.log("！录屏stop");
+        debug.log("录屏stop");
         this.log();
 
         if (!this.grm) {
@@ -104,18 +104,17 @@ let KsRecorder = {
                     }
 
                 } else if (!this.isAuto && isAuto) {
-                    debug.log("手动录频 忽略开始自动录屏");
+                    debug.log("手动录屏 忽略开始自动录屏");
                 } else if (!this.isAuto && !isAuto) {
                     debug.log("重复手动录频 按理应该不会这样 忽略");
                 } else if (this.isAuto && !isAuto) {
-                    debug.log("自动录频切到手动录频");
+                    debug.log("自动录屏切到手动");
                     this.stop();
                     this.isAuto = isAuto;
                     this.startAfterStop = true;
                     this.stopAfterStart = false;
                     this.willShare = false;
                 }
-
                 break;
 
             case "starting":
@@ -124,7 +123,7 @@ let KsRecorder = {
                 break;
 
             case "wait":
-                debug.log("什么都不做");
+                debug.log("wait 不做什么");
                 break;
         }
     },
