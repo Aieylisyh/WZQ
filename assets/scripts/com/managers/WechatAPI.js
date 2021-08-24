@@ -188,80 +188,113 @@ let WechatAPI = {
             this.nativeAdUtil = wx.nativeAdUtil;
 
             this.initAdUtils();
-        } else if (debug.platformToutiao || window.wx) {
-            if (debug.platformToutiao) {
-                this.isTT = true;
-                console.log("is toutiao");
-                window.wx = window.tt;
-                this.ttRecorder.setup();
+        } else if (debug.platformWx) {
 
-                let BannerAdUtil_tt = require("BannerAdUtil_tt");
-                this.bannerAdUtil = new BannerAdUtil_tt();
-                let VideoAdUtil_tt = require("VideoAdUtil_tt");
-                this.videoAdUtil = new VideoAdUtil_tt();
-                let InterstitialAdUtil_tt = require("InterstitialAdUtil_tt");
-                this.interstitialAdUtil = new InterstitialAdUtil_tt();
+            console.log("isWx");
+            this.isWx = true;
+            let BannerAdUtil_wx = require("BannerAdUtil_wx");
+            this.bannerAdUtil = new BannerAdUtil_wx();
+            let VideoAdUtil_wx = require("VideoAdUtil_wx");
+            this.videoAdUtil = new VideoAdUtil_wx();
+            let InterstitialAdUtil_wx = require("InterstitialAdUtil_wx");
+            this.interstitialAdUtil = new InterstitialAdUtil_wx();
+            //this.initCloudDev();
 
-                wx.showShareMenu({
-                    withShareTicket: true,
+            wx.showShareMenu(); //显示转发按钮
+            wx.updateShareMenu({
+                withShareTicket: true,
+            });
+
+            this.shareUtil = require("WxShare");
+
+            WechatAPI.wxPromo = {};
+            WechatAPI.wxPromo.ready = false;
+            if (typeof wx.createGamePortal == "function") {
+                WechatAPI.wxPromo.portal = wx.createGamePortal({
+                    adUnitId: "PBgAAeySGo7XS9rw",
+                    success: function (res) {
+                        console.log(res);
+                    },
+                    fail: function (res) {
+                        console.log(res);
+                    }
                 });
-                this.shareUtil = require("TtShare");
-            } else {
-                console.log("isWx");
-
-                this.isWx = true;
-                let BannerAdUtil_wx = require("BannerAdUtil_wx");
-                this.bannerAdUtil = new BannerAdUtil_wx();
-                let VideoAdUtil_wx = require("VideoAdUtil_wx");
-                this.videoAdUtil = new VideoAdUtil_wx();
-                let InterstitialAdUtil_wx = require("InterstitialAdUtil_wx");
-                this.interstitialAdUtil = new InterstitialAdUtil_wx();
-                //this.initCloudDev();
-
-                wx.showShareMenu(); //显示转发按钮
-                wx.updateShareMenu({
-                    withShareTicket: true,
-                });
-
-                this.shareUtil = require("WxShare");
-
-                WechatAPI.wxPromo = {};
-                WechatAPI.wxPromo.ready = false;
-                if (typeof wx.createGamePortal == "function") {
-                    WechatAPI.wxPromo.portal = wx.createGamePortal({
-                        adUnitId: "PBgAAeySGo7XS9rw",
-                        success: function (res) {
-                            console.log(res);
-                        },
-                        fail: function (res) {
-                            console.log(res);
-                        }
+                WechatAPI.wxPromo.portal.onLoad(
+                    function () {
+                        WechatAPI.wxPromo.ready = true;
                     });
-                    WechatAPI.wxPromo.portal.onLoad(
-                        function () {
-                            WechatAPI.wxPromo.ready = true;
-                        });
-                    WechatAPI.wxPromo.portal.onClose(
-                        function () {
-                            WechatAPI.wxPromo.ready = false;
-                            WechatAPI.wxPromo.portal.load();
-                        });
+                WechatAPI.wxPromo.portal.onClose(
+                    function () {
+                        WechatAPI.wxPromo.ready = false;
+                        WechatAPI.wxPromo.portal.load();
+                    });
 
-                    WechatAPI.wxPromo.portal.load();
+                WechatAPI.wxPromo.portal.load();
 
-                }
-
-                // if (typeof wx.onMemoryWarning == "function") {
-                //     wx.onMemoryWarning(function(res) {
-                //         WechatAPI.GC();
-                //     })
-                // }
-
-                wx.onShow(function (res) {
-                    WechatAPI.wxOnShow(res);
-                });
-                WechatAPI.wxOnShow(wx.getLaunchOptionsSync());
             }
+
+            wx.onShow(function (res) {
+                WechatAPI.wxOnShow(res);
+            });
+            WechatAPI.wxOnShow(wx.getLaunchOptionsSync());
+
+            this.initAdUtils();
+            wx.onAudioInterruptionEnd(function () {
+                appContext.getSoundManager().onShow();
+            });
+            this.enableShare = true;
+            WechatAPI.shareUtil.listenOnShare(); //初始化分享
+
+            WechatAPI.deviceManager.fitWideScreen();
+
+            if (typeof wx.getUpdateManager === 'function') {
+                const updateManager = wx.getUpdateManager();
+                updateManager.onCheckForUpdate(function (res) {
+                    if (res.hasUpdate) {
+                        console.log("发现新版本");
+                    }
+                })
+
+                updateManager.onUpdateReady(function () {
+                    wx.showModal({
+                        title: "检测到新版本",
+
+                        content: "新的版本已经下载好，是否立即应用新版本?",
+
+                        success: function (res) {
+                            if (res.confirm) {
+                                console.log("用户选更新");
+                                updateManager.applyUpdate();
+                            } else if (res.cancel) {
+                                console.log("用户选不更新");
+                            }
+                        },
+                    })
+                })
+
+                updateManager.onUpdateFailed(function () {
+                    console.warn("新版本下载失败");
+                })
+            } else {
+                console.log("不存在UpdateManager");
+            }
+        } else if (debug.platformToutiao) {
+            this.isTT = true;
+            console.log("is toutiao");
+            window.wx = window.tt;
+            this.ttRecorder.setup();
+
+            let BannerAdUtil_tt = require("BannerAdUtil_tt");
+            this.bannerAdUtil = new BannerAdUtil_tt();
+            let VideoAdUtil_tt = require("VideoAdUtil_tt");
+            this.videoAdUtil = new VideoAdUtil_tt();
+            let InterstitialAdUtil_tt = require("InterstitialAdUtil_tt");
+            this.interstitialAdUtil = new InterstitialAdUtil_tt();
+
+            wx.showShareMenu({
+                withShareTicket: true,
+            });
+            this.shareUtil = require("TtShare");
 
             this.initAdUtils();
             wx.onAudioInterruptionEnd(function () {
@@ -364,8 +397,6 @@ let WechatAPI = {
 
             this.isUC = true;
             window.wx = window.uc;
-            //console.log(uc);
-            // this.ttRecorder.setup();
 
             let BannerAdUtil_uc = require("BannerAdUtil_uc");
             this.bannerAdUtil = new BannerAdUtil_uc();
@@ -470,17 +501,68 @@ let WechatAPI = {
 
             this.enableShare = false;
             this.shareUtil = require("TtShare");
+        } else if (debug.platformKuaishou) {
+            this.isTT = true;
+            this.isKS = true;
+            console.log("is Kuaishou");
+            window.wx = window.ks;
+            window.tt = window.wx;
+            this.ttRecorder = require("KsRecorder");
+            this.ttRecorder.setup();
+            this.bannerAdUtil = null;
+            let VideoAdUtil_ks = require("VideoAdUtil_ks");
+            this.videoAdUtil = new VideoAdUtil_ks();
+            this.interstitialAdUtil = null;
+            this.shareUtil = require("KsShare");
+            this.initAdUtils();
+            this.enableShare = true;
+            WechatAPI.deviceManager.fitWideScreen();
+            if (typeof wx.getUpdateManager === 'function') {
+                const updateManager = wx.getUpdateManager();
+                updateManager.onCheckForUpdate(function (res) {
+                    if (res.hasUpdate) {
+                        console.log("发现新版本");
+                    }
+                })
+
+                updateManager.onUpdateReady(function () {
+                    wx.showModal({
+                        title: "检测到新版本",
+
+                        content: "新的版本已经下载好，是否立即应用新版本?",
+
+                        success: function (res) {
+                            if (res.confirm) {
+                                console.log("用户选更新");
+                                updateManager.applyUpdate();
+                            } else if (res.cancel) {
+                                console.log("用户选不更新");
+                            }
+                        },
+                    })
+                })
+
+                updateManager.onUpdateFailed(function () {
+                    console.warn("新版本下载失败");
+                })
+            } else {
+                console.log("不存在UpdateManager");
+            }
         }
 
         if (this.isEnabled()) {
             wx.originRequire = require;
             this.keepScreenOn();
         }
+        console.log("wechat api init ok");
     },
 
     wxOnShow(res) {
         console.log("onshow 启动参数！")
         console.log(res);
+        if (this.isKS) {
+            appContext.getSoundManager().onShow();
+        }
 
         if (res) {
             if (cc.tempData == null) {
@@ -500,7 +582,9 @@ let WechatAPI = {
             if (res.scene != null) {
                 cc.enterAppSceneId = res.scene;
             }
-
+            if (res.path != null) {
+                cc.path = res.path;
+            }
             if (res.referrerInfo != null) {
                 cc.tempData.referrerInfo = res.referrerInfo;
             }
@@ -1194,6 +1278,8 @@ let WechatAPI = {
                 console.log("今日头条");
             } else if (s.appName == "Douyin") {
                 console.log("抖音");
+            } else if (this.isKS) {
+                console.log("kuaishow");
             }
         }
 
@@ -1212,6 +1298,13 @@ let WechatAPI = {
             this.systemInfo.windowWidth = cc.view._frameSize.width;
             this.systemInfo.version = "yy";
             this.systemInfo.SDKVersion = "yy";
+        } else if (this.isKS) {
+            this.systemInfo.platform = "KS";
+            this.systemInfo.model = cc.sys.os;
+            this.systemInfo.windowHeight = cc.view._frameSize.height;
+            this.systemInfo.windowWidth = cc.view._frameSize.width;
+            this.systemInfo.version = "ks";
+            this.systemInfo.SDKVersion = "ks";
         } else if (this.isUC) {
             //异常的特殊 返回的字符串！
             s = JSON.parse(s);

@@ -42,6 +42,9 @@ cc.Class({
 
         platformYY: false,
 
+        platformKuaishou: false,
+
+        platformWx:false,
 
         freeAdReward: false,
 
@@ -91,6 +94,8 @@ cc.Class({
             platformUC: this.platformUC,
             platformMZ: this.platformMZ,
             platformYY: this.platformYY,
+            platformWx:this.platformWx,
+            platformKuaishou:this.platformKuaishou,
             extraSettings: {
                 fg: true,
                 fgCount: 5, //free gift count

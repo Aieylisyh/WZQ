@@ -8,11 +8,19 @@ cc.Class({
 
     properties: {
         eB: cc.EditBox,
+
+        contentTxt: cc.Label,
     },
 
     show: function () {
         this.fadeInBackground();
         this.fastShowAnim();
+
+        if (debug.platformToutiao) {
+            contentTxt.string = "关注抖音【五子棋对战】相关讯息\n不定期推出活动码";
+        } else {
+            contentTxt.string = "您可以试试输入 wzqdz\n更多活动码请搜索【五子棋对战】相关讯息";
+        }
     },
 
     onCommitCode() {

@@ -618,7 +618,8 @@ cc.Class({
 
             WechatAPI.ttRecorder.willShare = true;
             WechatAPI.ttRecorder.stop();
-            this.shareRewardTxt.node.active = false;//这个隐藏了就好 反正用户取消了录屏，这个视频就没了 不可能再次调起
+            this.shareRewardTxt.node.active = false;
+            //这个隐藏了就好 反正用户取消了录屏，这个视频就没了 不可能再次调起
             this.hasShareReward = false;
 
         } else {
