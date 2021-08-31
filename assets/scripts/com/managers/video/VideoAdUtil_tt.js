@@ -39,31 +39,31 @@ cc.Class({
         //         self.show();
         //     }
         // });
-        this._ad.onLoad(() => {
-            console.log("-------- tt v load simply ok");
-        });
-        this._ad.load();
+        //this._ad.onLoad(() => {
+        //    console.log("-------- tt v load simply ok");
+        //});
+        //this._ad.load();
         //this.customLoad();
     },
 
     customLoad() {
         debug.log("tt v load");
-        this.playAfterLoad = false;
+        //this.playAfterLoad = false;
         this._ad.load();
     },
 
     customShowOnLoad() {
         debug.log("tt v customShowOnLoad");
 
-        this.customLoad();
-        this.playAfterLoad = true;
-
+        this.customShow();
+        //this.playAfterLoad = true;
         //this.customShow();
     },
 
     customShow() {
         debug.log("tt v customShow");
         let self = this;
+
         this._ad.show().then(() => {
             console.log("tt video ad ok");
         }).catch((err) => {
@@ -75,6 +75,7 @@ cc.Class({
                 self._ad.show();
             });
         });
+
         // let self = this;
 
         // self._ad.show().then(() => {

@@ -1,3 +1,4 @@
+const { wxOnShow } = require("./WechatAPI");
 
 let recordTime = 240;
 let recordRestartTime = 90;
@@ -87,9 +88,15 @@ let TTRecorder = {
                 this.isAuto = isAuto;
                 this.stopAfterStart = false;
                 WechatAPI.ttRecorder.state = "starting";
-                this.grm.start({
-                    duration: recordTime,
-                });
+                debug.log(this.grm);
+                try {
+                    this.grm.start({
+                        duration: recordTime,
+                    });
+                } catch (e) {
+                    console.log(e);
+                }
+
                 break;
 
             case "stopping":
@@ -142,63 +149,18 @@ let TTRecorder = {
     },
 
     setup() {
-        if (WechatAPI.isTT) {
+        if (typeof wx.getGameRecorderManager == "function") {
             this.grm = tt.getGameRecorderManager();
 
-            if (this.grm) {
-                debug.log('录屏初始化');
-                this.grm.onStart(res => {
-                    WechatAPI.ttRecorder.startTimestamp = Date.now();
-                    WechatAPI.ttRecorder.state = "started";
-                    debug.log('！录屏开始了');
-                    debug.log(res);
-                    WechatAPI.ttRecorder.log();
+            debug.log('录屏初始化');
+            this.grm.onStart(res => {
+                WechatAPI.ttRecorder.startTimestamp = Date.now();
+                WechatAPI.ttRecorder.state = "started";
+                debug.log('！录屏开始了');
+                debug.log(res);
+                WechatAPI.ttRecorder.log();
 
-                    if (WechatAPI.ttRecorder.stopAfterStart) {
-                        WechatAPI.ttRecorder.state = "wait";
-                        debug.log("录屏延时关闭");
-                        appContext.scheduleOnce(function () {
-                            debug.log("延时关闭");
-                            WechatAPI.ttRecorder.state = "stopping";
-                            WechatAPI.ttRecorder.grm.stop();
-                        }, delay);
-                        WechatAPI.ttRecorder.stopAfterStart = false;
-                    }
-
-                })
-
-                WechatAPI.ttRecorder.grm.onStop((res) => {
-                    WechatAPI.ttRecorder.state = "stopped";
-                    WechatAPI.ttRecorder.getDuration();
-                    debug.log("！录屏结束了");
-                    debug.log(res);
-                    WechatAPI.ttRecorder.log();
-
-                    if (WechatAPI.ttRecorder.willShare) {
-                        debug.log("！录屏分享");
-                        WechatAPI.shareUtil.shareVideo(res.videoPath);
-                        WechatAPI.ttRecorder.willShare = false;
-                    }
-
-                    if (WechatAPI.ttRecorder.startAfterStop) {
-                        WechatAPI.ttRecorder.state = "wait";
-                        debug.log("录屏延时开始");
-                        appContext.scheduleOnce(function () {
-                            debug.log("延时开始");
-                            WechatAPI.ttRecorder.state = "starting";
-                            WechatAPI.ttRecorder.grm.start({
-                                duration: recordTime,
-                            });
-                        }, delay);
-                        WechatAPI.ttRecorder.startAfterStop = false;
-                    }
-                });
-
-                WechatAPI.ttRecorder.grm.onError((res) => {
-                    debug.log('！录屏出错');
-                    debug.log(res);
-                    WechatAPI.ttRecorder.startAfterStop = false;
-                    WechatAPI.ttRecorder.stopAfterStart = false;
+                if (WechatAPI.ttRecorder.stopAfterStart) {
                     WechatAPI.ttRecorder.state = "wait";
                     debug.log("录屏延时关闭");
                     appContext.scheduleOnce(function () {
@@ -206,8 +168,51 @@ let TTRecorder = {
                         WechatAPI.ttRecorder.state = "stopping";
                         WechatAPI.ttRecorder.grm.stop();
                     }, delay);
-                });
-            }
+                    WechatAPI.ttRecorder.stopAfterStart = false;
+                }
+
+            })
+
+            WechatAPI.ttRecorder.grm.onStop((res) => {
+                WechatAPI.ttRecorder.state = "stopped";
+                WechatAPI.ttRecorder.getDuration();
+                debug.log("！录屏结束了");
+                debug.log(res);
+                WechatAPI.ttRecorder.log();
+
+                if (WechatAPI.ttRecorder.willShare) {
+                    debug.log("！录屏分享");
+                    WechatAPI.shareUtil.shareVideo(res.videoPath);
+                    WechatAPI.ttRecorder.willShare = false;
+                }
+
+                if (WechatAPI.ttRecorder.startAfterStop) {
+                    WechatAPI.ttRecorder.state = "wait";
+                    debug.log("录屏延时开始");
+                    appContext.scheduleOnce(function () {
+                        debug.log("延时开始");
+                        WechatAPI.ttRecorder.state = "starting";
+                        WechatAPI.ttRecorder.grm.start({
+                            duration: recordTime,
+                        });
+                    }, delay);
+                    WechatAPI.ttRecorder.startAfterStop = false;
+                }
+            });
+
+            WechatAPI.ttRecorder.grm.onError((res) => {
+                debug.log('！录屏出错');
+                debug.log(res);
+                WechatAPI.ttRecorder.startAfterStop = false;
+                WechatAPI.ttRecorder.stopAfterStart = false;
+                WechatAPI.ttRecorder.state = "wait";
+                debug.log("录屏延时关闭");
+                appContext.scheduleOnce(function () {
+                    debug.log("延时关闭");
+                    WechatAPI.ttRecorder.state = "stopping";
+                    WechatAPI.ttRecorder.grm.stop();
+                }, delay);
+            });
         }
     },
 

@@ -17,6 +17,8 @@ cc.Class({
 
         btnShowOff: cc.Node,
 
+        btnFirstHand: cc.Node,
+
         btnFullfill: cc.Node,
 
         btnKeepGrade: cc.Node,
@@ -36,10 +38,6 @@ cc.Class({
         looserTagXRight: 150,
 
         mainNode: cc.Node,
-
-        chestsNode: cc.Node,
-
-        chestPrefab: cc.Prefab,
 
         buttons: cc.Node,
 
@@ -376,9 +374,7 @@ cc.Class({
     showButtons: function () {
         this.buttons.active = true;
 
-        this.setFullfillGradeBtns();
-        this.setShareBtns();
-        this.setKeepGradeBtns();
+        this.setBtns();
 
         this.buttons.y = -500;
         let action = cc.moveTo(0.5, 0, -40).easing(cc.easeCubicActionOut());
@@ -394,30 +390,28 @@ cc.Class({
         }, 0);
     },
 
-    setKeepGradeBtns() {
+    setBtns() {
+        var rowButtonCount = 0;
         this.btnKeepGrade.active = false;
 
         if (!this.info.win) {
             let toRestore = Math.abs(this.info.gradeScoreAdd);
-            if (toRestore > 0) {
+            if (toRestore > 80) {
                 this.btnKeepGrade.active = true;
+                rowButtonCount += 1;
                 this.keepGradeRewardTxt.node.active = true;
                 this.keepGradeRewardTxt.string = "恢复已损失积分" + toRestore;
                 this.keepGradeRewardAdIcon.active = appContext.getUxManager().gameInfo.keepGradeCardCount < 1;
             }
         }
-    },
 
-    setFullfillGradeBtns() {
         this.btnFullfill.active = false;
-        let delta = 200;
+        let delta = 300;
         let gradeToMin = 1;
-        if (WechatAPI.isMZ || WechatAPI.isUc) {
-            delta = 500;
-            gradeToMin = 0;
-        }
 
-        //如果胜利，且当前段位大于gradeToMin小于10，且差 delta 积分以内可以升段，就出现这个包含广告图标的“加满段位”按钮，点击效果是看广告，获得刚好的经验上一个段位
+        //如果胜利，且当前段位大于gradeToMin小于10，
+        //且差 delta 积分以内可以升段，就出现这个包含广告图标的“加满段位”按钮
+        //点击效果是看广告，获得刚好的经验上一个段位
         if (this.info.win) {
             let gradeTo = this.gradeAndFillInfoTo.grade;
             if (gradeTo > gradeToMin && gradeTo < 10) {
@@ -430,13 +424,19 @@ cc.Class({
                 }
             }
         }
-    },
 
-    setShareBtns() {
+        let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+        if (canWatchAd && rowButtonCount < 2) {
+            this.btnFirstHand.active = true;
+            rowButtonCount += 1;
+        } else {
+            this.btnFirstHand.active = false;
+        }
+
         this.btnShowOff.active = false;
-        if (WechatAPI.enableShare) {
+        if (WechatAPI.enableShare && rowButtonCount < 2) {
             this.btnShowOff.active = true;
-
+            rowButtonCount += 1;
             if (!WechatAPI.cache.lifetimeSuperShareVideoCount) {
                 WechatAPI.cache.lifetimeSuperShareVideoCount = 1;
             } else {
@@ -596,6 +596,26 @@ cc.Class({
         this.showIntAd();
     },
 
+    onClickBtnFirstHand: function () {
+        appContext.getSoundManager().playBtn();
+
+        let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
+        if (canWatchAd) {
+            this.showVideoFirstHand();
+        } else {
+            this.onClickBtnBack();
+        }
+    },
+
+    setFirstHand() {
+        appContext.getAppController().clearGameData();
+        appContext.getAppController().backToMain();
+        appContext.nextFirstHand = true;
+        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, "下局将由您先落子\n并且不消耗任何道具");
+        this.showIntAd();
+        this.hide();
+    },
+
     getHasVideoToShare() {
         return WechatAPI.ttRecorder && WechatAPI.ttRecorder.state == "started";
     },
@@ -724,6 +744,36 @@ cc.Class({
         WechatAPI.videoAdUtil.show();
     },
 
+    showVideoFirstHand() {
+        let self = this;
+        WechatAPI.videoAdUtil.updateCb({
+            failCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_1hand_fail");
+                appContext.getAnalyticManager().sendTT('videoAd_1hand', {
+                    res: 1,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "绝对先手未拥有");
+            },
+            finishCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_1hand_ok");
+                appContext.getAnalyticManager().sendTT('videoAd_1hand', {
+                    res: 0,
+                });
+                this.setFirstHand();
+            },
+            ceaseCb: function () {
+                appContext.getAnalyticManager().sendALD("ad_1hand_cease");
+                appContext.getAnalyticManager().sendTT('videoAd_1hand', {
+                    res: 2,
+                });
+                appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后拥有绝对先手");
+            },
+            caller: self,
+        });
+
+        WechatAPI.videoAdUtil.show();
+    },
+
     resetScore() {
         if (this == null) {
             return;
@@ -765,7 +815,7 @@ cc.Class({
         } else {
             this.setPBIcon(gradeFrom, gradeFrom + 1);
         }
-        
+
         if (this.expLowLabel)
             this.expLowLabel.string = "段位保护成功，积分已恢复";
     },

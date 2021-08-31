@@ -20,7 +20,7 @@ cc.Class({
 
         this.playAfterLoad = false;
         this.create();
-        this.customLoad();
+        //this.customLoad();
 
         this._cb = {};
     },
@@ -41,11 +41,6 @@ cc.Class({
             return;
         }
         
-        if (WechatAPI.isYY) {
-            this.customCreate();
-            return;
-        }
-
         if (this._ad) {
             console.log("already has video ad! abort create!");
             return;
@@ -54,7 +49,7 @@ cc.Class({
         this.customCreate();
 
         if (this._ad == null) {
-            debug.warn("!!video ad null");
+            console.warn("!!video ad create null");
             return;
         }
     },

@@ -342,6 +342,7 @@ cc.Class({
                     comp = dialogObj.getComponent("BaseDialog");
                 } catch (e) {
                     debug.log(e);
+                    debug.log(info);
                     console.log("can't instantiate " + type);
                     return;
                 }

@@ -375,7 +375,6 @@ let WechatAPI = {
                         }
                     })
                 }
-
             };
 
             // let ratio = WechatAPI.deviceManager.getPixelRatio(); //0.33
@@ -729,13 +728,11 @@ let WechatAPI = {
     },
 
     initAdUtils: function () {
-        debug.log("!initAdUtils");
-        appContext.scheduleOnce(function () {
-            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.init();
-            WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.init();
-            WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.init();
-            WechatAPI.nativeAdUtil && WechatAPI.nativeAdUtil.init();
-        }, 0.5);
+        debug.log("!initAdUtils sync");
+        WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.init();
+        WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.init();
+        WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.init();
+        WechatAPI.nativeAdUtil && WechatAPI.nativeAdUtil.init();
     },
 
     isEnabled: function () {

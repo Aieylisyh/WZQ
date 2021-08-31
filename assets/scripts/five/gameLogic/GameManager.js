@@ -126,9 +126,16 @@ cc.Class({
 
     startGrabFirstSection() {
         debug.log("!抢先手开始");
+        if (appContext.nextFirstHand == true) {
+            //appContext.nextFirstHand = false;
+            this.grabFirstEnd();
+            return;
+        }
+
         this.game.selfPlayer.notifyGrabFirst();
         this.game.opponentPlayer.notifyGrabFirst();
         this.grabFirstProcess = true;
+
 
         // appContext.getDialogManager().showDialog(DialogTypes.Toast, "正在问对面是否抢先手...");
         // debug.log("!!正在问对面是否抢先手");
@@ -278,19 +285,24 @@ cc.Class({
 
         debug.log("setupFirstPlay");
         let firstIsPlayer1 = true;
-        if (!this.game.player1GrabFirst && this.game.player2GrabFirst) {
-            firstIsPlayer1 = false;
-            //appContext.getDialogManager().showDialog(DialogTypes.Toast, "一方抢了先手");
-        } else if (this.game.player1GrabFirst && !this.game.player2GrabFirst) {
-            firstIsPlayer1 = true;
-            //appContext.getDialogManager().showDialog(DialogTypes.Toast, "双方都抢了先手");//n本局随机决定先手
-        } else {
-            if (this.game.player1GrabFirst && this.game.player2GrabFirst) {
-                appContext.getDialogManager().showDialog(DialogTypes.Toast, "双方都抢了先手");//n本局随机决定先手
-            }
-            firstIsPlayer1 = this.game.randomSeed < 0.5;
-        }
 
+        if (appContext.nextFirstHand == true) {
+            appContext.nextFirstHand = false;
+            firstIsPlayer1 = this.game.player1.isSelf();
+        } else {
+            if (!this.game.player1GrabFirst && this.game.player2GrabFirst) {
+                firstIsPlayer1 = false;
+                //appContext.getDialogManager().showDialog(DialogTypes.Toast, "一方抢了先手");
+            } else if (this.game.player1GrabFirst && !this.game.player2GrabFirst) {
+                firstIsPlayer1 = true;
+                //appContext.getDialogManager().showDialog(DialogTypes.Toast, "双方都抢了先手");//n本局随机决定先手
+            } else {
+                if (this.game.player1GrabFirst && this.game.player2GrabFirst) {
+                    appContext.getDialogManager().showDialog(DialogTypes.Toast, "双方都抢了先手");//n本局随机决定先手
+                }
+                firstIsPlayer1 = this.game.randomSeed < 0.5;
+            }
+        }
         this.game.firstIsPlayer1 = firstIsPlayer1;
 
         if (this.game.player1.isSelf() && firstIsPlayer1 ||
@@ -347,7 +359,7 @@ cc.Class({
 
     getOpening() {
         //暂时不用这个，开局的信息太多，影响用户体验
-        let index = Math.floor(Math.random() * 15);
+        let index = Math.floor(Math.random() * 30);
         let p1 = "";
         let p2 = "";
 
@@ -364,8 +376,8 @@ cc.Class({
             p1 = "五子棋灵指引我前进";
             p2 = "看谁笑到最后";
         } else if (index == 4) {
-            p1 = "万棋归宗！";
-            p2 = "晚，晚期，龟什么?";
+            p1 = "你认输吧";
+            p2 = "我偏不";
         } else if (index == 5) {
             p1 = "我下棋可是专业的";
             p2 = "你是输棋很专业吧";
@@ -395,7 +407,22 @@ cc.Class({
             p2 = "你只会输的更快";
         } else if (index == 14) {
             p1 = "别着急，慢慢来";
-            p2 = "怕看到自己扣积分吧？";
+            p2 = "怕了么？";
+        } else if (index < 17) {
+            p1 = "天下归心";
+            p2 = "万棋归宗";
+        } else if (index < 20) {
+            p1 = "我突破";
+            p2 = "看破了";
+        } else if (index < 23) {
+            p1 = "雕虫小技";
+            p2 = "你被看穿了";
+        } else if (index < 26) {
+            p1 = "你的计谋被识破了";
+            p2 = "我识破了你的识破";
+        } else {
+            p1 = "神之一手";
+            p2 = "...";
         }
 
         return {
@@ -486,7 +513,7 @@ cc.Class({
     },
 
     notifyReplyChat(type) {
-        if (this.game!=null && this.game.opponentPlayer!=null) {
+        if (this.game != null && this.game.opponentPlayer != null) {
             this.game.opponentPlayer.replyChat(type);
         }
     }

@@ -28,12 +28,12 @@ cc.Class({
                     appContext.getGameManager().playChat("think1");
                 }
 
-                if (this.getChessTurnTime() - ceilChessTimer > 16 && !this.flag_think2) {
+                if (this.getChessTurnTime() - ceilChessTimer > 17 && !this.flag_think2) {
                     this.flag_think2 = true;
                     appContext.getGameManager().playChat("think2");
                 }
 
-                if (this.getChessTurnTime() - ceilChessTimer > 24 && !this.flag_hurry) {
+                if (this.getChessTurnTime() - ceilChessTimer > 25 && !this.flag_hurry) {
                     this.flag_hurry = true;
                     appContext.getGameManager().playChat("hurry");
                 }
