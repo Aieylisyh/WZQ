@@ -12,11 +12,11 @@ let Ai = cc.Class({
         checkWin: function (type) {
             //debug.log("checkWin " + type);
             // 经过测试，只有以下情况的合法
-            //  reverseboard, reverseColor, reverseContinue
+            // reverseboard, reverseColor, reverseContinue
             // debug.log(this.getZebraSolution(param.list, type, true, true, true, true));//black win
             // debug.log(this.getZebraSolution(param.list, type, true, true, false, true));//white win
 
-            let param = this.getAnalyseParam(false);
+            let param = this.getAnalyseParam();
             if (param == null) {
                 //debug.log("checkWin param==null");
                 return;
@@ -79,7 +79,7 @@ let Ai = cc.Class({
         },
 
         randomlyMovePointBy1: function (res, param) {
-            debug.log("点歪 只会点在上下左右4个位置");
+            //debug.log("点歪 只会点在上下左右4个位置");
             let randomInt = Math.floor(Math.random() * 4);
             for (let i = randomInt; i < randomInt + 4; i++) {
                 let originX = res.x;
@@ -104,7 +104,7 @@ let Ai = cc.Class({
             return res;
         },
 
-        getAnalyseParam: function (needMap = true) {
+        getAnalyseParam: function () {
             let gm = appContext.getGameManager();
 
             let chessMap = gm.game.chessMap;
@@ -114,9 +114,7 @@ let Ai = cc.Class({
 
             let res = {};
             res.list = this.convertList(chessMap);
-            if (needMap) {
-                res.map = this.convertMap(chessMap);
-            }
+            res.map = this.convertMap(chessMap);
 
             return res;
         },

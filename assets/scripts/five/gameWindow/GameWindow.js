@@ -212,7 +212,7 @@ cc.Class({
 
     onClickChat(e, param) {
         appContext.getSoundManager().playBtn();
-        debug.log("onClickChat " + param);
+        //debug.log("onClickChat " + param);
         appContext.getGameManager().showChat(true, param);
         appContext.getGameManager().notifyReplyChat(param);
         this.closeChatBoard();

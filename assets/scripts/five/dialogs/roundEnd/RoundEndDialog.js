@@ -728,16 +728,17 @@ cc.Class({
         if (this == null) {
             return;
         }
-        
+
         let score = Math.abs(this.info.gradeScoreAdd);
         appContext.getDialogManager().showDialog(DialogTypes.Toast, "段位保护成功！\n回复积分" + score);
 
         let userInfo = appContext.getUxManager().getUserInfo();
         userInfo.basic.currentScore += score;
         appContext.getUxManager().saveUserInfo(userInfo);
-
-        this.expArtNumPref.string = "积分已恢复";
-        this.expArtNum.string = "";
+        if (this.expArtNumPref)
+            this.expArtNumPref.string = "积分已恢复";
+        if (this.expArtNum)
+            this.expArtNum.string = "";
         let shakeAction1 = cc.scaleTo(0.5, 0.5).easing(cc.easeBackOut());
         let shakeAction2 = cc.scaleTo(0.5, 1).easing(cc.easeBackOut());
         this.expAddPart.runAction(cc.sequence(shakeAction1, shakeAction2));
@@ -764,8 +765,9 @@ cc.Class({
         } else {
             this.setPBIcon(gradeFrom, gradeFrom + 1);
         }
-
-        this.expLowLabel.string = "段位保护成功，积分已恢复";
+        
+        if (this.expLowLabel)
+            this.expLowLabel.string = "段位保护成功，积分已恢复";
     },
 
     // onClickChest: function (chest) {
