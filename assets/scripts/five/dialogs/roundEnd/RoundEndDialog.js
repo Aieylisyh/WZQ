@@ -372,10 +372,8 @@ cc.Class({
     },
 
     showButtons: function () {
-        this.buttons.active = true;
-
         this.setBtns();
-
+        this.buttons.active = true;
         this.buttons.y = -500;
         let action = cc.moveTo(0.5, 0, -40).easing(cc.easeCubicActionOut());
         this.buttons.runAction(action);
@@ -420,6 +418,7 @@ cc.Class({
                     let canWatchAd = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
                     if (canWatchAd) {
                         this.btnFullfill.active = true;
+                        rowButtonCount += 1;
                     }
                 }
             }
@@ -683,7 +682,7 @@ cc.Class({
                 clickFunction: function () {
                     appContext.getUxManager().useKeepGradeCard();
                     self.resetScore();
-                    self.hideKeepGradeButton();
+                    self.btnKeepGrade.active = false;
                 },
             };
             info.btn2 = {};
@@ -702,15 +701,7 @@ cc.Class({
                 }
             }
 
-            this.hideKeepGradeButton();
-        }
-    },
-
-    hideKeepGradeButton() {
-        this.btnKeepGrade.active = false;
-
-        if (this.btnShowOff.active) {
-            this.btnShowOff.x = 0;
+            this.btnKeepGrade.active = false;
         }
     },
 
