@@ -81,6 +81,7 @@ cc.Class({
         let debug = window.debug = debug = {
             appId: this.appId,
             freeAdReward: this.freeAdReward,
+            
             giftCode: this.giftCode,
             unlimitedRoundTimingAndPromoFeature: this.unlimitedRoundTimingAndPromoFeature,
             enableRevert: this.enableRevert,
@@ -197,6 +198,8 @@ cc.Class({
     },
 
     setUrl() {
+        debug.pureFileDownloadRoot += this.remoteFileUrlSuffix_tt;
+
         if (WechatAPI.isWx) {
             debug.pureFileDownloadRoot += this.remoteFileUrlSuffix_wx;
         } else if (WechatAPI.isVivo) {

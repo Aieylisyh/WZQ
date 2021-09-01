@@ -4578,7 +4578,7 @@
         "__id__": 133
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [],
     "_prefab": {
       "__id__": 181
@@ -4660,8 +4660,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
-      "height": 84
+      "width": 333,
+      "height": 117
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4673,7 +4673,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -455,
+        -460,
         0,
         0,
         0,
@@ -4713,7 +4713,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "13c54ae6-103a-4b1d-82d1-5535fb666068"
+      "__uuid__": "c43b365c-ebb8-485e-9865-eb77fe9fd72f"
     },
     "_type": 0,
     "_sizeMode": 0,
@@ -4866,7 +4866,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 333,
+      "width": 0,
       "height": 150
     },
     "_anchorPoint": {
@@ -6131,7 +6131,7 @@
         "__id__": 172
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 175
@@ -6214,13 +6214,13 @@
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
-      "g": 193,
-      "b": 152,
+      "g": 203,
+      "b": 110,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 460.96,
+      "width": 256.96,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -6271,8 +6271,8 @@
       }
     ],
     "_useOriginalSize": false,
-    "_string": "下局100%先落子，不耗先手卡",
-    "_N$string": "下局100%先落子，不耗先手卡",
+    "_string": "下局100%先落子",
+    "_N$string": "下局100%先落子",
     "_fontSize": 34,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -6567,7 +6567,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 333,
+      "width": 0,
       "height": 150
     },
     "_resize": 1,

@@ -189,7 +189,6 @@ let WechatAPI = {
 
             this.initAdUtils();
         } else if (debug.platformWx) {
-
             console.log("isWx");
             this.isWx = true;
             let BannerAdUtil_wx = require("BannerAdUtil_wx");
@@ -199,7 +198,7 @@ let WechatAPI = {
             let InterstitialAdUtil_wx = require("InterstitialAdUtil_wx");
             this.interstitialAdUtil = new InterstitialAdUtil_wx();
             //this.initCloudDev();
-
+            this.ttRecorder.setup();
             wx.showShareMenu(); //显示转发按钮
             wx.updateShareMenu({
                 withShareTicket: true,
@@ -595,6 +594,10 @@ let WechatAPI = {
     },
 
     setTTAppLaunchOptions() {
+        if (!this.isEnabled()) {
+            return;
+        }
+
         this.ttAppLaunchOptions = null;
 
         this.hasTTRawMoreGame = false;
@@ -752,17 +755,6 @@ let WechatAPI = {
         return enabled;
     },
 
-    getWx: function () {
-        if (this._enabled != null) {
-            if (this._enabled) {
-                return window.wx;
-            }
-        } else if (this.isEnabled()) {
-            return window.wx;
-        }
-        return null;
-    },
-
     copy: function (content, sucCallback, failCallback, caller) {
         if (!this.isEnabled()) {
             return;
@@ -915,6 +907,18 @@ let WechatAPI = {
 
             appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
         }
+    },
+
+    stringifyData: function (storageData) {
+        let dataStr = "";
+        if (typeof storageData == "string") {
+            dataStr = storageData;
+        } else if (typeof storageData == "object") {
+            dataStr = JSON.stringify(storageData);
+        } else {
+            dataStr += storageData;
+        }
+        return dataStr;
     },
 
     setStorage: function (storageKey, storageData) {
@@ -1080,7 +1084,6 @@ let WechatAPI = {
         }
     },
 
-
     GC() {
         if (this.isEnabled() && typeof wx.triggerGC == "function") {
             wx.triggerGC();
@@ -1233,6 +1236,9 @@ let WechatAPI = {
     },
 
     vibrate: function () {
+        if (!this.isEnabled()) {
+            return;
+        }
         if (appContext.getGameSettingManager().noVibrate) {
             return;
         }
@@ -1260,13 +1266,11 @@ let WechatAPI = {
             return;
         }
 
-        let s = null;
+        let s = cc.sys;
         if (window.navigator && navigator.systemInfo) {
             s = navigator.systemInfo;
         } else if (typeof wx.getSystemInfoSync == "function") {
             s = wx.getSystemInfoSync();
-        } else if (this.isApp) {
-            s = cc.sys;
         }
 
         debug.log("setSystemInfo");
@@ -1275,9 +1279,9 @@ let WechatAPI = {
                 console.log("今日头条");
             } else if (s.appName == "Douyin") {
                 console.log("抖音");
-            } else if (this.isKS) {
-                console.log("kuaishow");
             }
+        } else if (this.isKS) {
+            console.log("kuaishow");
         }
 
         if (this.isWx || this.isTT || this.isBaidu) {

@@ -360,8 +360,8 @@ cc.Class({
 
     initGameInfo: function () {
         let info = WechatAPI.getStorageSync(StorageKey.uniqueKey.GameInfo, true);
-
-        if (info == null || info == "" || typeof info != "object") {
+        var noExistInfo = (info == null || info == "" || typeof info != "object");
+        if (noExistInfo) {
             this.gameInfo = {};
             this.gameInfo.gold = 0;
             this.gameInfo.grabFirstCardCount = 2;

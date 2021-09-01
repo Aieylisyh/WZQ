@@ -121,25 +121,6 @@ let TtShare = {
     },
 
     shareVideo(path) {
-        // tt.shareAppMessage({
-        //     channel: 'video',
-        //     title: '测试分享视频',
-        //     desc: "测试描述",
-        //     imageUrl: '',
-        //     templateId: '', // 替换成通过审核的分享ID
-        //     query: '',
-        //     extra: {
-        //         videoPath: 'ttfile://temp/test.mp4', // 可替换成录屏得到的视频地址
-        //         videoTopics: ['话题1', '话题2']
-        //     },
-        //     success() {
-        //         console.log('分享视频成功');
-        //     },
-        //     fail(e) {
-        //         console.log('分享视频失败');
-        //     }
-        // })
-
         debug.log("分享视频");
         debug.log(path);
         let recordTimeEnough = true;
