@@ -433,7 +433,7 @@ cc.Class({
         }
 
         this.btnShowOff.active = false;
-        if (WechatAPI.enableShare && rowButtonCount < 2) {
+        if (WechatAPI.enableShare && rowButtonCount < 2 && this.getHasVideoToShare()) {
             this.btnShowOff.active = true;
             rowButtonCount += 1;
             if (!WechatAPI.cache.lifetimeSuperShareVideoCount) {
@@ -616,7 +616,18 @@ cc.Class({
     },
 
     getHasVideoToShare() {
-        return WechatAPI.ttRecorder && WechatAPI.ttRecorder.state == "started";
+        if (!WechatAPI.ttRecorder) {
+            return false;
+        }
+        if (WechatAPI.ttRecorder.state != "started") {
+            return false;
+        }
+
+        if (!WechatAPI.shareUtil.isRecordTimeEnough()) {
+            return false;
+        }
+
+        return true;
     },
 
     // 点击"炫耀"按钮

@@ -731,11 +731,18 @@ let WechatAPI = {
     },
 
     initAdUtils: function () {
-        debug.log("!initAdUtils sync");
-        WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.init();
-        WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.init();
-        WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.init();
-        WechatAPI.nativeAdUtil && WechatAPI.nativeAdUtil.init();
+        //debug.log("!initAdUtils sync");
+        appContext.scheduleOnce(function () {
+            debug.log("!initAdUtils");
+            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.init();
+            WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.init();
+            WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.init();
+            WechatAPI.nativeAdUtil && WechatAPI.nativeAdUtil.init();
+        }, 2.4);
+        //WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.init();
+        //WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.init();
+        //WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.init();
+        //WechatAPI.nativeAdUtil && WechatAPI.nativeAdUtil.init();
     },
 
     isEnabled: function () {

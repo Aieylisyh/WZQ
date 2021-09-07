@@ -120,20 +120,27 @@ let TtShare = {
         this.shareVideoCB = cb;
     },
 
+    isRecordTimeEnough() {
+        if (WechatAPI.ttRecorder) {
+            let deltaSecond = WechatAPI.ttRecorder.getDuration();
+            if (deltaSecond != null) {
+                return deltaSecond > 3;
+            }
+           
+        }
+
+        return false;
+    },
+
     shareVideo(path) {
         debug.log("分享视频");
         debug.log(path);
-        let recordTimeEnough = true;
-        let deltaSecond = WechatAPI.ttRecorder.getDuration();
-        if (deltaSecond == null || deltaSecond <= 3) {
-            recordTimeEnough = false;
-        }
 
-        if (!recordTimeEnough) {
-            appContext.getDialogManager().showDialog("Toast", "请至少录制3秒视频")
+        if (!this.isRecordTimeEnough()) {
+            appContext.getDialogManager().showDialog("Toast", "请至少录制4秒")
             return;
-
         }
+        
         //8ee2j69haaaijm7gid
         //ch4n5gsi0njkflegg5
         let self = this;
