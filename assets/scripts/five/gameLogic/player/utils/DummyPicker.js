@@ -16,9 +16,23 @@ cc.Class({
                 }
             }
 
-            //let gradeInfo = Grade.getGradeInfo(gradeAndFillInfo.grade);
-            // debug.log("matchOpponent");
-            // debug.log(user);
+            return this.matchDummy(grade);
+        },
+
+        matchRankedOpponent: function (grade) {
+            let dummyPlayer = this.pickDummy(grade);
+            let success = true;
+            if (!dummyPlayer) {
+                success = false;
+            }
+
+            return {
+                dummyPlayer: dummyPlayer,//假人数据
+                success: success,//匹配是否成功 只有在没网才会失败
+            };
+        },
+
+        matchDummy: function (grade) {
             let dummyPlayer = this.pickDummy(grade);
             let success = true;
             if (!dummyPlayer) {
@@ -39,8 +53,8 @@ cc.Class({
             let tpUserPool = appContext.getUxManager().getUserPool();
             let gradeMatchModifier = Grade.getGradeMatchModifier(grade);
 
-            let fail = Math.random() * 100 < gradeMatchModifier.fail;
-            if (fail) {
+            //let fail = Math.random() * 100 < gradeMatchModifier.fail;
+            if (false) {
                 return dummy;
             }
 
@@ -87,30 +101,62 @@ cc.Class({
         },
 
         refineDummy(id, grade) {
-            let user = this.pickUserById(id);
+            let dummyUser = this.pickUserById(id);
 
             let oppoGrade = grade;
             let rnd = Math.random();
-            if (rnd > 0.96) {
-                oppoGrade += 3;
-            } else if (rnd > 0.92) {
-                oppoGrade -= 3;
-            } else if (rnd > 0.87) {
-                oppoGrade += 2;
-            } else if (rnd > 0.82) {
-                oppoGrade -= 2;
-            } else if (rnd > 0.66) {
-                oppoGrade += 1;
-            } else if (rnd > 0.5) {
-                oppoGrade -= 1;
+
+            if (appContext.getGameManager().soloPlay) {
+                oppoGrade = grade;
+            } else if (appContext.getGameManager().matchRank == 1) {
+                if (rnd > 0.6) {
+                    oppoGrade = 1;
+                } else if (rnd > 0.3) {
+                    oppoGrade = 2;
+                } else {
+                    oppoGrade = 3;
+                }
+            } else if (appContext.getGameManager().matchRank == 2) {
+                if (rnd > 0.75) {
+                    oppoGrade = 4;
+                } else if (rnd > 0.5) {
+                    oppoGrade = 5;
+                } else if (rnd > 0.25) {
+                    oppoGrade = 6;
+                } else {
+                    oppoGrade = 7;
+                }
+            } else if (appContext.getGameManager().matchRank == 3) {
+                if (rnd > 0.65) {
+                    oppoGrade = 8;
+                } else if (rnd > 0.33) {
+                    oppoGrade = 9;
+                } else {
+                    oppoGrade = 10;
+                }
+            } else {
+                if (rnd > 0.96) {
+                    oppoGrade += 3;
+                } else if (rnd > 0.92) {
+                    oppoGrade -= 3;
+                } else if (rnd > 0.87) {
+                    oppoGrade += 2;
+                } else if (rnd > 0.82) {
+                    oppoGrade -= 2;
+                } else if (rnd > 0.66) {
+                    oppoGrade += 1;
+                } else if (rnd > 0.5) {
+                    oppoGrade -= 1;
+                }
+
+                oppoGrade = Math.min(Math.max(oppoGrade, 0), 10);
+                //debug.log("oppoGrade " + oppoGrade);
             }
 
-            oppoGrade = Math.min(Math.max(oppoGrade, 0), 10);
-            //debug.log("oppoGrade " + oppoGrade);
-            user.basic.currentScore = Grade.getFitScore(oppoGrade);
+            dummyUser.basic.currentScore = Grade.getFitScore(oppoGrade);
             //user.fast = (Math.random() * 20 + oppoGrade < 15);
             //debug.log("refineDummy ");
-            let dummy = new Dummy(user);
+            let dummy = new Dummy(dummyUser);
             //debug.log(dummy);
             dummy.id = id;
             return dummy;
@@ -139,6 +185,10 @@ cc.Class({
                 user.basic.nickname = data.bUserNickNames[id - 1000];
                 //user.basic.headIconPath = "playerInfo/b/" + (id - 999) + ".jpg";
                 user.basic.headIconPath = "playerInfo/b/" + (id - 999);
+            }
+
+            if (appContext.getGameManager().soloPlay) {
+                user.basic.nickname = "我的镜像"
             }
 
             return user;

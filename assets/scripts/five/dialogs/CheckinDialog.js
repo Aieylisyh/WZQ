@@ -74,21 +74,21 @@ cc.Class({
             failCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_checkin_fail");
                 appContext.getAnalyticManager().sendTT('videoAd_checkin', {
-                    res: 1,
+                    res: "f",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "签到失败，请稍候重试");
             },
             finishCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_checkin_ok");
                 appContext.getAnalyticManager().sendTT('videoAd_checkin', {
-                    res: 0,
+                    res: "s",
                 });
                 this.checkinSuc();
             },
             ceaseCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_checkin_cease");
                 appContext.getAnalyticManager().sendTT('videoAd_checkin', {
-                    res: 2,
+                    es: "c",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以签到");
             },

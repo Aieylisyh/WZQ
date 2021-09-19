@@ -9,10 +9,14 @@ let DialogTypes = {
 
     Match: "Match",
 
+    MatchSelect: "MatchSelect",
+    
     Rank: "Rank",
 
     RoundEnd: "RoundEnd",
 
+    RoundEndRank: "RoundEndRank",
+    
     PlayerInfo: "PlayerInfo",
 
     Toast: "Toast",

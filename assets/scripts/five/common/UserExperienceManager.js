@@ -363,7 +363,7 @@ cc.Class({
         var noExistInfo = (info == null || info == "" || typeof info != "object");
         if (noExistInfo) {
             this.gameInfo = {};
-            this.gameInfo.gold = 0;
+            this.gameInfo.gold = 50;
             this.gameInfo.grabFirstCardCount = 2;
             this.gameInfo.keepGradeCardCount = 0;
             this.gameInfo.bonusScoreDay = 0;
@@ -458,7 +458,7 @@ cc.Class({
 
     canUseRandomGold() {
         let count = this.getAndRefineRandomGoldUsedCount();
-        return count < 4;
+        return count < 5;
     },
 
     useRandomGold() {
@@ -573,7 +573,7 @@ cc.Class({
 
         if (info.win) {
             if (this.tryUseBonusScore()) {
-                info.gradeScoreAdd += 120;
+                info.gradeScoreAdd += 100;
                 info.usedBonusScore = true;
             }
         } else {
@@ -630,6 +630,21 @@ cc.Class({
     },
 
     getGoldByGameEnd(win, grade) {
+        if (!win) {
+            return 0;
+        }
+
+        if (appContext.getGameManager().matchRank == 1) {
+            return 40;
+        }
+        if (appContext.getGameManager().matchRank == 2) {
+            return 100;
+        }
+        if (appContext.getGameManager().matchRank == 3) {
+            return 300;
+        }
+
+        return 0;
         let res = 10 + grade + Math.random() * 13;
 
         if (win) {

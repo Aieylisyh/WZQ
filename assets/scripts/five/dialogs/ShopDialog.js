@@ -163,14 +163,14 @@ cc.Class({
             failCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_shop_fail");
                 appContext.getAnalyticManager().sendTT('videoAd_shop', {
-                    res: 1,
+                    res: "f",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "抽取失败，请稍候重试");
             },
             finishCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_shop_ok");
                 appContext.getAnalyticManager().sendTT('videoAd_shop', {
-                    res: 0,
+                    res: "s",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "成功获得奖励");
                 funcSuc.call(caller);
@@ -178,7 +178,7 @@ cc.Class({
             ceaseCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_shop_cease");
                 appContext.getAnalyticManager().sendTT('videoAd_shop', {
-                    res: 2,
+                    res: "c",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以抽取");
             },

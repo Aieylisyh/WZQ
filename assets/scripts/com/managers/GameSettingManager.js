@@ -9,7 +9,7 @@ cc.Class({
 
         _muteCross: false,
 
-        _muteConfirmChess: false,
+        _muteConfirmChess: true,
 
         _muteSoundKey: "muteSoundKey",
 
@@ -58,9 +58,9 @@ cc.Class({
         }, this);
 
         WechatAPI.getStorage(this._muteConfirmChessKey, function (data) {
-            // if (data == null) {
-            //     return;
-            // }
+            if (data == null) {
+                return;
+            }
             this._muteConfirmChess = this.storageDataToBool(data);
         }, this);
     },

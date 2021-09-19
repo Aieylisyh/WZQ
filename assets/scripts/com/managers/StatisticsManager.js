@@ -28,7 +28,7 @@ cc.Class({
 
     sendTT(eventName, obj) {
         if (WechatAPI.isTT && typeof tt.reportAnalytics == "function") {
-            if (!obj) {
+            if (obj == null) {
                 obj = {};
             }
             tt.reportAnalytics(eventName, obj);

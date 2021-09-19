@@ -126,7 +126,7 @@ cc.Class({
 
     startGrabFirstSection() {
         debug.log("!抢先手开始");
-        if (appContext.nextFirstHand == true) {
+        if (appContext.nextFirstHand == true || appContext.getGameManager().soloPlay) {
             //appContext.nextFirstHand = false;
             this.grabFirstEnd();
             return;
@@ -286,7 +286,7 @@ cc.Class({
         debug.log("setupFirstPlay");
         let firstIsPlayer1 = true;
 
-        if (appContext.nextFirstHand == true) {
+        if (appContext.nextFirstHand == true || appContext.getGameManager().soloPlay) {
             appContext.nextFirstHand = false;
             firstIsPlayer1 = this.game.player1.isSelf();
         } else {
@@ -485,6 +485,11 @@ cc.Class({
     },
 
     playChat(type) {
+        if (appContext.getGameManager().soloPlay) {
+            //no chat in solo mode
+            return;
+        }
+
         let isSelf = this.getCurrentPlayerIsSelf();
         if (Math.random() > 0.91) {
             let phrase = this.getOpening();

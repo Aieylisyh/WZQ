@@ -87,7 +87,11 @@ cc.Class({
     },
 
     setChessAt(x, y, type, index = 0) {
-        let current = this.chessMap[x][y];
+        let current = null;
+        if (this.chessMap) {
+            current = this.chessMap[x][y];
+        }
+
         if (current != null) {
             if (current.type === ChessType.White) {
                 this.chessPool.recycleWhiteChess(current);
@@ -154,7 +158,7 @@ cc.Class({
                 this.chessChecker.setDemoChess();//传空的参数，恢复demo棋子
                 this.chessChecker.setCommitBtn();
             }
-        }else{
+        } else {
             //移动棋子
             this.chessChecker.toggleDeplacement(true);
             this.chessChecker.toggleCheckCross(false);

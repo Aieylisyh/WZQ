@@ -52,11 +52,11 @@ cc.Class({
             }
             let reward;
             if (s == "wzqdz") {
-                reward = [{ type: "GrabFirstCard", count: 1 }, { type: "Gold", count: 288 }];
+                reward = [{ type: "GrabFirstCard", count: 3 }, { type: "KeepGradeCard", count: 1 }, { type: "Gold", count: 88 }];
             } else if (s == "woshidaren") {
-                reward = [{ type: "GrabFirstCard", count: 5 }, { type: "KeepGradeCard", count: 1 }, { type: "Gold", count: 588 }];
+                reward = [{ type: "GrabFirstCard", count: 3 }, { type: "KeepGradeCard", count: 1 }, { type: "Gold", count: 258 }];
             } else if (s == "wzqdzdr") {
-                reward = [{ type: "GrabFirstCard", count: 6 }, { type: "KeepGradeCard", count: 6 }, { type: "Gold", count: 988 }];
+                reward = [{ type: "GrabFirstCard", count: 6 }, { type: "KeepGradeCard", count: 6 }, { type: "Gold", count: 528 }];
             }
             this.recodeCode(s);
             appContext.getUxManager().rewardItems(reward);

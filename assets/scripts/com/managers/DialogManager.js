@@ -25,7 +25,11 @@ cc.Class({
 
         matchDialogPrefabPath: "",
 
+        matchSelectDialogPrefabPath: "",
+
         rankDialogPrefabPath: "",
+
+        roundEndRankDialogPrefabPath: "",
 
         roundEndDialogPrefabPath: "",
 
@@ -262,6 +266,10 @@ cc.Class({
                 prefabPath = this.roundEndDialogPrefabPath;
                 break;
 
+            case DialogTypes.RoundEndRank:
+                prefabPath = this.roundEndRankDialogPrefabPath;
+                break;
+
             case DialogTypes.Item:
                 prefabPath = this.itemDialogPath;
                 break;
@@ -272,6 +280,10 @@ cc.Class({
 
             case DialogTypes.Match:
                 prefabPath = this.matchDialogPrefabPath;
+                break;
+
+            case DialogTypes.MatchSelect:
+                prefabPath = this.matchSelectDialogPrefabPath;
                 break;
 
             case DialogTypes.Rank:

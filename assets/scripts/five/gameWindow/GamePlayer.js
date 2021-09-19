@@ -39,12 +39,12 @@ cc.Class({
                 }
             }
 
-            if (debug.unlimitedRoundTimingAndPromoFeature) {
+            if (debug.unlimitedRoundTimingAndPromoFeature || appContext.getGameManager().soloPlay) {
                 this.timerLabel.string = "--";
-            }else{
+            } else {
                 this.timerLabel.string = ceilChessTimer;
             }
-           
+
         }
     },
 
@@ -96,7 +96,7 @@ cc.Class({
     },
 
     onPlayChessTimeOut: function () {
-        if (debug.unlimitedRoundTimingAndPromoFeature) {
+        if (debug.unlimitedRoundTimingAndPromoFeature || appContext.getGameManager().soloPlay) {
             return;
         }
 

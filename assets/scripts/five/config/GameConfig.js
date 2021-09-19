@@ -88,7 +88,7 @@ cc.Class({
             enablePromoRevert: this.enablePromoRevert,
             freeRename: this.freeRename,
 
-            platformVivo: this.unlimitedRoundTimingAndPromoFeature,
+            platformVivo: this.platformVivo,
             platformApp: this.platformApp,
             platformToutiao: this.platformToutiao,
             platformBaidu: this.platformBaidu,

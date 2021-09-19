@@ -281,6 +281,7 @@ let WechatAPI = {
             this.isTT = true;
             console.log("is toutiao");
             window.wx = window.tt;
+            appContext.getAnalyticManager().sendTT('appContextStep1');
             this.ttRecorder.setup();
 
             let BannerAdUtil_tt = require("BannerAdUtil_tt");
@@ -289,13 +290,12 @@ let WechatAPI = {
             this.videoAdUtil = new VideoAdUtil_tt();
             let InterstitialAdUtil_tt = require("InterstitialAdUtil_tt");
             this.interstitialAdUtil = new InterstitialAdUtil_tt();
-
+            appContext.getAnalyticManager().sendTT('appContextStep2');
             wx.showShareMenu({
                 withShareTicket: true,
             });
             this.shareUtil = require("TtShare");
 
-            this.initAdUtils();
             wx.onAudioInterruptionEnd(function () {
                 appContext.getSoundManager().onShow();
             });
@@ -303,7 +303,8 @@ let WechatAPI = {
             WechatAPI.shareUtil.listenOnShare(); //初始化分享
 
             WechatAPI.deviceManager.fitWideScreen();
-
+            this.initAdUtils();
+            
             if (typeof wx.getUpdateManager === 'function') {
                 const updateManager = wx.getUpdateManager();
                 updateManager.onCheckForUpdate(function (res) {
@@ -731,18 +732,12 @@ let WechatAPI = {
     },
 
     initAdUtils: function () {
-        //debug.log("!initAdUtils sync");
-        appContext.scheduleOnce(function () {
-            debug.log("!initAdUtils");
-            WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.init();
-            WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.init();
-            WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.init();
-            WechatAPI.nativeAdUtil && WechatAPI.nativeAdUtil.init();
-        }, 2.4);
-        //WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.init();
-        //WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.init();
-        //WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.init();
-        //WechatAPI.nativeAdUtil && WechatAPI.nativeAdUtil.init();
+        appContext.getAnalyticManager().sendTT('initAdUtils');
+        debug.log("!initAdUtils sync");
+        WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.init();
+        WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.init();
+        WechatAPI.interstitialAdUtil && WechatAPI.interstitialAdUtil.init();
+        WechatAPI.nativeAdUtil && WechatAPI.nativeAdUtil.init();
     },
 
     isEnabled: function () {

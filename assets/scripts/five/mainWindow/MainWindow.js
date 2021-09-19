@@ -51,6 +51,10 @@ cc.Class({
         btnDaily: cc.Node,
 
         btnCode: cc.Node,
+
+        goldNumNode: cc.Node,
+
+        goldNumLabel: cc.Label,
     },
 
     start: function () {
@@ -76,7 +80,6 @@ cc.Class({
         if (this.setupLoginFinish) {
             let userInfo = appContext.getUxManager().getUserInfo();
             this.playerInfoBoard.setup(userInfo, true);
-            this.setHouse(userInfo);
             return;
         }
 
@@ -92,8 +95,6 @@ cc.Class({
         let userInfo = appContext.getUxManager().getUserInfo();
         this.playerInfoBoard.setup(userInfo, true);
         this.playerInfoBoard.notifyClick();
-        this.setHouse(userInfo);
-        this.setRedDots();
         this.tickTime = 1;
         if (this.node && WechatAPI.isWx || WechatAPI.isTT || WechatAPI.isMZ || WechatAPI.isUC || WechatAPI.isYY) {
             WechatAPI.bannerAdUtil && WechatAPI.bannerAdUtil.reload();
@@ -103,7 +104,7 @@ cc.Class({
     update: function (dt) {
         // 信息栏动画
         if (this.swingTime != null) {
-            this.playerInfoBoard.node.x = Math.floor(Math.sin(this.swingTime * 1.5) * 220) * 0.1;
+            this.playerInfoBoard.node.x = Math.floor(Math.sin(this.swingTime * 1.5) * 220) * 0.1 + 45;
             this.swingTime += dt;
         }
 
@@ -148,6 +149,14 @@ cc.Class({
 
         //     }, 0);
         // }
+        this.showGold();
+    },
+
+    showGold() {
+        if(appContext.getUxManager()&&appContext.getUxManager().gameInfo){
+            this.goldNumNode.active = true;
+            this.goldNumLabel.string = appContext.getUxManager().gameInfo.gold;
+        }
     },
 
     buildAnim: function () {
@@ -156,56 +165,44 @@ cc.Class({
             return; true
         }
 
-        let btnMatchModeX = -50;
+        let btnMatchModeX = -30;
 
-        // let canEnterHardMode = appContext.getUxManager().playedTimes > 1;
-        // if (!canEnterHardMode) {
-        //     let userInfo = appContext.getUxManager().getUserInfo();
-        //     let grade = Grade.getGradeAndFillInfoByScore(userInfo.basic.currentScore).grade;
-        //     if (grade >= 2) {
-        //         canEnterHardMode = true;
-        //     }
-        // }
+        this.btnHardMode.active = true;
+        let btnHardModeY = this.btnHardMode.y;
+        let btnHardModeAction = cc.moveTo(0.6, 30, btnHardModeY).easing(cc.easeCubicActionOut());
+        let btnHardModeSequence = cc.sequence(cc.delayTime(0.1), btnHardModeAction);
+        this.btnHardMode.runAction(btnHardModeSequence);
 
-        if (true) {
-            // if (canEnterHardMode) {
-            this.btnHardMode.active = true;
-            let btnHardModeY = this.btnHardMode.y;
-            let btnHardModeAction = cc.moveTo(0.5, 70, btnHardModeY).easing(cc.easeCubicActionOut());
-            let btnHardModeSequence = cc.sequence(cc.delayTime(0.1), btnHardModeAction);
-            this.btnHardMode.runAction(btnHardModeSequence);
-
-            this.btnMatchModeTimer.string = "";
-            this.tickTimer = 0;
-        } else {
-            btnMatchModeX = 0;
-            this.btnHardMode.active = false;
-            this.btnHardMode.scale = 0.9;
-            this.btnMatchMode.y = this.btnMatchMode.y - 10;
-        }
+        this.btnMatchModeTimer.string = "";
+        this.tickTimer = 0;
 
         // 随机匹配左移动画
         this.btnMatchMode.active = true;
         let btnMatchModeY = this.btnMatchMode.y;
-        let btnMatchModeAction = cc.moveTo(0.5, btnMatchModeX, btnMatchModeY).easing(cc.easeCubicActionOut());
+        let btnMatchModeAction = cc.moveTo(0.6, btnMatchModeX, btnMatchModeY).easing(cc.easeCubicActionOut());
         let finishCallback = cc.callFunc(function () {
             this.onBuildAnimDone();
         }, this);
         let btnMatchModeSequence = cc.sequence(cc.delayTime(0.1), btnMatchModeAction, finishCallback);
         this.btnMatchMode.runAction(btnMatchModeSequence);
+
+        this.playUserInfoAction();
     },
 
     onBuildAnimDone: function () {
         // 如果有需要在动画完毕后的执行某些操作，可以放在这里
-        this.playUserInfoAction();
         this.showPromo();
-
+        this.showGold();
         if (!debug.extraSettings.global) {
             //this.btnDaily.active = WechatAPI.videoAdUtil && WechatAPI.videoAdUtil.canPlay();
             this.btnDaily.active = false;
         } else {
             this.btnDaily.active = false;
         }
+
+        let userInfo = appContext.getUxManager().getUserInfo();
+        this.setHouse(userInfo);
+        this.setRedDots();
         //this.btnDaily.active =  appContext.getUxManager().isValidDailyRewardClaimedDay();
     },
 
@@ -255,8 +252,21 @@ cc.Class({
         //         return;
         //     }
         // }
-
+        appContext.getGameManager().matchRank = 0;
+        appContext.getGameManager().soloPlay = false;
         appContext.getDialogManager().showDialog(DialogTypes.Match);
+    },
+
+    onClickBtnSolo() {
+        appContext.getGameManager().matchRank = 0;
+        appContext.getGameManager().soloPlay = true
+        appContext.getSoundManager().playBtn();
+        appContext.getDialogManager().showDialog(DialogTypes.Match);
+    },
+
+    onClickBtnMatch() {
+        appContext.getSoundManager().playBtn();
+        appContext.getDialogManager().showDialog(DialogTypes.MatchSelect);
     },
 
     showVideo() {
@@ -265,14 +275,14 @@ cc.Class({
             failCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_normalmode_fail");
                 appContext.getAnalyticManager().sendTT('videoAd_normalmode', {
-                    res: 1,
+                    res: "f",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "请稍后重试");
             },
             finishCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_normalmode_ok");
                 appContext.getAnalyticManager().sendTT('videoAd_normalmode', {
-                    res: 0,
+                    res: "s",
                 });
 
                 appContext.getSoundManager().playUseGold();
@@ -286,7 +296,7 @@ cc.Class({
             ceaseCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_normalmode_cease");
                 appContext.getAnalyticManager().sendTT('videoAd_normalmode', {
-                    res: 2,
+                    res: "c",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以立即匹配并获得20金币");
             },
@@ -405,21 +415,21 @@ cc.Class({
             failCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_shop_fail");
                 appContext.getAnalyticManager().sendTT('videoAd_shop', {
-                    res: 1,
+                    res: "f",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "抽取失败，请稍候重试");
             },
             finishCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_shop_ok");
                 appContext.getAnalyticManager().sendTT('videoAd_shop', {
-                    res: 0,
+                    res: "s",
                 });
                 funcSuc.call(caller);
             },
             ceaseCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_shop_cease");
                 appContext.getAnalyticManager().sendTT('videoAd_shop', {
-                    res: 2,
+                    res: "c",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以抽取");
             },
@@ -437,6 +447,8 @@ cc.Class({
     },
 
     startHardModeMatch() {
+        appContext.getGameManager().matchRank = 0;
+        appContext.getGameManager().soloPlay = false;
         appContext.getDialogManager().showDialog(DialogTypes.Match, true);
     },
 
@@ -446,21 +458,21 @@ cc.Class({
             failCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_unlockHardmode_fail");
                 appContext.getAnalyticManager().sendTT('videoAd_unlockHardmode', {
-                    res: 1,
+                    res: "f",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "请稍后重试");
             },
             finishCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_unlockHardmode_ok");
                 appContext.getAnalyticManager().sendTT('videoAd_unlockHardmode', {
-                    res: 0,
+                    res: "s",
                 });
                 this.unlockHardModeMatch();
             },
             ceaseCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_unlockHardmode_cease");
                 appContext.getAnalyticManager().sendTT('videoAd_unlockHardmode', {
-                    res: 2,
+                    res: "c",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以立即解锁");
             },
@@ -495,21 +507,21 @@ cc.Class({
             failCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_hardmode_fail");
                 appContext.getAnalyticManager().sendTT('videoAd_hardmode', {
-                    res: 1,
+                    res: "f",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "请稍后重试");
             },
             finishCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_hardmode_ok");
                 appContext.getAnalyticManager().sendTT('videoAd_hardmode', {
-                    res: 0,
+                    res: "s",
                 });
                 this.startHardModeMatch();
             },
             ceaseCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_hardmode_cease");
                 appContext.getAnalyticManager().sendTT('videoAd_hardmode', {
-                    res: 2,
+                    res: "c",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以立即匹配");
             },

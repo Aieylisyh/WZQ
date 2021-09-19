@@ -100,7 +100,7 @@ cc.Class({
 
     onError: function (err) {
         console.warn("!video ad onError", err);
-        debug.log(err);
+        appContext.getAnalyticManager().sendTT('showVadErr', err);
 
         WechatAPI.videoAdUtil.onFail();
         WechatAPI.videoAdUtil.updateCb();

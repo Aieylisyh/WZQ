@@ -5,53 +5,53 @@ let Grade = {
         {
             grade: 1,
             name: "初心一段",
-            exp: 250,
+            exp: 200,
             isBottom: true,
         },
         {
             grade: 2,
             name: "入门二段",
-            exp: 300,
+            exp: 250,
         },
         {
             grade: 3,
             name: "小成三段",
-            exp: 400,
+            exp: 300,
         },
         {
             grade: 4,
             name: "潜心四段",
-            exp: 550,
+            exp: 450,
         },
         {
             grade: 5,
             name: "大成五段",
-            exp: 750,
+            exp: 650,
         },
         {
             grade: 6,
             name: "至纯六段",
-            exp: 1000,
+            exp: 950,
         },
         {
             grade: 7,
             name: "如臻七段",
-            exp: 1250,
+            exp: 1300,
         },
         {
             grade: 8,
             name: "半仙八段",
-            exp: 1500,
+            exp: 1700,
         },
         {
             grade: 9,
             name: "超神九段",
-            exp: 1800,
+            exp: 2100,
         },
         {
             grade: 10,
             name: "一心十段",
-            exp: 2100,
+            exp: 2500,
             isTop: true,
         },
     ],
@@ -69,31 +69,31 @@ let Grade = {
         },
         {
             exist: 15,
-            fail: 1,
+            fail: 0,
             bUser: 20,
         },
         {
-            exist: 20,
-            fail: 2,
+            exist: 25,
+            fail: 0,
             bUser: 15,
         },
         {
-            exist: 28,
-            fail: 2,
+            exist: 30,
+            fail: 0,
             bUser: 15,
         },
         {
-            exist: 32,
-            fail: 2,
+            exist: 35,
+            fail: 0,
             bUser: 15,
         },
         {
-            exist: 20,
-            fail: 1,
+            exist: 30,
+            fail: 0,
             bUser: 10,
         },
         {
-            exist: 15,
+            exist: 20,
             fail: 0,
             bUser: 10,
         },
@@ -168,21 +168,10 @@ let Grade = {
     getScoreByGradeDelta(selfGrade, oppoGrade, isWin) {
         let delta = selfGrade - oppoGrade;
         let sum = selfGrade + oppoGrade;
-        let res = 100 + sum * 3;
-        debug.log(res);
-        if (isWin) {
-            res *= 1 - delta * 0.1;
-        } else {
-            res *= -1 - delta * 0.1;
-            if (selfGrade > 3) {
-                res -= 5;
-                if (selfGrade > 5) {
-                    res -= 5;
-                    if (selfGrade > 8) {
-                        res -= 5;
-                    }
-                }
-            }
+        let res = (80 + sum * 5) * (1 + delta * 0.15);
+        //debug.log(res);
+        if (!isWin) {
+            res = - res;
         }
 
         return Math.floor(res);

@@ -37,21 +37,21 @@ cc.Class({
             failCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_daily_fail");
                 appContext.getAnalyticManager().sendTT('videoAd_daily', {
-                    res: 1,
+                    res: "f",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "请稍候重试");
             },
             finishCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_daily_ok");
                 appContext.getAnalyticManager().sendTT('videoAd_daily', {
-                    res: 0,
+                    res: "s",
                 });
                 self.giveReward();
             },
             ceaseCb: function () {
                 appContext.getAnalyticManager().sendALD("ad_daily_cease");
                 appContext.getAnalyticManager().sendTT('videoAd_daily', {
-                    res: 2,
+                    res: "c",
                 });
                 appContext.getDialogManager().showDialog(DialogTypes.Toast, "看完后可以占星");
             },
