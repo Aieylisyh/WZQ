@@ -71,7 +71,7 @@ cc.Class({
         }).catch((err) => {
             console.log("tt video ad err", err);
             // 可以手动加载一次
-            appContext.getAnalyticManager().sendTT('showVadErr', err);
+            appContext.getAnalyticManager().sendTT('showVadErr',  { info: err + "" });
             self._ad.load().then(() => {
                 appContext.getAnalyticManager().sendTT('loadVadOk');
                 console.log("tt video ad reload ok");

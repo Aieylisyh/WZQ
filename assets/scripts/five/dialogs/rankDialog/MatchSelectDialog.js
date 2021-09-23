@@ -18,6 +18,7 @@ cc.Class({
         forbiden2: cc.Node,
         forbiden3: cc.Node,
 
+        gradeIcons: [cc.Node],
     },
 
     show: function () {
@@ -35,6 +36,14 @@ cc.Class({
         }
         if (8 > gradeAndFillInfo.grade) {
             this.forbiden3.active = true;
+        }
+
+        for (let i = 0; i < 10; i++) {
+            if (i + 1 > gradeAndFillInfo.grade) {
+                this.gradeIcons[i].opacity = 100;
+            } else {
+                this.gradeIcons[i].opacity = 255;
+            }
         }
 
         let rankInfo = appContext.getUxManager().gameInfo.rankInfo;

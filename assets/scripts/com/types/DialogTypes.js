@@ -9,6 +9,8 @@ let DialogTypes = {
 
     Match: "Match",
 
+    Solo: "Solo",
+
     MatchSelect: "MatchSelect",
     
     Rank: "Rank",

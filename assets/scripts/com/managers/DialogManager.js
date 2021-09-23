@@ -48,6 +48,8 @@ cc.Class({
         codePrefabPath: "",
 
         shareVideoDialogPrefabPath: "",
+
+        soloPrefabPath: "",
     },
 
     onDialogHide: function (type) {
@@ -312,6 +314,10 @@ cc.Class({
 
             case DialogTypes.Code:
                 prefabPath = this.codePrefabPath;
+                break;
+
+            case DialogTypes.Solo:
+                prefabPath = this.soloPrefabPath;
                 break;
             default:
                 break;

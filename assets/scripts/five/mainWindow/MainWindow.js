@@ -261,7 +261,7 @@ cc.Class({
         appContext.getGameManager().matchRank = 0;
         appContext.getGameManager().soloPlay = true
         appContext.getSoundManager().playBtn();
-        appContext.getDialogManager().showDialog(DialogTypes.Match);
+        appContext.getDialogManager().showDialog(DialogTypes.Solo);
     },
 
     onClickBtnMatch() {

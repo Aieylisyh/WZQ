@@ -175,7 +175,10 @@ cc.Class({
             };
             // debug.log("pickUserById ");
             // debug.log(id);
-            if (id < 1000) {
+            if (appContext.getGameManager().soloPlay) {
+                user.basic.nickname = "我的对手"
+                user.basic.headIconPath = "";
+            } else if (id < 1000) {
                 let rawData = data.data[id];
                 //debug.log(rawData);
                 //user.basic.nickname = rawData.nickname;
@@ -185,10 +188,6 @@ cc.Class({
                 user.basic.nickname = data.bUserNickNames[id - 1000];
                 //user.basic.headIconPath = "playerInfo/b/" + (id - 999) + ".jpg";
                 user.basic.headIconPath = "playerInfo/b/" + (id - 999);
-            }
-
-            if (appContext.getGameManager().soloPlay) {
-                user.basic.nickname = "我的镜像"
             }
 
             return user;
