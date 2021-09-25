@@ -15,6 +15,8 @@ cc.Class({
 
         btnRevert: cc.Node,
 
+        btnLeave: cc.Node,
+
         selfEmoji: require("EmojiDisplayer"),
 
         opponentEmoji: require("EmojiDisplayer"),
@@ -136,6 +138,7 @@ cc.Class({
         this.opponentPlayer.reset();
         this.btnRevert.active = false;
         this.btnSurrender.active = false;
+        this.btnLeave.active = false;
     },
 
     // 显示倒计时
@@ -176,6 +179,26 @@ cc.Class({
         appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
     },
 
+    // 点击"离开"按钮
+    onClickBtnLeave: function () {
+        appContext.getSoundManager().playBtn();
+        let info = {
+            content: "真的要离开吗",
+            btn1: {
+                clickFunction: function () {
+                    appContext.getAppController().clearGameData();
+                    appContext.getSoundManager().playBtn();
+                    appContext.getAppController().backToMain();
+                },
+            },
+            btn2: {
+                name: "取 消",
+            },
+            hideCloseBtn: true,
+        };
+        appContext.getDialogManager().showDialog(DialogTypes.ConfirmBox, info);
+    },
+
     // 点击"设置"按钮
     onClickBtnSetting: function () {
         appContext.getSoundManager().playBtn();
@@ -190,7 +213,6 @@ cc.Class({
     },
 
     onStartGame(firstIsSelfPlayer) {
-
         this.chessSPLeft.node.scale = 0;
         this.chessSPRight.node.scale = 0;
         this.chessSPLeft.spriteFrame = firstIsSelfPlayer ? this.chessSFBlack : this.chessSFWhite;
@@ -200,6 +222,10 @@ cc.Class({
         this.chessSPRight.node.runAction(cc.scaleTo(2, 1).easing(cc.easeElasticOut()));
 
         this.resetRecordBtns();
+
+        if (appContext.getGameManager().soloPlay) {
+            this.btnLeave.active = true;
+        }
     },
 
     closeChatBoard() {
@@ -451,7 +477,9 @@ cc.Class({
     onPlayerCommitChess() {
         this.tip.active = false;
         //show surrender
-        this.btnSurrender.active = true;
+        if (!this.btnSurrender.active && !appContext.getGameManager().soloPlay) {
+            this.btnSurrender.active = true;
+        }
 
         if (debug.enableRevert && !debug.enablePromoRevert) {
             this.showBtnRevert();
@@ -469,5 +497,4 @@ cc.Class({
     showBtnRevert(b = true) {
         this.btnRevert.active = b;
     },
-
 });
