@@ -26,7 +26,7 @@ let WechatAPI = {
 
     nativeAdUtil: null, //原生广告
 
-    enableYXSDK: true, //是否启用益欣的sdk。在这里更改！如果否，则使用我这里写的代码
+    enableYXSDK: false, //是否启用益欣的sdk。在这里更改！如果否，则使用我这里写的代码
 
     enableShare: false,
 
@@ -39,10 +39,10 @@ let WechatAPI = {
 
         if (window.qg) {
             window.wx = window.qg;
-            // mz?
+
             if (debug.platformOppo) {
                 console.log("isOppo");
-                this.initYXSDK();
+                //this.initYXSDK();
                 this.isOppo = true;
 
                 qg.setEnableDebug({
@@ -72,13 +72,9 @@ let WechatAPI = {
 
                 let oppOpackageName = "submarine.xplay.kyx.nearme.gamecenter";
                 let oppAppid = "30154796";
-                // 炸潜艇H5-激励视频ID: 108240 
-                // 炸潜艇H5-原生ID: 108239
-                // 炸潜艇H5-开屏ID: 108237 
-                // 炸潜艇H5-插屏ID: 108236
-                // 炸潜艇H5-bannerID: 108235
                 //需要获取用户信息才登录
-                //YXSDK initAdService包含在里面，login是登陆的功能需要自己写 所以如果不需要用户信息就不用执行下面了
+                //YXSDK initAdService包含在里面，
+                //login是登陆的功能需要自己写 所以如果不需要用户信息就不用执行下面了
                 if (!this.isYX) {
                     qg.login({
                         pkgName: oppOpackageName,
@@ -95,9 +91,7 @@ let WechatAPI = {
                         complete() {
                             debug.log("Oppo广告初始化");
                             qg.initAdService({
-
                                 appId: oppAppid,
-
                                 //  isDebug: debug.enableLog, // true 为打开，false 为关闭
                                 isDebug: true,
                                 success: function (res) {
@@ -112,17 +106,15 @@ let WechatAPI = {
                         }
                     });
                 }
-
-
             } else if (debug.platformVivo) {
                 console.log("isVivo");
-                this.initYXSDK();
+                //this.initYXSDK();
                 this.isVivo = true;
 
-                // packageName: "com.xplay.zqt.vivominigame",
+                // packageName: "com.gzfl.wzqdz.vivominigame"
                 if (typeof qg.onUpdateReady == "function") {
                     qg.onUpdateReady(function (res) {
-                        debug.log("vivo onUpdateReady " + res);
+                        console.log(`isUpdate--- ${res}`)
                         if (res == 1) {
                             qg.applyUpdate();
                         }
@@ -135,17 +127,17 @@ let WechatAPI = {
                 this.videoAdUtil = new VideoAdUtil_vivo();
                 let InterstitialAdUtil_vivo = require("InterstitialAdUtil_vivo");
                 this.interstitialAdUtil = new InterstitialAdUtil_vivo();
-                // this.nativeAdUtil = require("NativeAdUtil_vivo");
+                let NativeAdUtil_vivo = require("NativeAdUtil_vivo");
+                this.nativeAdUtil = new NativeAdUtil_vivo();
 
                 this.initAdUtils();
             } else if (debug.platformMZ) {
                 console.log("isMeizu");
                 this.isMZ = true;
                 if (typeof (mz_jsb) != "undefined") {
-                    console.log("魅族有mz");
+                    console.log("有mz");
                     window.wx = window.qg;
                 } else {
-                    console.log("魅族无mz");
                     this.isMZ = false;
                 }
 
@@ -304,7 +296,7 @@ let WechatAPI = {
 
             WechatAPI.deviceManager.fitWideScreen();
             this.initAdUtils();
-            
+
             if (typeof wx.getUpdateManager === 'function') {
                 const updateManager = wx.getUpdateManager();
                 updateManager.onCheckForUpdate(function (res) {
@@ -516,6 +508,7 @@ let WechatAPI = {
             this.initAdUtils();
             this.enableShare = true;
             WechatAPI.deviceManager.fitWideScreen();
+
             if (typeof wx.getUpdateManager === 'function') {
                 const updateManager = wx.getUpdateManager();
                 updateManager.onCheckForUpdate(function (res) {
@@ -557,7 +550,7 @@ let WechatAPI = {
     },
 
     wxOnShow(res) {
-        console.log("onshow 启动参数！")
+        console.log("onshow 参数")
         console.log(res);
         if (this.isKS) {
             appContext.getSoundManager().onShow();
@@ -720,7 +713,8 @@ let WechatAPI = {
     //初始化益欣公司的sdk
     initYXSDK() {
         if (!this.enableYXSDK) {
-            debug.log("不适用益欣sdk");
+            this.isYX = false;
+            //debug.log("不适用益欣sdk");
             return;
         }
 

@@ -30,6 +30,10 @@ cc.Class({
     },
 
     loadBUserInfo() {
+        if (debug.disableBUser) {
+            return;
+        }
+
         let path = "playerInfo/b/nickname";
         //debug.log("loadBUserInfo " + path);
         let self = this;

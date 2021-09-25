@@ -339,7 +339,7 @@
     "testPlatform": "",
     "appId": "tt5e1528a8c13f6cd9",
     "platformOppo": false,
-    "platformVivo": true,
+    "platformVivo": false,
     "platformApp": false,
     "platformToutiao": false,
     "platformBaidu": false,
