@@ -58,6 +58,8 @@ cc.Class({
 
         freeRename:false,
 
+        disableBUser:false,
+
         remoteFileUrlSuffix_wx: "/wx",
 
         remoteFileUrlSuffix_vivo: "/vivo",
@@ -87,7 +89,8 @@ cc.Class({
             enableRevert: this.enableRevert,
             enablePromoRevert: this.enablePromoRevert,
             freeRename: this.freeRename,
-
+            disableBUser: this.disableBUser,
+            
             platformVivo: this.platformVivo,
             platformApp: this.platformApp,
             platformToutiao: this.platformToutiao,

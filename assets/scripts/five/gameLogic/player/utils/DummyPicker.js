@@ -54,6 +54,7 @@ cc.Class({
             let gradeMatchModifier = Grade.getGradeMatchModifier(grade);
 
             //let fail = Math.random() * 100 < gradeMatchModifier.fail;
+            //不允许失败匹配了
             if (false) {
                 return dummy;
             }
@@ -65,11 +66,16 @@ cc.Class({
             if (pickExist) {
                 dummy = this.pickExsitUser(grade, tpUserPool);
             } else {
-                if (Math.random() * 100 < gradeMatchModifier.bUser) {
-                    dummy = this.pickNewBUser(grade);
-                } else {
+                if (debug.disableBUser) {
                     dummy = this.pickNewUser(grade);
+                } else {
+                    if (Math.random() * 100 < gradeMatchModifier.bUser) {
+                        dummy = this.pickNewBUser(grade);
+                    } else {
+                        dummy = this.pickNewUser(grade);
+                    }
                 }
+
             }
             debug.log("挑选到dummy:");
             debug.log(dummy);
